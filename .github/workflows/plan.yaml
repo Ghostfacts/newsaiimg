@@ -26,9 +26,9 @@ jobs:
       - name: AWS login
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ env.AWS_ACCOUNT }}:role/${{ env.AWS_ROLE }}
+          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/${{ vars.AWS_ROLE }}
           role-session-name: ${{ github.sha }}
-          aws-region: ${{ env.AWS_REGION }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Checkout
         uses: actions/checkout@v2
