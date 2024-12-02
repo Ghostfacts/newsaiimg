@@ -1,0 +1,35 @@
+---
+name: Terraform Plan
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+  statuses: write
+  checks: write
+  security-events: write
+on:
+  pull_request:
+    branches:
+      - main
+    # paths:
+    #   - terraform/**
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+
+      - name: AWS login
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ env.aws_account }}:role/${{ env.aws_role }}
+          role-session-name: ${{ github.sha }}
+          aws-region: ${{ env.region }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
