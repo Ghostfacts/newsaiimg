@@ -28,7 +28,7 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::${{ env.aws_account }}:role/${{ env.aws_role }}
           role-session-name: ${{ github.sha }}
-          aws-region: ${{ env.region }}
+          aws-region: ${{ env.aws_region }}
 
       - name: Checkout
         uses: actions/checkout@v2
