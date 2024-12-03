@@ -40,7 +40,7 @@ jobs:
       - name: Terraform init
         shell: sh
         run: |
-          terraform init -input=false -no-color -upgrade -reconfigure -backend-config=${{ matrix.environment }}/backend.conf -var-file=${{ matrix.environment }}/terraform.tfvars
+          terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/${{ matrix.environment }}/backend.conf -var-file=config/${{ matrix.environment }}/terraform.tfvars
         working-directory: terraform
       
       - name: Terraform Validate
@@ -55,7 +55,7 @@ jobs:
         if: github.event_name == 'pull_request'
         shell: sh
         run : |
-          terraform plan -refresh=true -out=plan.out -var-file=${{ matrix.environment }}/terraform.tfvars
+          terraform plan -refresh=true -out=plan.out -var-file=config/${{ matrix.environment }}/terraform.tfvars
           terraform show -json plan.out | jq . > plan.json
         continue-on-error: true
         working-directory: terraform
