@@ -57,5 +57,4 @@ jobs:
         run : |
           terraform plan -refresh=true -out=plan.out -var-file=config/${{ matrix.environment }}/terraform.tfvars
           terraform show -json plan.out | jq . > plan.json
-        continue-on-error: true
         working-directory: terraform
