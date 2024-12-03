@@ -7,6 +7,8 @@ permissions:
   statuses: write
   checks: write
   security-events: write
+  
+
 on:
   pull_request:
     branches:
@@ -54,7 +56,7 @@ jobs:
       - uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.TOKEN }}
-          approvers: forstnd,forstops
+          approvers: ["members"]
           minimum-approvals: 1
 
       - name: Terraform Plan/Show
