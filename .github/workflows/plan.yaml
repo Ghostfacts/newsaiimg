@@ -51,6 +51,12 @@ jobs:
         continue-on-error: true
         working-directory: terraform
 
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: forstnd
+          minimum-approvals: 1
+
       - name: Terraform Plan/Show
         if: github.event_name == 'pull_request'
         shell: sh
