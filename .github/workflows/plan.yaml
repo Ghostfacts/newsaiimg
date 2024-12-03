@@ -68,8 +68,8 @@ jobs:
       - uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.TOKEN }}
-          approvers: ["members"]
+          approvers: members,forstnd
           minimum-approvals: 1
-          
+
       - name: Deploy to production
         run: echo deploying
