@@ -54,7 +54,7 @@ jobs:
       - uses: trstringer/manual-approval@v1
         with:
           secret: ${{ github.TOKEN }}
-          approvers: forstnd
+          approvers: forstnd,forstops
           minimum-approvals: 1
 
       - name: Terraform Plan/Show
