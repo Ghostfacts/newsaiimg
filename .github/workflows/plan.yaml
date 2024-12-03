@@ -11,11 +11,15 @@ on:
   pull_request:
     branches:
       - main
-    # paths:
-    #   - terraform/**
+    paths:
+      - terraform/**
 
 jobs:
-  terraform:
+  terraformcode:
+    strategy:
+      matrix:
+        environment:
+          - development
     runs-on: ubuntu-latest
     steps:
       - name: install terraform
@@ -32,4 +36,26 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
+      
+      - name: Terraform init
+        shell: sh
+        run: |
+          terraform init -input=false -no-color -upgrade -reconfigure -backend-config=${{ matrix.environment }}/backend.conf -var-file=${{ matrix.environment }}/terraform.tfvars
+        working-directory: terraform
+      
+      - name: Terraform Validate
+        if: github.event_name == 'pull_request'
+        shell: sh
+        run : |
+          terraform validate -no-color
+        continue-on-error: true
+        working-directory: terraform
 
+      - name: Terraform Plan/Show
+        if: github.event_name == 'pull_request'
+        shell: sh
+        run : |
+          terraform plan -refresh=true -out=plan.out -var-file=${{ matrix.environment }}/terraform.tfvars
+          terraform show -json plan.out | jq . > plan.json
+        continue-on-error: true
+        working-directory: terraform
