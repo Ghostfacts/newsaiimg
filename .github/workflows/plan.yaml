@@ -11,8 +11,8 @@ on:
   pull_request:
     branches:
       - main
-    paths:
-      - terraform/**
+    # paths:
+    #   - terraform/**
 
 jobs:
   terraformcode:
