@@ -17,7 +17,7 @@ on:
     #   - terraform/**
 
 jobs:
-  terraformcode:
+  terraformplan:
     strategy:
       matrix:
         environment:
@@ -53,12 +53,6 @@ jobs:
         continue-on-error: true
         working-directory: terraform
 
-      - uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: ["members"]
-          minimum-approvals: 1
-
       - name: Terraform Plan/Show
         if: github.event_name == 'pull_request'
         shell: sh
@@ -66,3 +60,16 @@ jobs:
           terraform plan -refresh=true -out=plan.out -var-file=config/${{ matrix.environment }}/terraform.tfvars
           terraform show -json plan.out | jq . > plan.json
         working-directory: terraform
+  
+  terraformdeploy:
+    needs: terraformplan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ github.TOKEN }}
+          approvers: ["members"]
+          minimum-approvals: 1
+          
+      - name: Deploy to production
+        run: echo deploying
