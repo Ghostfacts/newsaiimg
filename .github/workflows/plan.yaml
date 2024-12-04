@@ -33,7 +33,7 @@ jobs:
       - name: AWS login
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ vars.AWS_ACCOUNT }}:role/${{ vars.AWS_ROLE }}
+          role-to-assume: arn:aws:iam::${{ secret.AWS_ACCOUNT }}:role/${{ secret.AWS_ROLE }}
           role-session-name: ${{ github.sha }}
           aws-region: ${{ vars.AWS_REGION }}
 
