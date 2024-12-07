@@ -85,7 +85,7 @@ jobs:
       - name: Run Terraform checks
         shell: sh
         run: |
-          checkov -f plan.json
+          checkov --quiet --repo-root-for-plan-enrichment . -f plan.json
         working-directory: terraform
 
       
