@@ -81,7 +81,6 @@ jobs:
           iac_version: 'v14'
           policy_type: 'aws'
           only_warn: true
-        working-directory: terraform
 
       - name: Run Terraform checks
         shell: sh
