@@ -73,11 +73,23 @@ jobs:
           terraform show -json plan.out | jq . > plan.json
         working-directory: terraform
 
+      - name: Run Terrascan
+        id: terrascan
+        uses: tenable/terrascan-action@main
+        with:
+          iac_type: 'terraform'
+          iac_version: 'v14'
+          policy_type: 'aws'
+          only_warn: true
+        working-directory: terraform
 
       - name: Run Terraform checks
         shell: sh
         run: |
-          checkov -f plan.json 
+          checkov -f plan.json
+        working-directory: terraform
+
+      
 
       
 
