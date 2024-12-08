@@ -1,0 +1,89 @@
+---
+name: Terraform Plan
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+  statuses: write
+  checks: write
+  security-events: write
+  issues: write
+  
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - terraform/**
+
+jobs:
+  terraformplan:
+    strategy:
+      matrix:
+        environment:
+          - development
+    runs-on: ubuntu-latest
+    steps:
+      - name: install terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.x  # Use any supported Python version
+      
+      - name: Install and update Software
+        shell: sh
+        run : |
+          python -m pip install --upgrade pip
+          pip install checkov==3.2.90
+
+      - name: AWS login
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/${{ secrets.AWS_ROLE }}
+          role-session-name: ${{ github.sha }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: Terraform init
+        shell: sh
+        run: |
+          terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/${{ matrix.environment }}/backend.conf -var-file=config/${{ matrix.environment }}/terraform.tfvars
+        working-directory: terraform
+      
+      - name: Terraform Validate
+        if: github.event_name == 'pull_request'
+        shell: sh
+        run : |
+          terraform validate -no-color
+        continue-on-error: true
+        working-directory: terraform
+
+      - name: Terraform Plan/Show
+        if: github.event_name == 'pull_request'
+        shell: sh
+        run : |
+          terraform plan -refresh=true -out=plan.out -var-file=config/${{ matrix.environment }}/terraform.tfvars
+          terraform show -json plan.out | jq . > plan.json
+        working-directory: terraform
+
+      - name: Run Terrascan
+        id: terrascan
+        uses: tenable/terrascan-action@main
+        with:
+          iac_type: 'terraform'
+          iac_version: 'v14'
+          policy_type: 'aws'
+          only_warn: true
+
+      - name: Run Checkov
+        shell: sh
+        run: |
+          cd terraform
+          checkov -f plan.json --repo-root-for-plan-enrichment="." --download-external-modules "true" --compact --summary-position bottom
