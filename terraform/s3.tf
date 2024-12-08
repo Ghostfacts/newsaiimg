@@ -6,8 +6,9 @@ resource "aws_s3_bucket" "aiminnews" {
   }
 }
 
- resource "aws_s3_bucket_public_access_block" "access_good_1" {
+ resource "aws_s3_bucket_public_access_block" "blockpublic" {
   bucket = aws_s3_bucket.aiminnews.id
   block_public_acls   = true
   block_public_policy = true
+  restrict_public_buckets = true
  }
