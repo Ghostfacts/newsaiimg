@@ -96,6 +96,11 @@ jobs:
     runs-on: ubuntu-latest
     needs: terraformplan
     steps:
+      - name: install terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+
       - name: Terraform apply
         if: github.event_name == 'pull_request'
         shell: sh
