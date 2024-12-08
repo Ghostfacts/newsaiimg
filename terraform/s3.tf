@@ -1,10 +1,10 @@
 resource "aws_s3_bucket" "aiminnews" {
-  # checkov:skip=CKV2_AWS_62:Dont need Notivcations
-  # checkov:skip=CKV_AWS_18:logging not needed
-  # checkov:skip=CKV_AWS_144:Cross Region is not needed
-  # checkov:skip=CKV_AWS_21:Version control no longer needed
-  # checkov:skip=CKV2_AWS_61:Life cycal policy pending
-  # checkov:skip=CKV_AWS_145:enc not needed
+  # checkov:skip=CKV2_AWS_62
+  # checkov:skip=CKV_AWS_18
+  # checkov:skip=CKV_AWS_144
+  # checkov:skip=CKV_AWS_21
+  # checkov:skip=CKV2_AWS_61
+  # checkov:skip=CKV_AWS_145
   bucket = "aiminnews"
   tags = {
     Name        = "aiminnews"
