@@ -85,8 +85,8 @@ jobs:
       - name: Run Checkov
         shell: sh
         run: |
+          cd terraform
           checkov -f plan.json --repo-root-for-plan-enrichment . --deep-analysis --download-external-modules "true" --compact --summary-position bottom
-        working-directory: terraform
 
   terraformdeploy:
     strategy:
