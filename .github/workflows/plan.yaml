@@ -88,22 +88,13 @@ jobs:
           checkov --quiet --repo-root-for-plan-enrichment . -f plan.json
         working-directory: terraform
 
-      
-
-      
-
-      
-
-  
   terraformdeploy:
     needs: terraformplan
     runs-on: ubuntu-latest
     steps:
-      - uses: trstringer/manual-approval@v1
-        with:
-          secret: ${{ github.TOKEN }}
-          approvers: members,forstnd,forstops
-          minimum-approvals: 1
-
-      - name: Deploy to production
-        run: echo deploying
+      - name: Terraform apply
+        if: github.event_name == 'pull_request'
+        shell: sh
+        run : |
+          terraform apply -var-file=config/${{ matrix.environment }}/terraform.tfvars --auto-approve
+        working-directory: terraform
