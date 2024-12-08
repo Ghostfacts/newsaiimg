@@ -9,7 +9,7 @@ resource "aws_s3_bucket" "aiminnews" {
   tags = merge(
     local.tags,
   {
-    Name        = "newsaiimg-${local.environment_map[var.environment]}-s3-imgstorage"
+    Name = "newsaiimg-${local.environment_map[var.environment]}-s3-imgstorage"
   }
   )
 }
