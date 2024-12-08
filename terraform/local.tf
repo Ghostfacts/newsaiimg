@@ -8,7 +8,5 @@ locals {
     tags={
         project = "newsaiimg"
         environment = var.environment
-        required = yes
-        type = "Personal-use"
     }
 }
