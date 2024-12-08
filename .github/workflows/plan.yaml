@@ -73,13 +73,6 @@ jobs:
           terraform show -json plan.out | jq . > plan.json
         working-directory: terraform
 
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: planfile
-          path: |
-            terraform/plan.json
-
       - name: Run Terrascan
         id: terrascan
         uses: tenable/terrascan-action@main
@@ -110,6 +103,12 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Terraform init
+        shell: sh
+        run: |
+          terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/${{ matrix.environment }}/backend.conf -var-file=config/${{ matrix.environment }}/terraform.tfvars
+        working-directory: terraform
 
       - name: Terraform apply
         if: github.event_name == 'pull_request'
