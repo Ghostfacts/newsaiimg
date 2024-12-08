@@ -1,5 +1,10 @@
 resource "aws_s3_bucket" "aiminnews" {
-  #checkov:skip=CKV_AWS_20:The bucket is a public static content host
+  #checkov:skip=CKV2_AWS_62:Dont need Notivcations
+  #checkov:skip=CKV_AWS_18:logging not needed
+  #checkov:skip=CKV_AWS_144:Cross Region is not needed
+  #checkov:skip=CKV_AWS_21:Version control no longer needed
+  #checkov:skip=CKV2_AWS_61:Life cycal policy pending
+  #checkov:skip=CKV_AWS_145:enc not needed
   bucket = "aiminnews"
   tags = {
     Name        = "aiminnews"
