@@ -82,10 +82,14 @@ jobs:
           policy_type: 'aws'
           only_warn: true
 
-      - name: Run Terraform checks
+      - name: Run Checkov
         shell: sh
         run: |
-          checkov --quiet --repo-root-for-plan-enrichment . -f plan.json
+          checkov --deep-analysis \
+            --check HIGH,CRITICAL \
+            --quiet \
+            --repo-root-for-plan-enrichment . \
+            -f plan.json
         working-directory: terraform
 
   terraformdeploy:
