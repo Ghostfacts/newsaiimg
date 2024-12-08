@@ -46,7 +46,6 @@ jobs:
         working-directory: terraform
 
       - name: Terraform apply
-        if: github.event_name == 'pull_request'
         shell: sh
         run : |
           terraform apply -var-file=config/${{ matrix.environment }}/terraform.tfvars --auto-approve
