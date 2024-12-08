@@ -1,4 +1,5 @@
 resource "aws_s3_bucket" "aiminnews" {
+  #checkov:skip=CKV_AWS_20:The bucket is a public static content host
   bucket = "aiminnews"
   tags = {
     Name        = "aiminnews"
