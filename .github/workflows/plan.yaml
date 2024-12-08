@@ -86,7 +86,7 @@ jobs:
         shell: sh
         run: |
           cd terraform
-          checkov -f plan.json --repo-root-for-plan-enrichment . --deep-analysis --download-external-modules "true" --compact --summary-position bottom
+          checkov -f plan.json --repo-root-for-plan-enrichment="." --deep-analysis --download-external-modules "true" --compact --summary-position bottom
 
   terraformdeploy:
     strategy:
