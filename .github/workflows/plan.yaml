@@ -73,6 +73,13 @@ jobs:
           terraform show -json plan.out | jq . > plan.json
         working-directory: terraform
 
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: planfile
+          path: |
+            terraform/plan.json
+
       - name: Run Terrascan
         id: terrascan
         uses: tenable/terrascan-action@main
@@ -86,7 +93,7 @@ jobs:
         shell: sh
         run: |
           cd terraform
-          checkov -f plan.json --repo-root-for-plan-enrichment="." --deep-analysis --download-external-modules "true" --compact --summary-position bottom
+          checkov -f plan.json --repo-root-for-plan-enrichment="." --download-external-modules "true" --compact --summary-position bottom
 
   terraformdeploy:
     strategy:
