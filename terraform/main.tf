@@ -1,7 +1,7 @@
 module "news_api_layer" {
   source = "./modules/lambda_layer_python"
   layer_name = "newsapi-test"
-  pythonversion = 3.10
+  pythonversion = "3.10"
   modules = [
     "newsapi==0.1.1",
     "newsapi-python==0.2.7",
