@@ -9,3 +9,11 @@ module "news_api_layer" {
     "requests==2.31.0"
   ]
 }
+
+module "news_api_function" {
+  source = "./modules/lambda_function"
+  name = "newsapi-test"
+  runtime = "python3.10"
+  source_path = ""
+
+}
