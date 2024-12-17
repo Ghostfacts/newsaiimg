@@ -2,7 +2,7 @@ variable "layer_name" {
   description = "environment the code being deplyed"  
 }
 
-variable "pythonversion" {
+variable "runtime" {
   description = "environment the code being deplyed"  
 }
 

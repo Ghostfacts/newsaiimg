@@ -24,11 +24,13 @@ jobs:
         environment:
           - development
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ matrix.environment }}
     steps:
       - name: AWS login
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/${{ secrets.AWS_ROLE }}
+          role-to-assume: arn:aws:iam::${{ secrets.MAIN_AWS_ACCOUNT_ID }}:role/${{ secrets.MAIN_AWS_ROLE }}
           role-session-name: ${{ github.sha }}
           aws-region: ${{ vars.AWS_REGION }}
       - name: install terraform
@@ -41,12 +43,18 @@ jobs:
 
       - name: Terraform init
         shell: sh
+        env:
+          TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT }}
+          TF_VAR_AWS_ROLE_NAME: ${{ secrets.DEPLOY_AWS_ROLE }}
         run: |
           terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/${{ matrix.environment }}/backend.conf -var-file=config/${{ matrix.environment }}/terraform.tfvars
         working-directory: terraform
 
       - name: Terraform apply
         shell: sh
+        env:
+          TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT }}
+          TF_VAR_AWS_ROLE_NAME: ${{ secrets.DEPLOY_AWS_ROLE }}
         run : |
           terraform apply -var-file=config/${{ matrix.environment }}/terraform.tfvars --auto-approve
         working-directory: terraform
