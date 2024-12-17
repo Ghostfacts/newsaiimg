@@ -3,7 +3,7 @@ resource "null_resource" "make_tmp_folder" {
     command = "mkdir /tmp/${var.layer_name}/"
   }
   triggers = {
-    always_run = "${timestamp()}" #uncomment to tigger all the time
+    always_run = "${timestamp()}" #uncomment to tigger all the time    
   }
 }
 
@@ -41,8 +41,6 @@ resource "aws_lambda_layer_version" "layer" {
       data.archive_file.layerzip
     ]
 }
-
-
 
 resource "null_resource" "Clreanup" {
   # Use for_each to create one resource per module
