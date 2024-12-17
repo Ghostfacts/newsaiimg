@@ -55,7 +55,7 @@ jobs:
       
       - name: Terraform init
         env:
-          TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT }}
+          TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
           TF_VAR_AWS_ROLE_NAME: ${{ secrets.DEPLOY_AWS_ROLE }}
         shell: sh
         run: |
@@ -73,7 +73,7 @@ jobs:
       - name: Terraform Plan/Show
         if: github.event_name == 'pull_request'
         env:
-          TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT }}
+          TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
           TF_VAR_AWS_ROLE_NAME: ${{ secrets.DEPLOY_AWS_ROLE }}
         shell: sh
         run : |
