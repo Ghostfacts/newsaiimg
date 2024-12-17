@@ -24,6 +24,8 @@ jobs:
         environment:
           - development
     runs-on: ubuntu-latest
+    environment:
+      name: ${{ matrix.environment }}
     steps:
       - name: install terraform
         uses: hashicorp/setup-terraform@v3
@@ -44,7 +46,7 @@ jobs:
       - name: AWS login
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT }}:role/${{ secrets.AWS_ROLE }}
+          role-to-assume: arn:aws:iam::${{ secrets.MAIN_AWS_ACCOUNT }}:role/${{ secrets.MAIN_AWS_ROLE }}
           role-session-name: ${{ github.sha }}
           aws-region: ${{ vars.AWS_REGION }}
 
@@ -52,6 +54,9 @@ jobs:
         uses: actions/checkout@v2
       
       - name: Terraform init
+        env:
+          TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT }}
+          TF_VAR_AWS_ROLE_NAME: ${{ secrets.DEPLOY_AWS_ROLE }}
         shell: sh
         run: |
           terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/${{ matrix.environment }}/backend.conf -var-file=config/${{ matrix.environment }}/terraform.tfvars
