@@ -11,7 +11,7 @@ resource "null_resource" "pip_install" {
   # Use for_each to create one resource per module
   for_each = toset(var.modules)
   provisioner "local-exec" {
-    command = "python${var.pythonversion} -m pip install ${each.value} --no-cache-dir --upgrade --isolated --target /tmp/${var.layer_name}/python/lib/python${var.pythonversion}/site-packages/"
+    command = "${var.runtime} -m pip install ${each.value} --no-cache-dir --upgrade --isolated --target /tmp/${var.layer_name}/python/lib/python${var.runtime}/site-packages/"
   }
   triggers = {
     always_run = "${timestamp()}" #uncomment to tigger all the time
@@ -35,7 +35,8 @@ resource "aws_lambda_layer_version" "layer" {
     filename   = data.archive_file.layerzip.output_path
     layer_name = "${var.layer_name}"
     source_code_hash = data.archive_file.layerzip.output_base64sha256
-    compatible_runtimes = ["python${var.pythonversion}"]
+    compatible_runtimes = ["python${var.runtime}"]
+    
     depends_on = [ 
       null_resource.pip_install,
       data.archive_file.layerzip
