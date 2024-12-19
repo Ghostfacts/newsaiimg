@@ -1,5 +1,3 @@
 locals {
-    tags ={
-        merge(var.tags)
-    }
+    tags  = merge(var.tags)
 }
