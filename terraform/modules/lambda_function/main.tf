@@ -16,5 +16,6 @@ resource "aws_lambda_function" "function" {
   environment {
     variables = var.environment_variables
   }
+  layers = var.attach_layers
   tags = local.tags
 }
