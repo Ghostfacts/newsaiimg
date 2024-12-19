@@ -23,7 +23,7 @@ module "news_api_function" {
   environment_variables ={
     secrect_name = aws_secretsmanager_secret.newsapi.name
   }
-  attach_layers = [module.news_api_layer.layer_arn]
+  attach_layers = [module.news_api_layer.layer.arn]
   tags = merge(
     local.tags
   )
