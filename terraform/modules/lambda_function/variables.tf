@@ -29,3 +29,8 @@ variable "environment_variables" {
   type       = any
   description = "hadlecoes"  
 }
+
+variable "attach_layers" {
+  type       = any
+  description = "layers to attact to the lambda if any"  
+}
