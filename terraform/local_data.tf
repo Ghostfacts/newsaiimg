@@ -10,3 +10,5 @@ locals {
         environment = var.environment
     }
 }
+
+data "aws_region" "current" {}

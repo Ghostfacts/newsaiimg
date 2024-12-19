@@ -9,7 +9,7 @@ resource "aws_iam_role" "step_function_role" {
         Action = "sts:AssumeRole"
         Effect = "Allow"
         Principal = {
-          Service = "states.${var.region}.amazonaws.com"
+          Service = "states.${data.aws_region.current.name}.amazonaws.com"
         }
       }
     ]
