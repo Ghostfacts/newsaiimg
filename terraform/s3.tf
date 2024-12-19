@@ -1,3 +1,4 @@
+#Storaing of images
 resource "aws_s3_bucket" "aiminnews" {
   # checkov:skip=CKV2_AWS_62
   # checkov:skip=CKV_AWS_18
@@ -14,10 +15,12 @@ resource "aws_s3_bucket" "aiminnews" {
   )
 }
 
- resource "aws_s3_bucket_public_access_block" "blockpublic" {
+ resource "aws_s3_bucket_public_access_block" "imgstorage-blockpublic" {
   bucket = aws_s3_bucket.aiminnews.id
   block_public_acls   = true
   block_public_policy = true
   restrict_public_buckets = true
   ignore_public_acls=true
  }
+
+# possable website part TBC
