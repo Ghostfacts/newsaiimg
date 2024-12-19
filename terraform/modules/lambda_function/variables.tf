@@ -18,3 +18,12 @@ variable "function_handler" {
   description = "hadlecoes"  
 }
 
+variable "tags" {
+  type       = any
+  description = "hadlecoes"  
+}
+
+variable "environment_variables" {
+  type       = any
+  description = "hadlecoes"  
+}

@@ -13,4 +13,8 @@ resource "aws_lambda_function" "function" {
   runtime           = var.runtime
   timeout           = 10
   memory_size       = 128
+  environment {
+    variables = var.environment_variables
+  }
+  tags = local.tags
 }
