@@ -85,4 +85,8 @@ jobs:
           only_warn: true
 
       - name: checkov
-        use: ghostfacts/checkov@main
+        uses: ghostfacts/checkov@main
+        with:
+          planfilename: plan.json
+          path: terraform
+          githubapi: ${{ secrets.GITHUB_TOKEN }}
