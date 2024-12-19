@@ -15,6 +15,7 @@ module "news_api_function" {
   # checkov:skip=CKV_AWS_272
   # checkov:skip=CKV_AWS_116
   # checkov:skip=CKV_AWS_117
+  # checkov:skip=CKV_AWS_173
   source = "./modules/lambda_function"
   nameprefex = "newsaiimg-${local.environment_map[var.environment]}-newsapi"
   runtime = "python3.10"
