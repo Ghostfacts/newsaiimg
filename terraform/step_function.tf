@@ -27,7 +27,7 @@ resource "aws_iam_role_policy" "step_function_policy" {
           "lambda:InvokeFunction"
         ]
         Effect   = "Allow"
-        Resource = "*"
+        Resource = "${module.news_api_function.function.arn}"
       }
     ]
   })
