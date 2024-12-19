@@ -100,8 +100,7 @@ ban_words=[
 #main
 def lambda_handler(event, context):
     today, yesterday = get_today_and_yesterday_dates()
-#    newsapi_key = get_secret(os.getenv('secrect_name'))
-    newsapi = NewsApiClient(api_key="a1078546613f4bd19b77bb6620f35855")
+   newsapi_key = get_secret(os.getenv('secrect_name'))
     selected_articles =[]
     logging.info("Grathing all news articles in date range %s to %s",yesterday.strftime('%Y-%m-%d'),today.strftime('%Y-%m-%d'))
     all_articles = newsapi.get_everything(

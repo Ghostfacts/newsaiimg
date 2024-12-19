@@ -1,7 +1,9 @@
-variable "name" {
+variable "nameprefex" {
   type       = string
   description = "Name of the Function"  
 }
+
+
 
 variable "runtime" {
   type       = string

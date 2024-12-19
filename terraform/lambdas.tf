@@ -12,7 +12,7 @@ module "news_api_layer" {
 
 module "news_api_function" {
   source = "./modules/lambda_function"
-  name = "newsaiimg-${local.environment_map[var.environment]}-lambda-function-newsapi"
+  nameprefex = "newsaiimg-${local.environment_map[var.environment]}-newsapi"
   runtime = "python3.10"
   source_path = "files/lambdas/newsapi/"
   function_handler = "main.lambda_handler"
