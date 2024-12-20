@@ -31,10 +31,6 @@ data "archive_file" "layerzip" {
       null_resource.make_tmp_folder,
       null_resource.pip_install
     ]
-  triggers = {
-    # always_run = "${timestamp()}" #uncomment to tigger all the time
-    module_change = local.modules_hash
-  }
 }
 
 resource "aws_lambda_layer_version" "layer" {
