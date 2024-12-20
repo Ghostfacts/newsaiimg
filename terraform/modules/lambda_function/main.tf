@@ -13,7 +13,6 @@ resource "aws_lambda_function" "function" {
   runtime           = var.runtime
   timeout           = var.timeout
   memory_size       = var.memory_size
-  provisioned_concurrent_executions = 10
   environment {
     variables = var.environment_variables
   }
