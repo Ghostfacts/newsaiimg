@@ -21,5 +21,5 @@ resource "aws_iam_role_policy" "inline_policy" {
 }
 
 data "aws_iam_policy_document" "merged_policy" {
-  source_json = loca.policy_source
+  source_json = local.policy_source
 }
