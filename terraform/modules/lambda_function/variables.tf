@@ -34,3 +34,8 @@ variable "attach_layers" {
   type       = any
   description = "layers to attact to the lambda if any"  
 }
+
+variable "policy" {
+  type       = any
+  description = "inline policy to attach to the lambda"  
+}
