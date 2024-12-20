@@ -39,13 +39,13 @@ variable "policy" {
 }
 
 variable "timeout" {
-  type       = int
+  type       = any
   description = "the lambda time out"
   default = 10
 }
 
 variable "memory_size" {
-  type       = int
+  type       = any
   description = "the lambda memory size"
   default = 128
 }
