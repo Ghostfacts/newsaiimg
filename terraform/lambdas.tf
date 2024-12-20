@@ -25,7 +25,7 @@ module "news_api_function" {
     secrect_name = aws_secretsmanager_secret.newsapi.name
   }
   attach_layers = [module.news_api_layer.layer.arn]
-  policy = [data.aws_iam_policy_document.lambda_policy.json]
+  policy = data.aws_iam_policy_document.lambda_policy.json
   tags = merge(
     local.tags
   )
