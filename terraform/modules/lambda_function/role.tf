@@ -15,11 +15,11 @@ resource "aws_iam_role" "lambda_exec" {
 }
 
 resource "aws_iam_role_policy" "inline_policy" {
-  name   = "inline_policy"
+  name   = "lambda_inline_policy"
   role   = aws_iam_role.lambda_exec.id
   policy = data.aws_iam_policy_document.merged_policy.json
 }
 
 data "aws_iam_policy_document" "merged_policy" {
-  source_json = local.policy_source
+  source_json = var.policy
 }

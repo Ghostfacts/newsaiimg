@@ -38,15 +38,10 @@ resource "aws_sfn_state_machine" "example" {
   # checkov:skip=CKV_AWS_285
   name     = "newsaiimg-${local.environment_map[var.environment]}-step-function"
   role_arn = aws_iam_role.step_function_role.arn
-  definition = jsonencode({
-    Comment: "A Hello World example of the Amazon States Language using a Pass state",
-    StartAt: "HelloWorld",
-    States: {
-      HelloWorld: {
-        Type: "Pass",
-        Result: "Hello, World!",
-        End: true
-      }
-    }
+  definition = templatefile("${path.module}/files/stepfunction_plan.json.tpl", {
+    result_value = "Hello, World!"
   })
+
+
+
 }
