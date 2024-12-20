@@ -21,6 +21,7 @@ module "news_api_function" {
   runtime = "python3.10"
   source_path = "files/lambdas/newsapi/"
   function_handler = "main.lambda_handler"
+  timeout = 120
   environment_variables ={
     secrect_name = aws_secretsmanager_secret.newsapi.name
   }

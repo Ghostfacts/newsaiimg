@@ -3,8 +3,6 @@ variable "nameprefex" {
   description = "Name of the Function"  
 }
 
-
-
 variable "runtime" {
   type       = string
   description = "runtime to use"  
@@ -38,4 +36,16 @@ variable "attach_layers" {
 variable "policy" {
   type       = any
   description = "inline policy to attach to the lambda"  
+}
+
+variable "timeout" {
+  type       = int
+  description = "the lambda time out"
+  default = 10
+}
+
+variable "memory_size" {
+  type       = int
+  description = "the lambda memory size"
+  default = 128
 }
