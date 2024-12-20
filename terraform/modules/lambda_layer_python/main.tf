@@ -11,7 +11,7 @@ resource "null_resource" "pip_install" {
   # Use for_each to create one resource per module
   for_each = toset(var.modules)
   provisioner "local-exec" {
-    command = "${var.runtime} -m pip install ${each.value} --no-cache-dir --upgrade --isolated --target /tmp/${var.layer_name}/python/lib/python${var.runtime}/site-packages/"
+    command = "${var.runtime} -m pip install ${each.value} --no-cache-dir --upgrade --isolated --target /tmp/${var.layer_name}/python/lib/${var.runtime}/site-packages/"
   }
   triggers = {
     always_run = "${timestamp()}" #uncomment to tigger all the time
