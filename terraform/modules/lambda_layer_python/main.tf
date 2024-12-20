@@ -38,13 +38,8 @@ resource "aws_lambda_layer_version" "layer" {
     layer_name = "${var.layer_name}"
     source_code_hash = data.archive_file.layerzip.output_base64sha256
     compatible_runtimes = [var.runtime]
-    
     depends_on = [ 
       null_resource.pip_install,
       data.archive_file.layerzip
     ]
-  triggers = {
-    # always_run = "${timestamp()}" #uncomment to tigger all the time
-    module_change = local.modules_hash
-  }
 }
