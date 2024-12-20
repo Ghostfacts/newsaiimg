@@ -13,6 +13,7 @@ resource "aws_lambda_function" "function" {
   runtime           = var.runtime
   timeout           = var.timeout
   memory_size       = var.memory_size
+  provisioned_concurrent_executions = 10
   environment {
     variables = var.environment_variables
   }
@@ -23,9 +24,4 @@ resource "aws_lambda_function" "function" {
 resource "aws_lambda_function_event_invoke_config" "function_config" {
   function_name = aws_lambda_function.function.function_name
   maximum_retry_attempts = 2
-}
-
-resource "aws_lambda_reserved_concurrent_executions" "function_executions" {
-  function_name = aws_lambda_function.function.function_name
-  reserved_concurrent_executions = 50
 }
