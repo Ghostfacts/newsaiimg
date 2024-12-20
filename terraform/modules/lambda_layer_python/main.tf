@@ -4,7 +4,8 @@ resource "null_resource" "make_tmp_folder" {
   }
   triggers = {
     # always_run = "${timestamp()}" #uncomment to tigger all the time
-    module_change = "${var.modules}"
+    module_change = local.modules_hash
+    
   }
 }
 
@@ -16,7 +17,7 @@ resource "null_resource" "pip_install" {
   }
   triggers = {
     # always_run = "${timestamp()}" #uncomment to tigger all the time
-    module_change = "${var.modules}"
+    module_change = local.modules_hash
   }
   depends_on =[
     null_resource.make_tmp_folder
