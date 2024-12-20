@@ -5,7 +5,6 @@ resource "null_resource" "make_tmp_folder" {
   triggers = {
     # always_run = "${timestamp()}" #uncomment to tigger all the time
     module_change = local.modules_hash
-    
   }
 }
 
@@ -32,6 +31,10 @@ data "archive_file" "layerzip" {
       null_resource.make_tmp_folder,
       null_resource.pip_install
     ]
+  triggers = {
+    # always_run = "${timestamp()}" #uncomment to tigger all the time
+    module_change = local.modules_hash
+  }
 }
 
 resource "aws_lambda_layer_version" "layer" {
@@ -44,18 +47,8 @@ resource "aws_lambda_layer_version" "layer" {
       null_resource.pip_install,
       data.archive_file.layerzip
     ]
-}
-
-resource "null_resource" "Clreanup" {
-  # Use for_each to create one resource per module
-  for_each = toset(var.modules)
-  provisioner "local-exec" {
-    command = "rm -rf /tmp/${var.layer_name}*"
+  triggers = {
+    # always_run = "${timestamp()}" #uncomment to tigger all the time
+    module_change = local.modules_hash
   }
-  depends_on =[
-    null_resource.pip_install,
-    null_resource.make_tmp_folder,
-    null_resource.pip_install,
-    aws_lambda_layer_version.layer
-  ]
 }
