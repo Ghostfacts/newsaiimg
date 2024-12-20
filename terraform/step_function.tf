@@ -1,7 +1,6 @@
 #Roles
 resource "aws_iam_role" "step_function_role" {
   name = "step_function_role"
-
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
@@ -27,7 +26,7 @@ resource "aws_iam_role_policy" "step_function_policy" {
           "lambda:InvokeFunction"
         ]
         Effect   = "Allow"
-        Resource = "${module.news_api_function.function.arn}"
+        Resource = "${module.news_api_function.function.arn}*"
       }
     ]
   })
