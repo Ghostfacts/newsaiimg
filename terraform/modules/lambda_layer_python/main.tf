@@ -36,7 +36,7 @@ resource "aws_lambda_layer_version" "layer" {
     layer_name = "${var.layer_name}"
     source_code_hash = data.archive_file.layerzip.output_base64sha256
     compatible_runtimes = [var.runtime]
-    
+    skip_destroy = true
     depends_on = [ 
       null_resource.pip_install,
       data.archive_file.layerzip
