@@ -91,12 +91,12 @@ jobs:
           path: terraform
           githubapi: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Post Terraform Output to PR
-      uses: marocchino/sticky-pull-request-comment@v2
-      with:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        header: Terraform Output
-        message: |
-          ```hcl
-          ${{ steps.terraform_plan.outputs.stdout }}
-          ```
+      - name: Post Terraform Output to PR
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          header: Terraform Output
+          message: |
+            ```hcl
+            ${{ steps.terraform_plan.outputs.stdout }}
+            ```
