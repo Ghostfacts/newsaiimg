@@ -64,6 +64,7 @@ jobs:
 
       - name: Terraform Plan/Show
         if: github.event_name == 'pull_request'
+        id: terraform_plan
         shell: sh
         run : |
           terraform plan -refresh=true -out=plan.out -var-file=config/${{ matrix.environment }}/terraform.tfvars
@@ -82,7 +83,7 @@ jobs:
           policy_type: 'aws'
           only_warn: true
 
-      - name: checkov
+      - name: Checkov
         id: checkov
         uses: ghostfacts/checkov@main
         with:
@@ -90,17 +91,12 @@ jobs:
           path: terraform
           githubapi: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Post Terrascan and Checkov Results to PR
-      #   uses: actions/github-script@v6
-      #   with:
-      #     script: |
-      #       const { context } = require('@actions/github');
-      #       const prNumber = context.payload.pull_request.number;
-      #       const terrascanResult = `Terrascan results:\n\n${{ steps.terrascan.outputs.result }}`;
-      #       const checkovResult = `Checkov results:\n\n${{ steps.checkov.outputs.result }}`;
-      #       const body = `${terrascanResult}\n\n${checkovResult}`;
-      #       const comment = await github.rest.issues.createComment({
-      #         ...context.repo,
-      #         issue_number: prNumber,
-      #         body: body
-      #       });
+    - name: Post Terraform Output to PR
+      uses: marocchino/sticky-pull-request-comment@v2
+      with:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        header: Terraform Output
+        message: |
+          ```hcl
+          ${{ steps.terraform_plan.outputs.stdout }}
+          ```
