@@ -19,3 +19,8 @@ resource "aws_lambda_function" "function" {
   layers = var.attach_layers
   tags = local.tags
 }
+
+resource "aws_lambda_function_event_invoke_config" "function_config" {
+  function_name = aws_lambda_function.function.function_name
+  maximum_retry_attempts = 2
+}
