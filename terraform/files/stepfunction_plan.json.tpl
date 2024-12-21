@@ -8,7 +8,7 @@
         "OutputPath": "$.Payload",
         "Parameters": {
           "Payload.$": "$",
-          "FunctionName": "arn:aws:lambda:eu-west-1:711387118193:function:newsaiimg-dev-newsapi-lambda-function:$LATEST"
+          "FunctionName": "${newapi_lmb_function}"
         },
         "Retry": [
           {
