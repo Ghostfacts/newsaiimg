@@ -15,31 +15,6 @@ resource "aws_iam_role" "step_function_role" {
   })
 }
 
-data "aws_iam_policy_document" "step_function_policy" {
-   statement {
-        sid="lambda"
-        Action = [
-          "lambda:InvokeFunction",
-        ]
-        Effect = "Allow"
-        Resource = "${module.news_api_function.function.arn}*"
-      },
-  statement{
-        sid="Bedrock"
-        Action = [
-          "bedrock:InvokeModel",
-        ]
-        Effect = "Allow"
-        Resource = [
-          "arn:aws:bedrock:${data.aws_region.current.name}::foundation-model/*"
-        ]
-      }
-
-
-}
-
-
-
 resource "aws_iam_role_policy" "step_function_policy" {
   name   = "newsaiimg-${local.environment_map[var.environment]}-iam-policy-step-function"
   role   = aws_iam_role.step_function_role.id
