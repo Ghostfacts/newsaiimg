@@ -15,14 +15,8 @@ resource "aws_iam_role" "step_function_role" {
   })
 }
 
-resource "aws_iam_role_policy" "step_function_policy" {
-  name = "step_function_policy"
-  role = aws_iam_role.step_function_role.id
-
-  policy = {
-    Version = "2012-10-17"
-    Statement = [
-      {
+data "aws_iam_policy_document" "step_function_policy" {
+   statement {
         sid="lambda"
         Action = [
           "lambda:InvokeFunction",
@@ -30,7 +24,7 @@ resource "aws_iam_role_policy" "step_function_policy" {
         Effect = "Allow"
         Resource = "${module.news_api_function.function.arn}*"
       },
-      {
+  statement{
         sid="Bedrock"
         Action = [
           "bedrock:InvokeModel",
@@ -40,13 +34,17 @@ resource "aws_iam_role_policy" "step_function_policy" {
           "arn:aws:bedrock:${data.aws_region.current.name}::foundation-model/*"
         ]
       }
-    ]
-  }
+
+
 }
 
 
 
-
+resource "aws_iam_role_policy" "step_function_policy" {
+  name   = "newsaiimg-${local.environment_map[var.environment]}-iam-policy-step-function"
+  role   = aws_iam_role.step_function_role.id
+  policy = aws_iam_policy_document.step_function_policy.json
+}
 
 #function it self
 resource "aws_sfn_state_machine" "example" {
