@@ -38,7 +38,7 @@ resource "aws_sfn_state_machine" "example" {
   name     = "newsaiimg-${local.environment_map[var.environment]}-step-function"
   role_arn = aws_iam_role.step_function_role.arn
   definition = templatefile("${path.module}/files/stepfunction_plan.json.tpl", {
-    result_value = "Hello, World!"
+    newapi_lmb_function = "${module.news_api_function.function.arn}"
   })
 
 
