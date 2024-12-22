@@ -3,9 +3,9 @@ variable "aws_account_id" {
 }
 
 variable "aws_role_name" {
-  description = "Role to deploy with"  
+  description = "Role to deploy with"
 }
 
 variable "environment" {
-  description = "environment the code being deplyed"  
+  description = "environment the code being deplyed"
 }
