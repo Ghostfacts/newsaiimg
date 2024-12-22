@@ -8,9 +8,9 @@ resource "aws_cloudwatch_event_rule" "daily_trigger" {
 
 # Target: Existing Step Function
 resource "aws_cloudwatch_event_target" "step_function_target" {
-  rule      = aws_cloudwatch_event_rule.daily_trigger.name
-  arn       = aws_sfn_state_machine.newsaiimg_step_function.arn
-  role_arn  = aws_iam_role.eventbridge_role.arn
+  rule     = aws_cloudwatch_event_rule.daily_trigger.name
+  arn      = aws_sfn_state_machine.newsaiimg_step_function.arn
+  role_arn = aws_iam_role.eventbridge_role.arn
 }
 
 # IAM Role for EventBridge to invoke Step Function
