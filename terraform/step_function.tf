@@ -22,7 +22,7 @@ resource "aws_iam_role_policy" "step_function_policy" {
 }
 
 #function it self
-resource "aws_sfn_state_machine" "example" {
+resource "aws_sfn_state_machine" "newsaiimg_step_function" {
   # checkov:skip=CKV_AWS_285
   name     = "newsaiimg-${local.environment_map[var.environment]}-step-function"
   role_arn = aws_iam_role.step_function_role.arn
