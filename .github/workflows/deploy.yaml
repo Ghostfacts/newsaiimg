@@ -80,11 +80,10 @@ jobs:
           git config --global user.email "github-actions@github.com"
 
       - name: Delete current branch
-        if: env.branch_name != 'main'
+        if: ${{ env.branch_name != 'main' }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH_NAME: ${{ env.branch_name }}
         run: |
           echo "Deleting branch $BRANCH_NAME"
-          git push origin --delete $BRANCH_NAME
-
+          git push origin --delete "$BRANCH_NAME"
