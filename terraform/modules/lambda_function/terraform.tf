@@ -14,9 +14,4 @@ terraform {
       version = "2.7.0"
     }
   }
-
-=======
-  }
-
->>>>>>> 5c062b1 (Fixing tflint)
 }
