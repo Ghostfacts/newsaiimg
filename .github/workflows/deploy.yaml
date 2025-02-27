@@ -86,5 +86,4 @@ jobs:
           BRANCH_NAME: ${{ env.branch_name }}
         run: |
           echo "Deleting branch $BRANCH_NAME"
-          git push origin --delete $BRANCH_NAME
-
+          git push origin --delete "$BRANCH_NAME"
