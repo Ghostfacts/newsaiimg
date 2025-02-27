@@ -38,13 +38,13 @@ jobs:
           terraform_version: 1.9.5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5.4.0
         with:
           python-version: "3.10"  # Use any supported Python version
 
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
 
       - name: Terraform init
         shell: sh
@@ -68,11 +68,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
 
       - name: Get current branch name
         id: get_branch
-        run: echo "branch_name=$(echo $GITHUB_REF | sed 's|refs/heads/||')" >> $GITHUB_ENV
+        run: echo "branch_name=$(echo ""$GITHUB_REF"" | sed 's|refs/heads/||')" >> $GITHUB_ENV
 
       - name: Set up Git
         run: |
