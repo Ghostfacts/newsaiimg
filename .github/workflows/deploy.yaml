@@ -9,7 +9,6 @@ permissions:
   security-events: write
   issues: write
 
-
 on:
   push:
     branches:
@@ -40,8 +39,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5.4.0
         with:
-          python-version: "3.10"  # Use any supported Python version
-
+          python-version: "3.10" # Use any supported Python version
 
       - name: Checkout
         uses: actions/checkout@v4.2.2
@@ -60,7 +58,7 @@ jobs:
         env:
           TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
           TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
-        run : |
+        run: |
           terraform apply -var-file=config/${{ matrix.environment }}/terraform.tfvars --auto-approve
         working-directory: terraform
 

@@ -9,7 +9,6 @@ permissions:
   security-events: write
   issues: write
 
-
 on:
   pull_request:
     branches:
@@ -51,7 +50,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5.4.0
         with:
-          python-version: 3.x  # Use any supported Python version
+          python-version: 3.x # Use any supported Python version
 
       - name: AWS login
         uses: aws-actions/configure-aws-credentials@v4
@@ -75,7 +74,7 @@ jobs:
       - name: Terraform Validate
         if: github.event_name == 'pull_request'
         shell: sh
-        run : |
+        run: |
           terraform validate -no-color
         continue-on-error: true
         working-directory: terraform
@@ -84,7 +83,7 @@ jobs:
         if: github.event_name == 'pull_request'
         id: terraform_plan
         shell: sh
-        run : |
+        run: |
           terraform plan -refresh=true -out=plan.out -var-file=config/${{ matrix.environment }}/terraform.tfvars
           terraform show -json plan.out | jq . > plan.json
         env:
@@ -96,9 +95,9 @@ jobs:
         id: terrascan
         uses: tenable/terrascan-action@main
         with:
-          iac_type: 'terraform'
-          iac_version: 'v14'
-          policy_type: 'aws'
+          iac_type: "terraform"
+          iac_version: "v14"
+          policy_type: "aws"
           only_warn: true
 
       - name: Checkov
