@@ -2,7 +2,7 @@ name: Delete Old Workflow Runs
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs daily at midnight UTC
+    - cron: "0 0 * * *" # Runs daily at midnight UTC
 
 jobs:
   delete-old-runs:
@@ -27,8 +27,7 @@ jobs:
         env:
           REPO: ${{ github.repository }}
         run: |
-          # Get the current date in seconds since epoch
-          current_date=$(date +%s)
+          current_date="$(date +%s)"
 
           # Get all workflow runs
           runs=$(gh api repos/${REPO}/actions/runs --paginate -q '.workflow_runs[] | select(.event != "workflow_dispatch") | [.id, .created_at]')
