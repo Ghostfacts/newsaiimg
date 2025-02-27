@@ -68,10 +68,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4.2.2
 
-      - name: Get current branch name
-        id: get_branch
-        run: echo "branch_name=$(echo ""$GITHUB_REF"" | sed 's|refs/heads/||')" >> $GITHUB_ENV
-
       - name: Set up Git
         run: |
           git config --global user.name "github-actions"
@@ -83,5 +79,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           BRANCH_NAME: ${{ env.branch_name }}
         run: |
-          echo "Deleting branch $BRANCH_NAME"
-          git push origin --delete "$BRANCH_NAME"
+          branch_name=${GITHUB_REF_NAME}
+          echo "Deleting branch $branch_name"
+          git push origin --delete "$branch_name"
