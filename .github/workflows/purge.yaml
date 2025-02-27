@@ -8,7 +8,7 @@ on:
     branches:
       - main
   schedule:
-    - cron: "0 0 * * *" # Runs daily at midnight UTC
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
 
 jobs:
   delete-old-runs:
@@ -31,7 +31,8 @@ jobs:
         env:
           REPO: ${{ github.repository }}
         run: |
-          current_date="$(date +%s)"
+          runs=$(gh api repos/"${REPO}"/actions/runs --paginate -q '.workflow_runs[] | select(.event != "workflow_dispatch") | [.id, .created_at]')
+
 
           # Get all workflow runs
           runs=$(gh api "repos/${REPO}/actions/runs" --paginate -q '.workflow_runs[] | select(.event != "workflow_dispatch") | [.id, .created_at]')
