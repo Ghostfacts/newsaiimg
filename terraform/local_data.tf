@@ -11,7 +11,6 @@ locals {
     "eu-central-1" = "fra",
     "us-east-1"    = "nyc"
   }
-  resource_naming_prefex = "newsaiimg-${local.environment_map[var.environment]}-${local.region_map[data.aws_region.current.name]}-"
   tags = {
     project     = "newsaiimg"
     environment = var.environment

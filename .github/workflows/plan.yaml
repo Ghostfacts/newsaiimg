@@ -23,7 +23,6 @@ concurrency:
   group: workflow-${{ github.ref }}
   cancel-in-progress: true
 
-
 jobs:
   linter_checks:
     runs-on: ubuntu-latest
