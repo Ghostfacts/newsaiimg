@@ -8,7 +8,7 @@ permissions:
   checks: write
   security-events: write
   issues: write
-  
+
 
 on:
   pull_request:
@@ -16,6 +16,24 @@ on:
       - main
 
 jobs:
+  linters:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: Lint Code Base
+        uses: super-linter/super-linter@v7.3.0
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_JSCPD: false
+          VALIDATE_CHECKOV: false
+
   terraformplan:
     strategy:
       matrix:
@@ -34,7 +52,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: 3.x  # Use any supported Python version
-      
+
       - name: AWS login
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -44,7 +62,7 @@ jobs:
 
       - name: Checkout
         uses: actions/checkout@v2
-      
+
       - name: Terraform init
         env:
           TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
@@ -53,7 +71,7 @@ jobs:
         run: |
           terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/${{ matrix.environment }}/backend.conf -var-file=config/${{ matrix.environment }}/terraform.tfvars
         working-directory: terraform
-      
+
       - name: Terraform Validate
         if: github.event_name == 'pull_request'
         shell: sh
