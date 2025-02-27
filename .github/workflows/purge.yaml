@@ -2,14 +2,14 @@ name: Delete Old Workflow Runs
 
 on:
   schedule:
-    - cron: '0 0 * * *' # Runs daily at midnight UTC
+    - cron: "0 0 * * *" # Runs daily at midnight UTC
 
 jobs:
   delete-old-runs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install GitHub CLI
         run: |
