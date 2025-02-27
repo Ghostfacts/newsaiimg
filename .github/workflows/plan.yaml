@@ -14,6 +14,15 @@ on:
     branches:
       - main
 
+defaults:
+  run:
+    shell: bash
+    working-directory: terraform
+
+concurrency:
+  group: workflow-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   linter_checks:
     runs-on: ubuntu-latest

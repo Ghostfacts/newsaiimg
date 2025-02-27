@@ -3,9 +3,9 @@ resource "null_resource" "make_tmp_folder" {
     command = "mkdir /tmp/${var.layer_name}/"
   }
   triggers = {
-    always_run   = "${timestamp()}",
+    # always_run   = "${timestamp()}",
     runtime      = local.runtime_hash,
-    modules_hash = "${md5(join("", var.modules))}"
+    modules_hash = md5(join("", var.modules))
   }
 }
 
@@ -16,9 +16,9 @@ resource "null_resource" "pip_install" {
     command = "${var.runtime} -m pip install ${each.value} --no-cache-dir --upgrade --isolated --target /tmp/${var.layer_name}/python/lib/${var.runtime}/site-packages/"
   }
   triggers = {
-    always_run   = "${timestamp()}",
+    # always_run   = "${timestamp()}",
     runtime      = local.runtime_hash,
-    modules_hash = "${md5(join("", var.modules))}"
+    modules_hash = md5(join("", var.modules))
   }
   depends_on = [
     null_resource.make_tmp_folder
