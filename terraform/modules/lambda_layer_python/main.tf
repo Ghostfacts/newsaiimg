@@ -5,7 +5,7 @@ resource "null_resource" "make_tmp_folder" {
   triggers = {
     # always_run   = "${timestamp()}",
     runtime      = local.runtime_hash,
-    modules_hash = "${md5(join("", var.modules))}"
+    modules_hash = md5(join("", var.modules))
   }
 }
 
@@ -18,7 +18,7 @@ resource "null_resource" "pip_install" {
   triggers = {
     # always_run   = "${timestamp()}",
     runtime      = local.runtime_hash,
-    modules_hash = "${md5(join("", var.modules))}"
+    modules_hash = md5(join("", var.modules))
   }
   depends_on = [
     null_resource.make_tmp_folder
