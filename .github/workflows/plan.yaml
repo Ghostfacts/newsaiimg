@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v4.2.2
         with:
           # Full git history is needed to get a proper list of changed files within `super-linter`
           fetch-depth: 0
@@ -49,7 +49,7 @@ jobs:
           terraform_version: 1.9.5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5.4.0
         with:
           python-version: 3.x  # Use any supported Python version
 
@@ -61,7 +61,7 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4.2.2
 
       - name: Terraform init
         env:
