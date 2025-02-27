@@ -2,14 +2,14 @@ name: Delete Old Workflow Runs
 
 on:
   schedule:
-    - cron: "0 0 * * *" # Runs daily at midnight UTC
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
 
 jobs:
   delete-old-runs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4.2.2
+        uses: actions/checkout@v4
 
       - name: Install GitHub CLI
         run: |
@@ -21,19 +21,24 @@ jobs:
       - name: Authenticate GitHub CLI
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh auth login --with-token
+        run: echo "${GITHUB_TOKEN}" | gh auth login --with-token
 
       - name: Delete old workflow runs
         env:
           REPO: ${{ github.repository }}
         run: |
+          # Get the current date in seconds since epoch
+          current_date=$(date +%s)
+
+          # Get all workflow runs
           runs=$(gh api repos/${REPO}/actions/runs --paginate -q '.workflow_runs[] | select(.event != "workflow_dispatch") | [.id, .created_at]')
-          current_date="$(date +%s)"
-          echo "$runs" | while read -r id created_at; do
+
+          # Loop through each run and delete if older than 30 days
+          echo "$runs" | jq -r '. | @tsv' | while IFS=$'\t' read -r id created_at; do
             created_at_seconds=$(date -d "$created_at" +%s)
             age=$(( (current_date - created_at_seconds) / 86400 ))
             if [ "$age" -gt 30 ]; then
-              echo "Deleting run "$id" ("$created_at", "$age" days old)"
+              echo "Deleting run $id ($created_at, $age days old)"
               gh api repos/${REPO}/actions/runs/$id -X DELETE
             fi
           done
