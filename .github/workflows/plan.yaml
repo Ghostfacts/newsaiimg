@@ -1,5 +1,5 @@
 ---
-name: Terraform Plan
+name: Code Checks
 permissions:
   id-token: write
   contents: read
@@ -8,7 +8,6 @@ permissions:
   checks: write
   security-events: write
   issues: write
-  
 
 on:
   pull_request:
@@ -16,6 +15,24 @@ on:
       - main
 
 jobs:
+  linter_checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4.2.2
+        with:
+          # Full git history is needed to get a proper list of changed files within `super-linter`
+          fetch-depth: 0
+
+      - name: Lint Code Base
+        uses: super-linter/super-linter@v7.3.0
+        env:
+          VALIDATE_ALL_CODEBASE: false
+          DEFAULT_BRANCH: main
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          VALIDATE_JSCPD: false
+          VALIDATE_CHECKOV: false
+
   terraformplan:
     strategy:
       matrix:
@@ -31,10 +48,10 @@ jobs:
           terraform_version: 1.9.5
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5.4.0
         with:
-          python-version: 3.x  # Use any supported Python version
-      
+          python-version: 3.x # Use any supported Python version
+
       - name: AWS login
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -43,8 +60,8 @@ jobs:
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Checkout
-        uses: actions/checkout@v2
-      
+        uses: actions/checkout@v4.2.2
+
       - name: Terraform init
         env:
           TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
@@ -53,11 +70,11 @@ jobs:
         run: |
           terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/${{ matrix.environment }}/backend.conf -var-file=config/${{ matrix.environment }}/terraform.tfvars
         working-directory: terraform
-      
+
       - name: Terraform Validate
         if: github.event_name == 'pull_request'
         shell: sh
-        run : |
+        run: |
           terraform validate -no-color
         continue-on-error: true
         working-directory: terraform
@@ -66,7 +83,7 @@ jobs:
         if: github.event_name == 'pull_request'
         id: terraform_plan
         shell: sh
-        run : |
+        run: |
           terraform plan -refresh=true -out=plan.out -var-file=config/${{ matrix.environment }}/terraform.tfvars
           terraform show -json plan.out | jq . > plan.json
         env:
@@ -78,9 +95,9 @@ jobs:
         id: terrascan
         uses: tenable/terrascan-action@main
         with:
-          iac_type: 'terraform'
-          iac_version: 'v14'
-          policy_type: 'aws'
+          iac_type: "terraform"
+          iac_version: "v14"
+          policy_type: "aws"
           only_warn: true
 
       - name: Checkov
