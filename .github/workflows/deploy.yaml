@@ -8,7 +8,7 @@ permissions:
   checks: write
   security-events: write
   issues: write
-  
+
 
 on:
   push:
@@ -63,3 +63,28 @@ jobs:
         run : |
           terraform apply -var-file=config/${{ matrix.environment }}/terraform.tfvars --auto-approve
         working-directory: terraform
+
+  branchcleanup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Get current branch name
+        id: get_branch
+        run: echo "branch_name=$(echo $GITHUB_REF | sed 's|refs/heads/||')" >> $GITHUB_ENV
+
+      - name: Set up Git
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+
+      - name: Delete current branch
+        if: env.branch_name != 'main'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH_NAME: ${{ env.branch_name }}
+        run: |
+          echo "Deleting branch $BRANCH_NAME"
+          git push origin --delete $BRANCH_NAME
+
