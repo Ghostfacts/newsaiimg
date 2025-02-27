@@ -1,12 +1,12 @@
 repos:
--   repo: git@github.com:forestnd/pre-commit-checks.git
+  - repo: git@github.com:forestnd/pre-commit-checks.git
     rev: d0d144ad11ebe4deb1203ef162eed8e510541217
     hooks:
-#Code checks
-    -   id: check-added-large-files
-    -   id: check-json
-    -   id: detect-aws-credentials
-    -   id: detect-private-key
-#IaC checks
-    -   id: terraform-fmt
-    -   id: trailing-whitespace
+      #Code checks
+      - id: check-added-large-files
+      - id: check-json
+      - id: detect-aws-credentials
+      - id: detect-private-key
+      #IaC checks
+      - id: terraform-fmt
+      - id: trailing-whitespace
