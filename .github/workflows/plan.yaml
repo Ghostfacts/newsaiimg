@@ -1,5 +1,5 @@
 ---
-name: Terraform Plan
+name: Code Checks
 permissions:
   id-token: write
   contents: read
