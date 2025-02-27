@@ -5,7 +5,6 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 5.0"
     }
-<<<<<<< HEAD
     null = {
       source  = "hashicorp/null"
       version = "3.2.3"
@@ -18,5 +17,6 @@ terraform {
 
 =======
   }
->>>>>>> 4a402c2 (Fixing tflint)
+
+>>>>>>> 5c062b1 (Fixing tflint)
 }
