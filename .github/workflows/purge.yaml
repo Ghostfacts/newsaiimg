@@ -25,6 +25,7 @@ jobs:
       - name: Delete old workflow runs
         env:
           REPO: ${{ github.repository }}
+          RETAIN: 10
         run: |
           # Get the current date in seconds since epoch
           current_date=$(date +%s)
@@ -34,7 +35,7 @@ jobs:
           do
               created_at_seconds=$(date -d "$created_at" +%s)
               age=$(( (current_date - created_at_seconds) / 86400 ))
-              if [ "$age" -gt 30 ]; then
+              if [ "$age" -gt $RETAIN ]; then
                   echo "Deleting run $id ($created_at, $age days old)"
                   gh api "repos/${REPO}/actions/runs/$id" -X DELETE
               fi
