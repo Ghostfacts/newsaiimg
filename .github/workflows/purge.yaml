@@ -1,26 +1,10 @@
 name: Delete Old Workflow Runs
 
 on:
-  pull_request:
-    branches:
-      - main
-  push:
-    branches:
-      - main
   schedule:
     - cron: "0 0 * * *" # Runs daily at midnight UTC
 
 permissions:
-  contents: write
-  issues: write
-  deployments: write
-  statuses: write
-  pull-requests: write
-  repository-projects: write
-  security-events: write
-  discussions: write
-  packages: write
-  pages: write
   actions: write
 
 jobs:
@@ -44,7 +28,6 @@ jobs:
         run: |
           # Get the current date in seconds since epoch
           current_date=$(date +%s)
-          echo "${REPO}"
           # Get all workflow runs
           runs=$(gh api "repos/${REPO}/actions/runs" --paginate -q '.workflow_runs[] | select(.event != "workflow_dispatch") | [.id, .created_at]')
           echo "$runs" | jq -r '. | @tsv' | while IFS=$'\t' read -r id created_at
