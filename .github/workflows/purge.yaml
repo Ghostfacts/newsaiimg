@@ -21,10 +21,6 @@ permissions:
   discussions: write
   packages: write
   pages: write
-  workflows: write
-  members: write
-  secrets: write
-  metadata: write
 
 jobs:
   delete-old-runs:
