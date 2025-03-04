@@ -23,7 +23,7 @@ jobs:
           gh-cli-version: 2.65.0 # optional, see action.yml for current default
 
       - name: Authenticate GitHub CLI
-        run: gh auth login --with-token
+        run: echo ${{ secrets.GITHUB_TOKEN }} | gh auth login --with-token
 
       - name: Delete old workflow runs
         env:
