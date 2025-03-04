@@ -29,7 +29,9 @@ jobs:
         env:
           REPO: ${{ github.repository }}
         run: |
-          runs=$(gh api repos/"${REPO}"/actions/runs --paginate -q '.workflow_runs[] | select(.event != "workflow_dispatch") | [.id, .created_at]')
+          # Get the current date in seconds since epoch
+          current_date=$(date +%s)
+
           # Get all workflow runs
           runs=$(gh api "repos/${REPO}/actions/runs" --paginate -q '.workflow_runs[] | select(.event != "workflow_dispatch") | [.id, .created_at]')
 
