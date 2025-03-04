@@ -10,6 +10,22 @@ on:
   schedule:
     - cron: "0 0 * * *" # Runs daily at midnight UTC
 
+permissions:
+  contents: write
+  issues: write
+  deployments: write
+  statuses: write
+  pull-requests: write
+  repository-projects: write
+  security-events: write
+  discussions: write
+  packages: write
+  pages: write
+  workflows: write
+  members: write
+  secrets: write
+  metadata: write
+
 jobs:
   delete-old-runs:
     runs-on: ubuntu-latest
