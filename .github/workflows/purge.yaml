@@ -21,6 +21,7 @@ permissions:
   discussions: write
   packages: write
   pages: write
+  actions: write
 
 jobs:
   delete-old-runs:
