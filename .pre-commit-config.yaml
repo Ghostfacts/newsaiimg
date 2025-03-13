@@ -7,6 +7,7 @@ repos:
       - id: check-json
       - id: detect-aws-credentials
       - id: detect-private-key
+      - id: black
       #IaC checks
       - id: terraform-fmt
       - id: trailing-whitespace

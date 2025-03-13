@@ -8,7 +8,7 @@
       "OutputPath": "$.Payload",
       "Parameters": {
         "Payload.$": "$",
-        "FunctionName": "${newapi_lmb_function}"
+        "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-newsapi-lambda-function"
       },
       "Retry": [
         {
@@ -24,38 +24,7 @@
           "JitterStrategy": "FULL"
         }
       ],
-      "Next": "Map"
-    },
-    "Map": {
-      "Type": "Map",
-      "ItemProcessor": {
-        "ProcessorConfig": {
-          "Mode": "DISTRIBUTED",
-          "ExecutionType": "STANDARD"
-        },
-        "StartAt": "Bedrock InvokeModel",
-        "States": {
-          "Bedrock InvokeModel": {
-            "Type": "Task",
-            "Resource": "arn:aws:states:::bedrock:invokeModel",
-            "Parameters": {
-              "ModelId": "arn:aws:bedrock:eu-west-2::foundation-model/amazon.titan-text-lite-v1",
-              "Body": {
-                "inputText": "help me understand bedrok",
-                "textGenerationConfig": {
-                  "temperature": 0,
-                  "topP": 1,
-                  "maxTokenCount": 512
-                }
-              }
-            },
-            "End": true
-          }
-        }
-      },
-      "End": true,
-      "Label": "Map",
-      "MaxConcurrency": 1000
+      "End": true
     }
   }
 }
