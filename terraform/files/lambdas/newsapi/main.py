@@ -3,8 +3,10 @@
 import json
 import logging
 import os
+import random
 import re
 from datetime import datetime, timedelta
+
 
 import boto3
 import genai
@@ -20,6 +22,22 @@ else:
 
 
 # functions
+def generate_custom_uuid():
+    """Create an uniquuid"""
+    # Get the current date and time
+    now = datetime.today()
+    date_str = now.strftime("%Y%m%d")
+    time_str = now.strftime("%H%M%S")
+
+    # Generate a random number
+    random_number = random.randint(1000, 9999)
+
+    # Combine date, time, and random number to form the UUID
+    custom_uuid = f"{date_str}-{time_str}-{random_number}"
+
+    return custom_uuid
+
+
 def remove_specific_href_tags(text, keywords):
     """Removes unwatned href info from story"""
     # Define the regex pattern to find <a> tags with specific keywords in the href attribute
@@ -51,7 +69,6 @@ def get_secret(secret_name, region_name="eu-west-1"):
             )
         else:
             logging.error("Unexpected error occurred: %s", e)
-        return None
     else:
         # Parse and return the secret JSON string
         secret = json.loads(response["SecretString"])
@@ -198,10 +215,23 @@ def lambda_handler(event, context):  # pylint: disable=W0613
                     all_articles["articles"].remove(article)
                 else:
                     logging.info("Adding story: %s", article["title"])
+                    article["id"] = int(len(selected_articles)) + 1
                     selected_articles.append(article)
     logging.info(
         "Total articles recived %s vs Totel after sorted %s",
         len(all_articles["articles"]),
         len(selected_articles),
     )
-    return selected_articles
+    highest_score_entry = max(selected_articles, key=lambda x: x["airesult"]["score"])
+    print(highest_score_entry["id"])
+
+    return {
+        "event_id": str(generate_custom_uuid()),
+        "picked_article_id": highest_score_entry["id"],
+        "all_articles": selected_articles,
+    }
+
+
+# testing
+if __name__ == "__main__":
+    print(json.dumps(lambda_handler(None, None), indent=4))
