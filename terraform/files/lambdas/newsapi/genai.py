@@ -3,6 +3,7 @@ import json
 import logging
 from botocore.exceptions import ClientError
 
+
 class Bedrock:
     def __init__(self, region="eu-west-1"):
         """
@@ -39,8 +40,8 @@ class Bedrock:
             "textGenerationConfig": {
                 "maxTokenCount": 1000,
                 "temperature": 0.1,
-                "topP": 0.1
-            }
+                "topP": 0.1,
+            },
         }
 
         request = json.dumps(native_request)
@@ -50,7 +51,7 @@ class Bedrock:
             model_response = json.loads(response["body"].read())
             return {
                 "model_id": model_id,
-                "outputText": model_response["results"][0]['outputText']
+                "outputText": model_response["results"][0]["outputText"],
             }
 
         except (ClientError, Exception) as e:
@@ -63,8 +64,8 @@ class Bedrock:
         :param news_story: The news story text
         :return: Processed summary from the model
         """
-        news_reviews=[]
-        ia_model_ids =[
+        news_reviews = []
+        ia_model_ids = [
             "amazon.titan-text-express-v1",
             "amazon.titan-text-lite-v1",
         ]
@@ -87,16 +88,15 @@ class Bedrock:
         """
         try:
             for ia_model_id in ia_model_ids:
-                info = self.__invoke_model__(
-                    prompt=prompt_text,
-                    model_id=ia_model_id
+                info = self.__invoke_model__(prompt=prompt_text, model_id=ia_model_id)
+                # data clean up
+                news_reviews.append(
+                    {
+                        "model_id": info["model_id"],
+                        "results": json.loads(info["outputText"]),
+                    }
                 )
-                #data clean up
-                news_reviews.append({
-                    "model_id": info['model_id'],
-                    "results": json.loads(info['outputText'])
-                })
         except Exception as e:
             logging.error("Error processing news story: %s", str(e))
-            logging.info("AI output: %s", info['outputText'])
+            logging.info("AI output: %s", info["outputText"])
         return news_reviews
