@@ -1,17 +1,17 @@
 """Lambda function for getting sotries and filtering them"""
 
-import re
-import os
 import json
 import logging
+import os
+import re
 from datetime import datetime, timedelta
-from newsapi.newsapi_client import NewsApiClient
-from bs4 import BeautifulSoup
-import requests
+
 import boto3
 import genai
+import requests
 from botocore.exceptions import ClientError
-
+from bs4 import BeautifulSoup
+from newsapi.newsapi_client import NewsApiClient
 
 if len(logging.getLogger().handlers) > 0:
     logging.getLogger().setLevel(logging.INFO)
@@ -34,7 +34,6 @@ def get_secret(secret_name, region_name="eu-west-1"):
     # Create a Secrets Manager client
     session = boto3.session.Session()
     client = session.client(service_name="secretsmanager", region_name=region_name)
-
     try:
         # Retrieve the secret
         response = client.get_secret_value(SecretId=secret_name)
