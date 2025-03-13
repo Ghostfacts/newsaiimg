@@ -3,9 +3,10 @@
 import json
 import logging
 import os
+import random
 import re
 from datetime import datetime, timedelta
-import random
+
 
 import boto3
 import genai
@@ -22,6 +23,7 @@ else:
 
 # functions
 def generate_custom_uuid():
+    """Create an uniquuid"""
     # Get the current date and time
     now = datetime.today()
     date_str = now.strftime("%Y%m%d")
@@ -67,7 +69,6 @@ def get_secret(secret_name, region_name="eu-west-1"):
             )
         else:
             logging.error("Unexpected error occurred: %s", e)
-        return None
     else:
         # Parse and return the secret JSON string
         secret = json.loads(response["SecretString"])
