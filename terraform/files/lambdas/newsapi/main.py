@@ -1,21 +1,19 @@
+"""Lambda function for getting sotries and filtering them"""
+
+import re
 import os
 import json
 import logging
-import time
-import hashlib
 from datetime import datetime, timedelta
 from newsapi.newsapi_client import NewsApiClient
 from bs4 import BeautifulSoup
 import requests
 import boto3
-from botocore.exceptions import ClientError
-import re
 import genai
+from botocore.exceptions import ClientError
 
 
 if len(logging.getLogger().handlers) > 0:
-    # The Lambda environment pre-configures a handler logging to stderr. If a handler is already configured,
-    # `.basicConfig` does not execute. Thus we set the level directly.
     logging.getLogger().setLevel(logging.INFO)
 else:
     logging.basicConfig(level=logging.INFO)
@@ -23,6 +21,7 @@ else:
 
 # functions
 def remove_specific_href_tags(text, keywords):
+    """Removes unwatned href info from story"""
     # Define the regex pattern to find <a> tags with specific keywords in the href attribute
     pattern = r'<a\s+[^>]*href="[^"]*(' + "|".join(keywords) + r')[^"]*"[^>]*>.*?<\/a>'
     # Substitute the matching <a> tags with an empty string
@@ -31,6 +30,7 @@ def remove_specific_href_tags(text, keywords):
 
 
 def get_secret(secret_name, region_name="eu-west-1"):
+    """Retrives the secret from AWS Secrets Manager"""
     # Create a Secrets Manager client
     session = boto3.session.Session()
     client = session.client(service_name="secretsmanager", region_name=region_name)
@@ -60,6 +60,7 @@ def get_secret(secret_name, region_name="eu-west-1"):
 
 
 def get_today_and_yesterday_dates():
+    """Get today's and yesterday's date"""
     # Get today's date
     today_date = datetime.today().date()
     # Get yesterday's date by subtracting one day from today
@@ -70,8 +71,9 @@ def get_today_and_yesterday_dates():
 
 
 def get_fullstory(url):
+    """Get the full story from the URL"""
     # Send an HTTP GET request to the URL
-    response = requests.get(url)
+    response = requests.get(url=url, timeout=20)
     logging.debug("retriveing url %s", url)
     # Check if the request was successful (status code 200)
     keywords = ["facebook", "twitter", "instagram"]
@@ -95,7 +97,6 @@ def get_fullstory(url):
                     par_text = remove_specific_href_tags(par_text, keywords)
                     par_text = par_text.replace("\n", " ")
                     par_text = par_text.replace("\r", " ")
-                    ### need to work out some filtering their
                     if re.search(
                         r"Follow BBC", par_text, flags=re.IGNORECASE
                     ) or re.search(r"@BBC", par_text, flags=re.IGNORECASE):
@@ -114,7 +115,8 @@ ban_words = ["football", "sports", "Broadcast", "sport", "stabbings", "stab"]
 
 
 # main
-def lambda_handler(event, context):
+def lambda_handler(event, context):  # pylint: disable=W0613
+    """Main function for the lambda"""
     bedrock = genai.Bedrock(region="eu-west-2")
     today, yesterday = get_today_and_yesterday_dates()
     newsapi_key = get_secret(
@@ -204,9 +206,3 @@ def lambda_handler(event, context):
         len(selected_articles),
     )
     return selected_articles
-
-
-if __name__ == "__main__":
-    # for testing
-    for artc in lambda_handler(1, 2):
-        print(json.dumps(artc, indent=2))

@@ -1,28 +1,28 @@
-import boto3
+"""Genai funtions for newsAI"""
+
 import json
 import logging
+import boto3
 from botocore.exceptions import ClientError
 
 
 class Bedrock:
+    """Class bock for genAI"""
+
     def __init__(self, region="eu-west-1"):
-        """
-        Initializes the AWS Bedrock client.
-        :param region: AWS region where Bedrock is available.
-        """
+        """Initializes the AWS Bedrock client."""
+
         self.region = region
         self.bedrockclient = boto3.client("bedrock-runtime", region_name=self.region)
 
     def list_models(self):
-        """
-        Lists available foundation models in AWS Bedrock.
-        """
+        """Lists available foundation models in AWS Bedrock."""
         try:
             bedrock_client = boto3.client("bedrock", region_name=self.region)
             response = bedrock_client.list_foundation_models()
             models = [model["modelId"] for model in response.get("modelSummaries", [])]
             return models
-        except Exception as e:
+        except (ClientError, Exception) as e:  # pylint: disable=W0718
             print(f"Error listing models: {str(e)}")
             return []
 
@@ -54,7 +54,7 @@ class Bedrock:
                 "outputText": model_response["results"][0]["outputText"],
             }
 
-        except (ClientError, Exception) as e:
+        except (ClientError, Exception) as e:  # pylint: disable=W0718
             print(f"ERROR: Can't invoke '{model_id}'. Reason: {e}")
             return None  # Return None instead of raising an error
 
@@ -88,15 +88,17 @@ class Bedrock:
         """
         try:
             for ia_model_id in ia_model_ids:
-                info = self.__invoke_model__(prompt=prompt_text, model_id=ia_model_id)
+                airesponce = self.__invoke_model__(
+                    prompt=prompt_text, model_id=ia_model_id
+                )
                 # data clean up
                 news_reviews.append(
                     {
-                        "model_id": info["model_id"],
-                        "results": json.loads(info["outputText"]),
+                        "model_id": airesponce["model_id"],
+                        "results": json.loads(airesponce["outputText"]),
                     }
                 )
-        except Exception as e:
+        except Exception as e:  # pylint: disable=W0718
             logging.error("Error processing news story: %s", str(e))
-            logging.info("AI output: %s", info["outputText"])
+            logging.info("AI output: %s", airesponce["outputText"])
         return news_reviews
