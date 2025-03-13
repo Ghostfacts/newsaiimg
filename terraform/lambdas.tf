@@ -22,7 +22,6 @@ module "news_api_function" {
   source_path      = "files/lambdas/newsapi/"
   function_handler = "main.lambda_handler"
   timeout          = 120
-  dead_letter_arn  = "arn:aws:sns:eu-west-1:519388350760:sns-opsgenie-alerts:ce581fcb-21fa-49e7-9b5c-507e7a1e0749"
   environment_variables = {
     secrect_name = aws_secretsmanager_secret.newsapi.name
     region_name  = data.aws_region.current.name
