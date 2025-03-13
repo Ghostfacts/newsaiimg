@@ -10,6 +10,7 @@ import requests
 import boto3
 from botocore.exceptions import ClientError
 import re
+import genai
 
 
 if len(logging.getLogger().handlers) > 0:
@@ -24,7 +25,7 @@ def remove_specific_href_tags(text, keywords):
     # Define the regex pattern to find <a> tags with specific keywords in the href attribute
     pattern = r'<a\s+[^>]*href="[^"]*(' + '|'.join(keywords) + r')[^"]*"[^>]*>.*?<\/a>'
     # Substitute the matching <a> tags with an empty string
-    cleaned_text = re.sub(pattern, '', text, flags=re.IGNORECASE)    
+    cleaned_text = re.sub(pattern, '', text, flags=re.IGNORECASE)
     return cleaned_text
 
 def get_secret(secret_name, region_name='eu-west-1'):
@@ -53,14 +54,13 @@ def get_secret(secret_name, region_name='eu-west-1'):
         secret = json.loads(response['SecretString'])
         return secret
 
-
 def get_today_and_yesterday_dates():
     # Get today's date
     today_date = datetime.today().date()
     # Get yesterday's date by subtracting one day from today
     yesterday_date = today_date - timedelta(days=1)
     formatted_today_date = today_date
-    formatted_yesterday_date = yesterday_date   
+    formatted_yesterday_date = yesterday_date
     return formatted_today_date, formatted_yesterday_date
 
 def get_fullstory(url):
@@ -113,13 +113,13 @@ ban_words=[
     "stab"
 ]
 
-
 #main
 def lambda_handler(event, context):
+    bedrock = genai.Bedrock(region="eu-west-2")
     today, yesterday = get_today_and_yesterday_dates()
     newsapi_key = get_secret(
         secret_name=os.getenv('secrect_name','newsaiimg-dev-ssm-newsapi'),
-        region_name=os.getenv('region_name')
+        region_name=os.getenv('region_name','eu-west-2')
         )['token']
     newsapi = NewsApiClient(api_key=newsapi_key)
     selected_articles =[]
@@ -143,7 +143,7 @@ def lambda_handler(event, context):
             article['content'] = get_fullstory(article['url'])
             if str(article['author']).lower() == "none" or str(article['author']).lower() == "null":
                 logging.info("Removing story %s -> author (%s) is not valied",article['title'],str(article['author']).lower())
-                article_check = False        
+                article_check = False
             if article['content'] == "was not able to retive story" and article_check is True:
                 logging.info("Removing story %s -> cant get full story",article['title'])
                 article_check = False
@@ -155,10 +155,12 @@ def lambda_handler(event, context):
                 all_articles['articles'].remove(article)
             else:
                 logging.info("Adding story: %s",article['title'])
+                article['aiscors'] = bedrock.news_reviews(article['content'])
                 selected_articles.append(article)
+                exit()
     logging.info("Total articles recived %s vs Totel after sorted %s",len(all_articles['articles']), len(selected_articles))
     return selected_articles
 
-# #for testing
-# for artc in lambda_handler(1,2):
-#     print(artc)
+#for testing
+for artc in lambda_handler(1,2):
+    print(artc)
