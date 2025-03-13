@@ -35,7 +35,21 @@ data "archive_file" "layerzip" {
   ]
 }
 
+resource "null_resource" "layer_check" {
+  triggers = {
+    # always_run   = "${timestamp()}",
+    runtime      = local.runtime_hash,
+    modules_hash = md5(join("", var.modules))
+  }
+}
+
+locals {
+  create_layer = length(null_resource.layer_check.triggers) > 0 ? true : false
+}
+
+
 resource "aws_lambda_layer_version" "layer" {
+  count               = local.create_layer ? 1 : 0
   filename            = data.archive_file.layerzip.output_path
   layer_name          = var.layer_name
   source_code_hash    = data.archive_file.layerzip.output_base64sha256
