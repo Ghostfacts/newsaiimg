@@ -23,10 +23,12 @@ data "aws_iam_policy_document" "step_function_policy" {
     effect = "Allow"
     actions = [
       "bedrock:InvokeModel",
+      "bedrock:InvokeModelWithResponseStream"
+
     ]
 
     resources = [
-      "arn:aws:bedrock:${data.aws_region.current.name}::foundation-model/*"
+      "*"
     ]
   }
 }
