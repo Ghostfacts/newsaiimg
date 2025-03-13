@@ -7,6 +7,18 @@ data "aws_iam_policy_document" "lambda_policy" {
     ]
     resources = [aws_secretsmanager_secret.newsapi.arn]
   }
+  statement {
+    sid    = "Bedrock"
+    effect = "Allow"
+    actions = [
+      "bedrock:InvokeModel",
+      "bedrock:InvokeModelWithResponseStream"
+
+    ]
+    resources = [
+      "arn:aws:bedrock:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:model/*"
+    ]
+  }
 }
 
 data "aws_iam_policy_document" "step_function_policy" {
@@ -23,10 +35,11 @@ data "aws_iam_policy_document" "step_function_policy" {
     effect = "Allow"
     actions = [
       "bedrock:InvokeModel",
-    ]
+      "bedrock:InvokeModelWithResponseStream"
 
+    ]
     resources = [
-      "arn:aws:bedrock:${data.aws_region.current.name}::foundation-model/*"
+      "arn:aws:bedrock:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:model/*"
     ]
   }
 }
