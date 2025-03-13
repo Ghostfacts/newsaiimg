@@ -30,7 +30,8 @@
       "Type": "Map",
       "ItemProcessor": {
         "ProcessorConfig": {
-          "Mode": "INLINE",
+          "Mode": "DISTRIBUTED",
+          "ExecutionType": "STANDARD"
         },
         "StartAt": "Bedrock InvokeModel",
         "States": {
