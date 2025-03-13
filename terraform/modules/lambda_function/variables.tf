@@ -49,3 +49,8 @@ variable "memory_size" {
   description = "the lambda memory size"
   default     = 128
 }
+
+variable "dead_letter_arn" {
+  type        = any
+  description = "the lambda dead letter arn"
+}

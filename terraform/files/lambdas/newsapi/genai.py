@@ -70,29 +70,33 @@ class Bedrock:
         ]
         prompt_text = f"""
         Your tasks completed in this order:
-        - Audit the story and provied it an score from 0 to 20 please base the score on the fallowing needs
-         - The Story need to be happy
-         - The Story can not be about war
-         - The Story can not be goverment
+        - Audit the story and provied it an score from 0 to 20 base the score on the fallowing needs
+            - The Story need to be happy
+            - The Story can not be about war
+            - The Story can not be goverment
+            - The Story can not be about drugs
+            - The Story can not be about crime
         - Your respone MUST be formated in the fallowing way
-          - MUST be a valid JSON object
-          - With an key value called 'result' its value is if the story is an pass or fail
-          - With an key value called 'score': the score you gave the story
-          - With an key value called 'reson': the reson why you gave the story that score
-
+            - MUST meet the requirments to be an be a valid JSON object
+            - With an key value called 'result' its value is if the story is an pass or fail
+            - With an key value called 'score': the score you gave the story
+            - With an key value called 'reson': the reson why you gave the story that score
 
         Here is the news story to score:
         \"\"\"{news_story}\"\"\"
         """
-
-
-        for ia_model_id in ia_model_ids:
-            info = self.__invoke_model__(
-                prompt=prompt_text,
-                model_id=ia_model_id
-            )
-            news_reviews.append({
-                "model_id": info['model_id'],
-                "results": json.loads(info['outputText'])
-            })
+        try:
+            for ia_model_id in ia_model_ids:
+                info = self.__invoke_model__(
+                    prompt=prompt_text,
+                    model_id=ia_model_id
+                )
+                #data clean up
+                news_reviews.append({
+                    "model_id": info['model_id'],
+                    "results": json.loads(info['outputText'])
+                })
+        except Exception as e:
+            logging.error("Error processing news story: %s", str(e))
+            logging.info("AI output: %s", info['outputText'])
         return news_reviews

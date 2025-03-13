@@ -154,13 +154,29 @@ def lambda_handler(event, context):
             if article_check is False:
                 all_articles['articles'].remove(article)
             else:
-                logging.info("Adding story: %s",article['title'])
                 article['aiscors'] = bedrock.news_reviews(article['content'])
-                selected_articles.append(article)
-                exit()
+                article['airesult'] ={
+                    "result": "pass",
+                    "score": 0
+                }
+                for aires in article['aiscors']:
+                    article['airesult']['score'] = aires['results']['score'] + aires['results']['score']
+                    if aires['results']['result'] == "fail":
+                        article['airesult']['result'] = "Failed"
+                        logging.info("Story Failed AI Check: %s, Why: %s",article['title'],aires['results']['reson'])
+                        article_check = False
+                #Final check to see if story shoud be added
+                if article_check is False:
+                    all_articles['articles'].remove(article)
+                else:
+                    logging.info("Adding story: %s",article['title'])
+                    selected_articles.append(article)
     logging.info("Total articles recived %s vs Totel after sorted %s",len(all_articles['articles']), len(selected_articles))
     return selected_articles
 
-#for testing
-for artc in lambda_handler(1,2):
-    print(artc)
+
+
+if __name__ == "__main__":
+    #for testing
+    for artc in lambda_handler(1,2):
+        print(json.dumps(artc, indent=2))
