@@ -3,7 +3,7 @@ resource "aws_cloudwatch_event_rule" "daily_trigger" {
   name                = "daily-trigger-rule"
   description         = "Triggers the Step Function 'test' at 1:30 PM daily"
   schedule_expression = "cron(30 13 * * ? *)" # Cron for 1:30 PM UTC daily
-  state               = "Enabled"
+  state               = "ENABLED"
 }
 
 # Target: Existing Step Function
