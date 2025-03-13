@@ -50,7 +50,7 @@ variable "memory_size" {
   default     = 128
 }
 
-variable "dead_letter_arn" {
-  type        = any
-  description = "the lambda dead letter arn"
-}
+# variable "dead_letter_arn" {
+#   type        = any
+#   description = "the lambda dead letter arn"
+# }

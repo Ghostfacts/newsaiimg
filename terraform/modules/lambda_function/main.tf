@@ -13,9 +13,6 @@ resource "aws_lambda_function" "function" {
   runtime          = var.runtime
   timeout          = var.timeout
   memory_size      = var.memory_size
-  dead_letter_config {
-    target_arn = var.dead_letter_arn
-  }
   environment {
     variables = var.environment_variables
   }
