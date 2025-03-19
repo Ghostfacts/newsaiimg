@@ -223,7 +223,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613
         len(selected_articles),
     )
     highest_score_entry = max(selected_articles, key=lambda x: x["airesult"]["score"])
-    print(highest_score_entry["id"])
+    logging.info("Story ID picked %s", highest_score_entry["id"])
 
     return {
         "event_id": str(generate_custom_uuid()),
@@ -232,6 +232,6 @@ def lambda_handler(event, context):  # pylint: disable=W0613
     }
 
 
-# testing
-if __name__ == "__main__":
-    print(json.dumps(lambda_handler(None, None), indent=4))
+# # testing
+# if __name__ == "__main__":
+#     print(json.dumps(lambda_handler(None, None), indent=4))

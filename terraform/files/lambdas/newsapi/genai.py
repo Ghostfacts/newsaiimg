@@ -54,9 +54,8 @@ class Bedrock:
                 "model_id": model_id,
                 "outputText": model_response["results"][0]["outputText"],
             }
-
         except (ClientError, Exception) as e:  # pylint: disable=W0718
-            print(f"ERROR: Can't invoke '{model_id}'. Reason: {e}")
+            logging.error("Can't invoke %s Reason: %s", model_id, e)
             return None  # Return None instead of raising an error
 
     def news_reviews(self, news_story):
@@ -101,5 +100,5 @@ class Bedrock:
                 )
         except Exception as e:  # pylint: disable=W0718
             logging.error("Error processing news story: %s", str(e))
-            logging.info("AI output: %s", airesponce["outputText"])
+            logging.info("AI output: %s", airesponce)
         return news_reviews
