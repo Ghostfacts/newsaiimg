@@ -5,8 +5,7 @@
     "GetNewsStories": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
-      "OutputPath": "$.Payload",
-      "Parameters": {
+      "OutputPath": "$
         "FunctionName": "${newapi_lmb_function_arn}"
       },
       "Retry": [
@@ -23,7 +22,10 @@
           "JitterStrategy": "FULL"
         }
       ],
-      "Next": "Parallel"
+      "Next": "Parallel",
+      "Assign": {
+        "event_id.$": "$.Payload.event_id"
+      }
     },
     "Parallel": {
       "Type": "Parallel",
@@ -36,7 +38,7 @@
               "Parameters": {
                 "Body.$": "States.JsonToString($.all_articles)",
                 "Bucket": "${s3_bucket}",
-                "Key.$": "States.Format('{}/news_stories.json', $.event_id)"
+                "Key.$": "States.Format('{}/news_stories.json', $event_id)"
               },
               "Resource": "arn:aws:states:::aws-sdk:s3:putObject.waitForTaskToken",
               "End": true
@@ -60,9 +62,9 @@
               "Parameters": {
                 "Body.$": "States.JsonToString($)",
                 "Bucket": "${s3_bucket}",
-                "Key.$": "States.Format('{}/lambda_log.json', $.event_id)"
+                "Key.$": "States.Format('{}/lambda_log.json', $event_id)"
               },
-              "Resource": "arn:aws:states:::aws-sdk:s3:putObject.waitForTaskToken",
+              "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
               "End": true
             }
           }
