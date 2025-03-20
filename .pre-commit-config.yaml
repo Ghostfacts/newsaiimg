@@ -1,3 +1,4 @@
+---
 repos:
   - repo: git@github.com:Ghostfacts/pre-commit-checks.git
     rev: f834020bc4d40102714908a744a1e3c57fe23aff
