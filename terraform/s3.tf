@@ -1,12 +1,11 @@
 #Storaing of images
-resource "aws_s3_bucket" "aiminnews" {
+resource "aws_s3_bucket" "aiminnews" { # ts:skip=AC_AWS_0012
   # checkov:skip=CKV2_AWS_62
   # checkov:skip=CKV_AWS_18
   # checkov:skip=CKV_AWS_144
   # checkov:skip=CKV_AWS_21
   # checkov:skip=CKV2_AWS_61
   # checkov:skip=CKV_AWS_145
-  # ts:skip=AC_AWS_0012
   bucket = "newsaiimg-${local.environment_map[var.environment]}-s3-imgstorage"
   tags = merge(
     local.tags,
