@@ -1,13 +1,19 @@
 repos:
-  - repo: git@github.com:forestnd/pre-commit-checks.git
-    rev: d0d144ad11ebe4deb1203ef162eed8e510541217
+  - repo: git@github.com:Ghostfacts/pre-commit-checks.git
+    rev: a935262e5fb826e3cf7440a35de8c2eed2e04624
     hooks:
       #Code checks
       - id: check-added-large-files
       - id: check-json
       - id: detect-aws-credentials
       - id: detect-private-key
-      - id: black
       #IaC checks
       - id: terraform-fmt
       - id: trailing-whitespace
+      #python checks
+      - id: pylint
+      - id: black
+      - id: flake8
+      - id: mypy
+      - id: isort
+      - id: bandit
