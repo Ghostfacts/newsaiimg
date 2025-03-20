@@ -25,7 +25,7 @@ jobs:
       - name: Delete old workflow runs
         env:
           REPO: ${{ github.repository }}
-          RETENTION_DAYS: 10
+          RETENTION_DAYS: 5
         run: |
           # Get the current date in seconds since epoch
           current_date=$(date +%s)
