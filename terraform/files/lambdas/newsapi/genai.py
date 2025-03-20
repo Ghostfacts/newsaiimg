@@ -2,9 +2,9 @@
 
 import json
 import logging
-
 import boto3
 from botocore.exceptions import ClientError
+import time
 
 
 class Bedrock:
@@ -98,6 +98,7 @@ class Bedrock:
                         "results": json.loads(airesponce["outputText"]),
                     }
                 )
+                time.sleep(5)
         except Exception as e:  # pylint: disable=W0718
             logging.error("Error processing news story: %s", str(e))
             logging.info("AI output: %s", airesponce)

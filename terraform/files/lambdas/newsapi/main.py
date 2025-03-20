@@ -140,7 +140,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613
         region_name=os.getenv("region_name", "eu-west-2"),
     )["token"]
     newsapi = NewsApiClient(api_key=newsapi_key)
-    selected_articles = []
+    filtred_article_list = []
     logging.info(
         "Grathing all news articles with in date range from %s to %s",
         yesterday.strftime("%Y-%m-%d %H:%M:%S"),
@@ -197,7 +197,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613
                 all_articles["articles"].remove(article)
             else:
                 article["aiscors"] = bedrock.news_reviews(article["content"])
-                article["airesult"] = {"result": "pass", "score": 0}
+                article["airesult"] = {"result": "not_registred", "score": 0}
                 for aires in article["aiscors"]:
                     article["airesult"]["score"] = (
                         aires["results"]["score"] + aires["results"]["score"]
@@ -206,32 +206,42 @@ def lambda_handler(event, context):  # pylint: disable=W0613
                         article["airesult"]["result"] = "Failed"
                         logging.info(
                             "Story Failed AI Check: %s, Why: %s",
-                            article["title"],
-                            aires["results"]["reson"],
+                            article.get("title", "missing"),
+                            aires["results"].get("reson", ""),
                         )
                         article_check = False
+                if aires["results"]["score"] <= 0:
+                    logging.info("Removing story %s -> AI score is 0", article["title"])
+                    article_check = False
                 # Final check to see if story shoud be added
                 if article_check is False:
                     all_articles["articles"].remove(article)
                 else:
                     logging.info("Adding story: %s", article["title"])
-                    article["id"] = int(len(selected_articles)) + 1
-                    selected_articles.append(article)
+                    article["id"] = len(filtred_article_list)
+                    article["picked"] = "false"
+                    filtred_article_list.append(article)
     logging.info(
         "Total articles recived %s vs Totel after sorted %s",
         len(all_articles["articles"]),
-        len(selected_articles),
+        len(filtred_article_list),
     )
-    highest_score_entry = max(selected_articles, key=lambda x: x["airesult"]["score"])
-    logging.info("Story ID picked %s", highest_score_entry["id"])
-
+    choose_article = max(filtred_article_list, key=lambda x: x["airesult"]["score"])
+    logging.info("Story ID picked %s", choose_article["id"])
+    filtred_article_list[choose_article["id"]]["picked"] = "true"
+    choose_article["source"] = choose_article["source"]["id"]
+    choose_article.pop("picked", None)
+    choose_article.pop("aiscors", None)
+    choose_article.pop("airesult", None)
+    choose_article.pop("id", None)
     return {
         "event_id": str(generate_custom_uuid()),
-        "picked_article_id": highest_score_entry["id"],
-        "all_articles": selected_articles,
+        "picked_article": choose_article,
+        "all_articles": filtred_article_list,
+        "logStreamName": getattr(context, "log_stream_name", None),
     }
 
 
-# # testing
-# if __name__ == "__main__":
-#     print(json.dumps(lambda_handler(None, None), indent=4))
+# testing
+if __name__ == "__main__":
+    print(json.dumps(lambda_handler(None, None), indent=4))

@@ -15,6 +15,8 @@ resource "aws_iam_role" "step_function_role" {
   })
 }
 
+
+
 resource "aws_iam_role_policy" "step_function_policy" {
   name   = "newsaiimg-${local.environment_map[var.environment]}-iam-policy-step-function"
   role   = aws_iam_role.step_function_role.id

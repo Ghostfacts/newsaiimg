@@ -19,3 +19,8 @@ resource "aws_iam_role_policy" "inline_policy" {
   role   = aws_iam_role.lambda_exec.id
   policy = var.policy
 }
+
+resource "aws_iam_role_policy_attachment" "lambda_basic_execution" {
+  role       = aws_iam_role.lambda_exec.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+}
