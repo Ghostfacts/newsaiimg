@@ -243,5 +243,5 @@ def lambda_handler(event, context):  # pylint: disable=W0613
 
 
 # testing
-if __name__ == "__main__":
-    print(json.dumps(lambda_handler(None, None), indent=4))
+#if __name__ == "__main__":
+#    print(json.dumps(lambda_handler(None, None), indent=4))
