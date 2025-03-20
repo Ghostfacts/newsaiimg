@@ -7,7 +7,7 @@
       "Resource": "arn:aws:states:::lambda:invoke",
       "OutputPath": "$.Payload",
       "Parameters": {
-        "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-newsapi-lambda-function:$LATEST"
+        "FunctionName": "${newapi_lmb_function_arn}"
       },
       "Retry": [
         {
@@ -35,7 +35,7 @@
               "Type": "Task",
               "Parameters": {
                 "Body.$": "States.JsonToString($.all_articles)",
-                "Bucket": "aiminnews",
+                "Bucket": "${s3_bucket}",
                 "Key.$": "States.Format('{}/news_stories.json', $.event_id)"
               },
               "Resource": "arn:aws:states:::aws-sdk:s3:putObject.waitForTaskToken",
@@ -49,7 +49,7 @@
             "Get-Lambda-Logs": {
               "Type": "Task",
               "Parameters": {
-                "LogGroupName": "/aws/lambda/newsaiimg-dev-newsapi-lambda-function",
+                "LogGroupName": "/aws/lambda/${newapi_lmb_function_name}",
                 "LogStreamName.$": "$.logStreamName"
               },
               "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:getLogEvents",
@@ -59,7 +59,7 @@
               "Type": "Task",
               "Parameters": {
                 "Body.$": "States.JsonToString($)",
-                "Bucket": "aiminnews",
+                "Bucket": "${s3_bucket}",
                 "Key.$": "States.Format('{}/lambda_log.json', $.event_id)"
               },
               "Resource": "arn:aws:states:::aws-sdk:s3:putObject.waitForTaskToken",
