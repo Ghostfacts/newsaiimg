@@ -31,9 +31,7 @@ jobs:
           # Get the current date in seconds since epoch
           current_date=$(date +%s)
           # Get all workflow runs
-          runs=$(gh api "repos/${REPO}/actions/runs" --paginate \
-          -q '.workflow_runs[] | select(.event != "workflow_dispatch") \
-          | [.id, .created_at]')
+          runs=$(gh api "repos/${REPO}/actions/runs" --paginate -q '.workflow_runs[] | select(.event != "workflow_dispatch") | [.id, .created_at]')
           echo "$runs" | jq -r '. | @tsv' | while IFS=$'\t' read -r id created_at
           do
               created_at_seconds=$(date -d "$created_at" +%s)
