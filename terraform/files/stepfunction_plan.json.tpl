@@ -5,7 +5,8 @@
     "GetNewsStories": {
       "Type": "Task",
       "Resource": "arn:aws:states:::lambda:invoke",
-      "OutputPath": "$
+      "OutputPath": "$.Payload",
+      "Parameters": {
         "FunctionName": "${newapi_lmb_function_arn}"
       },
       "Retry": [
