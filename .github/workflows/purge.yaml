@@ -39,5 +39,15 @@ jobs:
               if [ "$age" -gt "$RETENTION_DAYS" ]; then
                   echo "Deleting run $id ($created_at, $age days old)"
                   gh api "repos/${REPO}/actions/runs/$id" -X DELETE
+                  echo "- Run ID: $id, Created At: $created_at, Age: $age days" >> deleted_runs.log
               fi
           done
+
+      - name: Report deleted workflow runs
+        if: always()
+        run: |
+          if [ -f deleted_runs.log ]; then
+            echo "## Deleted Workflow Runs" >> $GITHUB_STEP_SUMMARY
+            cat deleted_runs.log >> $GITHUB_STEP_SUMMARY
+          else
+            echo "No workflow runs were deleted." >> $GITHUB_STEP_SUMMARY
