@@ -157,5 +157,3 @@ jobs:
         run: |
           terraform apply -var-file=config/${{ matrix.environment }}/terraform.tfvars --auto-approve
         working-directory: terraform
-
-
