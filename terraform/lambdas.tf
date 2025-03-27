@@ -32,3 +32,23 @@ module "news_api_function" {
     local.tags
   )
 }
+
+module "img_gen_function" {
+  # checkov:skip=CKV_AWS_50
+  # checkov:skip=CKV_AWS_272
+  # checkov:skip=CKV_AWS_116
+  # checkov:skip=CKV_AWS_117
+  # checkov:skip=CKV_AWS_173
+  source                = "./modules/lambda_function"
+  nameprefex            = "newsaiimg-${local.environment_map[var.environment]}-imggen"
+  runtime               = "python3.10"
+  source_path           = "files/lambdas/imagegen/"
+  function_handler      = "main.lambda_handler"
+  timeout               = 830
+  environment_variables = {}
+  attach_layers         = []
+  policy                = data.aws_iam_policy_document.lambda_policy.json
+  tags = merge(
+    local.tags
+  )
+}
