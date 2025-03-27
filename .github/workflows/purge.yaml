@@ -47,7 +47,7 @@ jobs:
         if: always()
         run: |
           if [ -f deleted_runs.log ]; then
-            echo "## Deleted Workflow Runs" >> $GITHUB_STEP_SUMMARY
-            cat deleted_runs.log >> $GITHUB_STEP_SUMMARY
+            echo "## Deleted Workflow Runs"
+            cat deleted_runs.log
           else
-            echo "No workflow runs were deleted." >> $GITHUB_STEP_SUMMARY
+            echo "No workflow runs were deleted."

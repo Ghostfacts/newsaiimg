@@ -1,5 +1,5 @@
 ---
-name: Code Checks
+name: Terraform Checks/Deploy(Dev)
 permissions:
   id-token: write
   contents: read
@@ -13,6 +13,8 @@ on:
   pull_request:
     branches:
       - main
+    paths:
+      - terraform/**
 
 defaults:
   run:
@@ -108,12 +110,12 @@ jobs:
           path: terraform
           githubapi: ${{ secrets.GITHUB_TOKEN }}
 
-      # - name: Post Terraform Output to PR
-      #   uses: marocchino/sticky-pull-request-comment@v2
-      #   with:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     header: Terraform Output
-      #     message: |
-      #       ```hcl
-      #       ${{ steps.terraform_plan.outputs.stdout }}
-      #       ```
+      - name: Terraform apply
+        shell: sh
+        env:
+          TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
+          TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
+        run: |
+          terraform apply -var-file=config/${{ matrix.environment }}/terraform.tfvars --auto-approve
+        working-directory: terraform
+
