@@ -12,3 +12,10 @@ variable "environment" {
   type        = string
   description = "environment the code being deplyed"
 }
+
+variable "github_token" {
+  type        = string
+  description = "github auth token"
+}
+
+

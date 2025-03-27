@@ -7,5 +7,5 @@ provider "aws" {
 }
 
 provider "github" {
-  # Configuration options
+  token = var.github_token # or `GITHUB_TOKEN
 }
