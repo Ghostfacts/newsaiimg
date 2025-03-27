@@ -110,6 +110,45 @@ jobs:
           path: terraform
           githubapi: ${{ secrets.GITHUB_TOKEN }}
 
+  terraformdeploy:
+    strategy:
+      matrix:
+        environment:
+          - development
+    runs-on: ubuntu-latest
+    needs: terraformplan
+    environment:
+      name: ${{ matrix.environment }}
+    steps:
+      - name: AWS login
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.MAIN_AWS_ACCOUNT_ID }}:role/${{ secrets.MAIN_AWS_ROLE }}
+          role-session-name: ${{ github.sha }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: install terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version: "3.10" # Use any supported Python version
+
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Terraform init
+        shell: sh
+        env:
+          TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
+          TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
+        run: |
+          terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/${{ matrix.environment }}/backend.conf -var-file=config/${{ matrix.environment }}/terraform.tfvars
+        working-directory: terraform
+
       - name: Terraform apply
         shell: sh
         env:
@@ -118,4 +157,5 @@ jobs:
         run: |
           terraform apply -var-file=config/${{ matrix.environment }}/terraform.tfvars --auto-approve
         working-directory: terraform
+
 
