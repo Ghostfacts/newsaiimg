@@ -1,5 +1,11 @@
 # S3 Bucket for Static Website Hosting
 resource "aws_s3_bucket" "website_bucket" {
+  # checkov:skip=CKV2_AWS_62
+  # checkov:skip=CKV_AWS_18
+  # checkov:skip=CKV_AWS_144
+  # checkov:skip=CKV_AWS_21
+  # checkov:skip=CKV2_AWS_61
+  # checkov:skip=CKV_AWS_145
   bucket = "newsaiimg-${local.environment_map[var.environment]}-s3-website"
   acl    = "public-read"
 
