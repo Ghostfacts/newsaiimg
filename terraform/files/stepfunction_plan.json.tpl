@@ -53,7 +53,7 @@
             "Get-Lambda-Logs": {
               "Type": "Task",
               "Parameters": {
-                "LogGroupName": "/aws/lambda/${newapi_lmb_function_name}",
+                "LogGroupName": "/aws/lambda/newsaiimg-dev-newsapi-lambda-function",
                 "LogStreamName.$": "$.logStreamName"
               },
               "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:getLogEvents",
@@ -81,8 +81,11 @@
       "Resource": "arn:aws:states:::lambda:invoke",
       "OutputPath": "$.Payload",
       "Parameters": {
-        "Payload.$": "$",
-        "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-imggen-lambda-function:$LATEST"
+        "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-imggen-lambda-function:$LATEST",
+        "Payload": {
+          "event_id.$": "$event_id",
+          "story.$": "$.picked_article"
+        }
       },
       "Retry": [
         {
