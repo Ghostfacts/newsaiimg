@@ -5,6 +5,9 @@ resource "null_resource" "pip" {
     ${var.runtime} -m pip install ${each.value} --no-cache-dir --upgrade --isolated --target /tmp/${var.layer_name}/python/lib/${var.runtime}/site-packages/
     EOT
   }
+  triggers = {
+    time = timestamp()
+  }
 }
 
 data "archive_file" "layerzip" {
