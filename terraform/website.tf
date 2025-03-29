@@ -45,9 +45,9 @@ resource "aws_cloudfront_distribution" "cdn" {
   # checkov:skip=CKV_AWS_68
   # checkov:skip=CKV_AWS_174
   # checkov:skip=CKV_AWS_310
-  # checkov:skip=CKV_AWS_42
-  # checkov:skip=CKV_AWS_47
-  # checkov:skip=CKV_AWS_32
+  # checkov:skip=CKV2_AWS_42
+  # checkov:skip=CKV2_AWS_47
+  # checkov:skip=CKV2_AWS_32
   # checkov:skip=CKV_AWS_86
   origin {
     domain_name = aws_s3_bucket.website_bucket.website_endpoint
