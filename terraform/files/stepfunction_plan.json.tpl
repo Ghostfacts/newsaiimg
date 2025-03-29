@@ -72,25 +72,33 @@
         }
       ],
       "ResultPath": "$.parallelResults",
-      "Next": "Generate_image",
+      "Next": "genimage",
       "Assign": {
         "event_id.$": "$.event_id"
       }
     },
-    "Generate_image": {
+    "genimage": {
       "Type": "Task",
-      "Resource": "arn:aws:states:::bedrock:invokeModel",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
       "Parameters": {
-        "ModelId": "arn:aws:bedrock:eu-west-2::foundation-model/amazon.titan-image-generator-v1",
-        "Body": {
-          "inputText": "Make an image of an dog jumping over an large fence",
-          "textGenerationConfig": {
-            "temperature": 0,
-            "topP": 1,
-            "maxTokenCount": 512
-          }
-        }
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-imggen-lambda-function:$LATEST"
       },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
       "End": true
     }
   }

@@ -30,7 +30,10 @@ data "aws_iam_policy_document" "step_function_policy" {
     actions = [
       "lambda:InvokeFunction",
     ]
-    resources = ["${module.news_api_function.function.arn}*"]
+    resources = [
+      "${module.news_api_function.function.arn}*",
+      "${module.img_gen_function.function.arn}*"
+    ]
   }
   statement {
     sid    = "Bedrock"
