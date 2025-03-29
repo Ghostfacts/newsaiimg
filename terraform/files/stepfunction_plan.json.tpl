@@ -72,10 +72,7 @@
         }
       ],
       "ResultPath": "$.parallelResults",
-      "Next": "genimage",
-      "Assign": {
-        "event_id.$": "$.event_id"
-      }
+      "Next": "genimage"
     },
     "genimage": {
       "Type": "Task",
