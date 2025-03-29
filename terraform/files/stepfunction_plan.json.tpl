@@ -37,6 +37,7 @@
             "Filtred_articles-to-s3": {
               "Type": "Task",
               "Parameters": {
+                "ContentType": "application/json",
                 "Body.$": "States.JsonToString($.all_articles)",
                 "Bucket": "${s3_bucket}",
                 "Key.$": "States.Format('{}/news_stories.json', $event_id)"
@@ -61,6 +62,7 @@
             "lambda_logs-to-s3": {
               "Type": "Task",
               "Parameters": {
+                "ContentType": "application/json",
                 "Body.$": "States.JsonToString($)",
                 "Bucket": "${s3_bucket}",
                 "Key.$": "States.Format('{}/lambda_log.json', $event_id)"
