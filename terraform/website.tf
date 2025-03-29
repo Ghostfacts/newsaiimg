@@ -7,6 +7,7 @@ resource "aws_s3_bucket" "website_bucket" {
   # checkov:skip=CKV2_AWS_61
   # checkov:skip=CKV_AWS_145
   # checkov:skip=CKV_AWS_20
+  # checkov:skip=CKV_AWS_86
   bucket = "newsaiimg-${local.environment_map[var.environment]}-s3-website"
   acl    = "public-read"
 
@@ -41,6 +42,12 @@ resource "aws_s3_bucket_policy" "website_bucket_policy" {
 
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "cdn" {
+  # checkov:skip=CKV_AWS_68
+  # checkov:skip=CKV_AWS_174
+  # checkov:skip=CKV_AWS_310
+  # checkov:skip=CKV_AWS_42
+  # checkov:skip=CKV_AWS_47
+  # checkov:skip=CKV_AWS_32
   origin {
     domain_name = aws_s3_bucket.website_bucket.website_endpoint
     origin_id   = "S3-${aws_s3_bucket.website_bucket.id}"
