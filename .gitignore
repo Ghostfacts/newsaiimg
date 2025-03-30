@@ -39,4 +39,4 @@ terraform.rcti
 # python
 
 **/__pycache__
-**/newsapi/test.py
+**/test.py
