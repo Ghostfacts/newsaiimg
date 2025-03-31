@@ -36,6 +36,7 @@ module "news_api_function" {
     secrect_name = aws_secretsmanager_secret.newsapi.name
     region_name  = data.aws_region.current.name
   }
+  dlq_arn       = aws_sqs_queue.dlq.arn
   attach_layers = [module.news_api_layer.layer.arn]
   policy        = data.aws_iam_policy_document.lambda_policy.json
   tags = merge(
@@ -56,6 +57,7 @@ module "img_gen_function" {
   function_handler      = "main.lambda_handler"
   timeout               = 830
   environment_variables = {}
+  dlq_arn               = aws_sqs_queue.dlq.arn
   attach_layers         = [module.image_gen_layer.layer.arn]
   policy                = data.aws_iam_policy_document.lambda_policy.json
   tags = merge(

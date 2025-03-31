@@ -50,3 +50,7 @@ variable "memory_size" {
   default     = 128
 }
 
+variable "dlq_arn" {
+  type    = any
+  default = ""
+}

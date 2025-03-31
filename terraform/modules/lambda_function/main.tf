@@ -16,6 +16,9 @@ resource "aws_lambda_function" "function" {
   environment {
     variables = var.environment_variables
   }
+  dead_letter_config {
+    target_arn = var.dlq_arn
+  }
   layers = var.attach_layers
   tags   = local.tags
 }
