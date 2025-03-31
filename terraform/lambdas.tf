@@ -10,6 +10,16 @@ module "news_api_layer" {
   ]
 }
 
+module "image_gen_layer" {
+  source     = "./modules/lambda_layer_python"
+  layer_name = "newsaiimg-${local.environment_map[var.environment]}-lambda-layer-imggen"
+  runtime    = "python3.10"
+  modules = [
+    "pillow==10.2.0",
+  ]
+}
+
+
 module "news_api_function" {
   # checkov:skip=CKV_AWS_50
   # checkov:skip=CKV_AWS_272
@@ -46,7 +56,7 @@ module "img_gen_function" {
   function_handler      = "main.lambda_handler"
   timeout               = 830
   environment_variables = {}
-  attach_layers         = []
+  attach_layers         = [module.image_gen_layer.layer.arn]
   policy                = data.aws_iam_policy_document.lambda_policy.json
   tags = merge(
     local.tags
