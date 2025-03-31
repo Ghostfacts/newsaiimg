@@ -8,6 +8,14 @@ data "aws_iam_policy_document" "lambda_policy" {
     resources = [aws_secretsmanager_secret.newsapi.arn]
   }
   statement {
+    effect = "Allow"
+    sid    = "SSMsettings"
+    actions = [
+      "ssm:GetParameter"
+    ]
+    resources = [aws_ssm_parameter.json_parameter.arn]
+  }
+  statement {
     sid    = "s3aibucket"
     effect = "Allow"
     actions = [
