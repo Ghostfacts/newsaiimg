@@ -34,5 +34,3 @@ resource "aws_sfn_state_machine" "newsaiimg_step_function" {
     s3_bucket                = aws_s3_bucket.aiminnews.bucket,
   })
 }
-
-#arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-newsapi-lambda-function:$LATEST
