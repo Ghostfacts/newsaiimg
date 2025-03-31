@@ -4,10 +4,10 @@ resource "aws_ssm_parameter" "json_parameter" {
   description = "Settings for the newsaiimg application"
   type        = "String"
   value = jsonencode({
-    ais3        = aws_s3_bucket.aiminnews.bucket
-    sites3      = "TBD"
-    region      = data.aws_region.current.name
-    secret_name = aws_secretsmanager_secret.newsapi.name
+    ais3bucket   = aws_s3_bucket.aiminnews.bucket
+    sites3bucket = "TBD"
+    region       = data.aws_region.current.name
+    secret_name  = aws_secretsmanager_secret.newsapi.name
   })
 
   tags = merge(

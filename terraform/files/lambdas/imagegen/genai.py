@@ -32,14 +32,15 @@ class Genai:  # pylint: disable=R0903
         image_promt = image_promt.replace("\n", " ")
         # Ensure the image prompt does not exceed 512 characters
         if len(image_promt) > 512:
-            print(f"Over max caracters, truncating to 510 from {len(image_promt)}")
+            logging.warning(
+                "Over max caracters, truncating to 510 from %s", len(image_promt)
+            )
             image_promt = image_promt[:510]
         else:
-            char_count = len(image_promt)
-            print(f"Number of characters in the image prompt: {char_count}")
+            logging.info("Image prompt length: %s characters", len(image_promt))
 
         word_count = len(image_promt.split())
-        print(f"Number of words in the image prompt: {word_count}")
+        logging.info("Image prompt word count: %s words", word_count)
 
         # The image prompt is the output of the text generation model
         image_bytes = self.__gen_image(image_promt)
@@ -50,9 +51,9 @@ class Genai:  # pylint: disable=R0903
             "prompt": image_promt,
         }
         if image_bytes is None:
-            print("No image data returned")
+            logging.error("No image data returned")
         else:
-            print("image Saved")
+            logging.info("Image data returned")
             image = Image.open(io.BytesIO(image_bytes["image_data"]))
             image = image.convert("RGB")
             image.save(os.path.join(imagepath, "newsimage.png"), "PNG")
@@ -97,7 +98,7 @@ class Genai:  # pylint: disable=R0903
             }
         except (ClientError, Exception) as e:  # pylint: disable=W0718
             # logging.error("Can't invoke %s Reason: %s", model_id, e)
-            print(f"Image error {e}")
+            logging.error("Can't invoke %s Reason: %s", model_id, e)
             return None
 
     def __image_promt(self, story):
