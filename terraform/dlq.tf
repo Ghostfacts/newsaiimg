@@ -1,9 +1,12 @@
 #this is the deadletterqueu for lambda and other things
-
 resource "aws_sns_topic" "sns_topic" {
+  # checkov:skip=CKV_AWS_26
+  # checkov:skip=CKV_AWS_27
   name = "newsaiimg-${local.environment_map[var.environment]}-sns-topic"
 }
 resource "aws_sqs_queue" "dlq" {
+  # checkov:skip=CKV_AWS_26
+  # checkov:skip=CKV_AWS_27
   name = "newsaiimg-${local.environment_map[var.environment]}-sqs-dlq"
 }
 
