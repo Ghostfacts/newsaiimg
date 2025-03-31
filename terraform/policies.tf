@@ -8,6 +8,19 @@ data "aws_iam_policy_document" "lambda_policy" {
     resources = [aws_secretsmanager_secret.newsapi.arn]
   }
   statement {
+    sid    = "s3aibucket"
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:List*",
+    ]
+    resources = [
+      aws_s3_bucket.aiminnews.arn,
+      "${aws_s3_bucket.aiminnews.arn}/*"
+    ]
+  }
+  statement {
     sid    = "Bedrock"
     effect = "Allow"
     actions = [
