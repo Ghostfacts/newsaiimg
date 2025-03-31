@@ -131,7 +131,18 @@ def get_fullstory(url):
 
 def filter_article(article):
     """Filter the article"""
-    ban_words = ["football", "sports", "Broadcast", "sport", "stabbings", "stab"]
+    ban_words = [
+        "football",
+        "sports",
+        "Broadcast",
+        "sport",
+        "stabbings",
+        "stab",
+        "drug",
+        "drugs",
+        "pill",
+        "lottery",
+    ]
     author_black_list = []
     # logging.info(article)
     article_check = True
