@@ -1,6 +1,6 @@
 resource "aws_ssm_parameter" "json_parameter" {
   # checkov:skip=CKV2_AWS_34
-  name        = "newsaiimg/${local.environment_map[var.environment]}/settings"
+  name        = "/newsaiimg/${local.environment_map[var.environment]}/settings"
   description = "Settings for the newsaiimg application"
   type        = "String"
   value = jsonencode({
