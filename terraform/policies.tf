@@ -1,5 +1,13 @@
 data "aws_iam_policy_document" "lambda_policy" {
   statement {
+    sid    = "SNSqueue"
+    effect = "Allow"
+    actions = [
+      "SNS:SendMessage"
+    ]
+    resources = [aws_sqs_queue.dlq.arn]
+  }
+  statement {
     effect = "Allow"
     actions = [
       "secretsmanager:GetSecretValue",
