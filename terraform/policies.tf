@@ -3,7 +3,8 @@ data "aws_iam_policy_document" "lambda_policy" {
     sid    = "SNSqueue"
     effect = "Allow"
     actions = [
-      "SNS:SendMessage"
+      "SNS:SendMessage",
+      "SQS:SendMessage"
     ]
     resources = [aws_sqs_queue.dlq.arn]
   }
