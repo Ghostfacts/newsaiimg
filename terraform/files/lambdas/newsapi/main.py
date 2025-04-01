@@ -8,9 +8,8 @@ import re
 from datetime import datetime
 
 import boto3
-import genai
-import newsapi
 from botocore.exceptions import ClientError
+from functions import genai, newsapi
 
 if len(logging.getLogger().handlers) > 0:
     logging.getLogger().setLevel(logging.INFO)
