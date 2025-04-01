@@ -13,7 +13,7 @@ variable "environment" {
   description = "environment the code being deplyed"
 }
 
-variable "ilert_hook" {
+variable "ilert_token" {
   type        = string
   description = ""
 }

@@ -19,5 +19,5 @@ resource "aws_sns_topic_subscription" "sns_topic_subscription" {
 resource "aws_sns_topic_subscription" "sns_webhook_subscription" {
   topic_arn = aws_sns_topic.sns_topic.arn
   protocol  = "https"
-  endpoint  = var.ilert_hook
+  endpoint  = "https://api.ilert.com/api/v1/events/amazon-sns/${var.ilert_token}"
 }
