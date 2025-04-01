@@ -3,8 +3,6 @@ module "news_api_layer" {
   layer_name = "newsaiimg-${local.environment_map[var.environment]}-lambda-layer-newsapi"
   runtime    = "python3.10"
   modules = [
-    "newsapi==0.1.1",
-    "newsapi-python==0.2.7",
     "beautifulsoup4==4.12.3",
     "requests==2.31.0"
   ]
@@ -16,6 +14,7 @@ module "image_gen_layer" {
   runtime    = "python3.10"
   modules = [
     "pillow==10.2.0",
+    "requests==2.31.0"
   ]
 }
 
