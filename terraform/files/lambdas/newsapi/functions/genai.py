@@ -69,9 +69,11 @@ class Bedrock:
             if e.response["Error"]["Code"] == "ThrottlingException":
                 return {
                     "model_id": model_id,
-                    "outputText": [
-                        {"result": "fail", "score": "0", "reson": "ThrottlingException"}
-                    ],
+                    "outputText": {
+                        "result": "fail",
+                        "score": "0",
+                        "reson": "ThrottlingException",
+                    },
                 }
             return {
                 "model_id": model_id,
