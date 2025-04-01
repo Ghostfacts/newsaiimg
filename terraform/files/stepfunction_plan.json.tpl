@@ -101,6 +101,15 @@
           "JitterStrategy": "FULL"
         }
       ],
+      "Next": "SNS Publish"
+    },
+    "SNS Publish": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "Message.$": "$",
+        "TopicArn": "arn:aws:sns:eu-west-2:711387118193:newsaiimg-dev-sns-topic"
+      },
       "End": true
     }
   }

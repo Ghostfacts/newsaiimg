@@ -55,6 +55,15 @@ data "aws_iam_policy_document" "lambda_policy" {
 
 data "aws_iam_policy_document" "step_function_policy" {
   statement {
+    sid    = "SNSqueue"
+    effect = "Allow"
+    actions = [
+      "SNS:SendMessage",
+      "SQS:SendMessage"
+    ]
+    resources = [aws_sqs_queue.dlq.arn]
+  }
+  statement {
     sid    = "lambda"
     effect = "Allow"
     actions = [
