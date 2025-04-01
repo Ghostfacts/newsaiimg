@@ -42,13 +42,3 @@ jobs:
                   echo "- Run ID: $id, Created At: $created_at, Age: $age days" >> deleted_runs.log
               fi
           done
-
-      - name: Report deleted workflow runs
-        if: always()
-        run: |
-          if [ -f deleted_runs.log ]; then
-            echo "## Deleted Workflow Runs"
-            cat deleted_runs.log
-          else
-            echo "No workflow runs were deleted."
-          fi
