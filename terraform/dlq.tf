@@ -15,3 +15,9 @@ resource "aws_sns_topic_subscription" "sns_topic_subscription" {
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.dlq.arn
 }
+
+resource "aws_sns_topic_subscription" "sns_webhook_subscription" {
+  topic_arn = aws_sns_topic.sns_topic.arn
+  protocol  = "https"
+  endpoint  = var.ilert_hook
+}

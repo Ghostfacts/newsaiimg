@@ -13,3 +13,8 @@ variable "environment" {
   description = "environment the code being deplyed"
 }
 
+variable "ilert_hook" {
+  type        = string
+  description = ""
+}
+
