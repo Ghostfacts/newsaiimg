@@ -55,7 +55,7 @@ jobs:
           TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
           TF_VAR_AWS_ROLE_NAME: ${{ secrets.DEPLOY_AWS_ROLE }}
           TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
-          TF_VAR_ilert_token:   ${{ secrets.ILERT_HOOK }}
+          TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
         shell: sh
         run: |
           terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/development/backend.conf -var-file=config/development/terraform.tfvars
@@ -80,7 +80,7 @@ jobs:
           TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
           TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
           TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
-          TF_VAR_ilert_token:   ${{ secrets.ILERT_HOOK }}
+          TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
         working-directory: terraform
 
       - name: Checkov
@@ -126,7 +126,7 @@ jobs:
           TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
           TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
           TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
-          TF_VAR_ilert_token:  ${{ secrets.ILERT_HOOK }}
+          TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
         run: |
           terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/development/backend.conf -var-file=config/development/terraform.tfvars
         working-directory: terraform
@@ -137,7 +137,7 @@ jobs:
           TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
           TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
           TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
-          TF_VAR_ilert_token:  ${{ secrets.ILERT_HOOK }}
+          TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
         run: |
           terraform apply -var-file=config/development/terraform.tfvars --auto-approve
         working-directory: terraform
