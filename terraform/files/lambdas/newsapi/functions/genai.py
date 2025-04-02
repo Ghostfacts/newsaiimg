@@ -51,13 +51,38 @@ class Bedrock:
         try:
             response = self.bedrockclient.invoke_model(modelId=model_id, body=request)
             model_response = json.loads(response["body"].read())
+            if (
+                model_response["results"][0]["outputText"]
+                == "Sorry - this model is unable to respond to this request."
+            ):
+                model_response["results"][0]["outputText"] = {
+                    "result": "fail",
+                    "score": "1",
+                    "reson": "model is unable to respond to this request.",
+                }
             return {
                 "model_id": model_id,
                 "outputText": model_response["results"][0]["outputText"],
             }
         except (ClientError, Exception) as e:  # pylint: disable=W0718
             logging.error("Can't invoke %s Reason: %s", model_id, e)
-            return None  # Return None instead of raising an error
+            if e.response["Error"]["Code"] == "ThrottlingException":
+                return {
+                    "model_id": model_id,
+                    "outputText": {
+                        "result": "fail",
+                        "score": "0",
+                        "reson": "ThrottlingException",
+                    },
+                }
+            return {
+                "model_id": model_id,
+                "outputText": {
+                    "result": "fail",
+                    "score": "0",
+                    "reson": f"Returned error {str(e)}",
+                },
+            }
 
     def news_reviews(self, news_story):
         """
@@ -78,6 +103,8 @@ class Bedrock:
             - The Story can not be goverment
             - The Story can not be about drugs
             - The Story can not be about crime
+            - The Story can not be about death
+            - The Story can not be about healthcare
         - Your respone MUST be formated in the fallowing way
             - MUST meet the requirments to be an be a valid JSON object
             - With an key value called 'result' its value is if the story is an pass or fail
@@ -89,6 +116,7 @@ class Bedrock:
         """
         try:
             for ia_model_id in ia_model_ids:
+                airesponce = ""
                 airesponce = self.__invoke_model__(
                     prompt=prompt_text, model_id=ia_model_id
                 )

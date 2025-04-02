@@ -1,36 +1,13 @@
-resource "null_resource" "layer_check" {
-  triggers = {
-    # always_run   = "${timestamp()}",
-    runtime      = local.runtime_hash,
-    modules_hash = md5(join("", var.modules))
-  }
-}
-
-resource "null_resource" "make_tmp_folder" {
-  provisioner "local-exec" {
-    command = "mkdir /tmp/${var.layer_name}/"
-  }
-  triggers = {
-    always_run   = timestamp(),
-    runtime      = local.runtime_hash,
-    modules_hash = md5(join("", var.modules))
-  }
-}
-
-resource "null_resource" "pip_install" {
-  # Use for_each to create one resource per module
+resource "null_resource" "pip" {
   for_each = toset(var.modules)
   provisioner "local-exec" {
-    command = "${var.runtime} -m pip install ${each.value} --no-cache-dir --upgrade --isolated --target /tmp/${var.layer_name}/python/lib/${var.runtime}/site-packages/"
+    command = <<EOT
+    ${var.runtime} -m pip install ${each.value} --no-cache-dir --upgrade --isolated --target /tmp/${var.layer_name}/python/lib/${var.runtime}/site-packages/
+    EOT
   }
   triggers = {
-    always_run   = timestamp(),
-    runtime      = local.runtime_hash,
-    modules_hash = md5(join("", var.modules))
+    time = timestamp()
   }
-  depends_on = [
-    null_resource.make_tmp_folder
-  ]
 }
 
 data "archive_file" "layerzip" {
@@ -38,20 +15,17 @@ data "archive_file" "layerzip" {
   source_dir  = "/tmp/${var.layer_name}/"
   output_path = "/tmp/${var.layer_name}_package.zip"
   depends_on = [
-    null_resource.make_tmp_folder,
-    null_resource.pip_install
+    null_resource.pip
   ]
 }
 
 resource "aws_lambda_layer_version" "layer" {
-  count               = local.create_layer ? 1 : 0
   filename            = data.archive_file.layerzip.output_path
   layer_name          = var.layer_name
   source_code_hash    = data.archive_file.layerzip.output_base64sha256
   compatible_runtimes = [var.runtime]
   skip_destroy        = true
   depends_on = [
-    null_resource.pip_install,
     data.archive_file.layerzip
   ]
 }

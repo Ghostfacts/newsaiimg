@@ -1,11 +1,44 @@
 data "aws_iam_policy_document" "lambda_policy" {
   statement {
+    sid    = "SNSqueue"
+    effect = "Allow"
+    actions = [
+      "SNS:Publish",
+      "SQS:SendMessage"
+    ]
+    resources = [
+      aws_sqs_queue.dlq.arn,
+      aws_sns_topic.sns_topic.arn
+    ]
+  }
+  statement {
     effect = "Allow"
     actions = [
       "secretsmanager:GetSecretValue",
       "secretsmanager:ListSecretVersionIds"
     ]
     resources = [aws_secretsmanager_secret.newsapi.arn]
+  }
+  statement {
+    effect = "Allow"
+    sid    = "SSMsettings"
+    actions = [
+      "ssm:GetParameter"
+    ]
+    resources = [aws_ssm_parameter.json_parameter.arn]
+  }
+  statement {
+    sid    = "s3aibucket"
+    effect = "Allow"
+    actions = [
+      "s3:PutObject",
+      "s3:GetObject",
+      "s3:List*",
+    ]
+    resources = [
+      aws_s3_bucket.aiminnews.arn,
+      "${aws_s3_bucket.aiminnews.arn}/*"
+    ]
   }
   statement {
     sid    = "Bedrock"
@@ -25,12 +58,27 @@ data "aws_iam_policy_document" "lambda_policy" {
 
 data "aws_iam_policy_document" "step_function_policy" {
   statement {
+    sid    = "SNSqueue"
+    effect = "Allow"
+    actions = [
+      "SNS:Publish",
+      "SQS:SendMessage"
+    ]
+    resources = [
+      aws_sqs_queue.dlq.arn,
+      aws_sns_topic.sns_topic.arn
+    ]
+  }
+  statement {
     sid    = "lambda"
     effect = "Allow"
     actions = [
       "lambda:InvokeFunction",
     ]
-    resources = ["${module.news_api_function.function.arn}*"]
+    resources = [
+      "${module.news_api_function.function.arn}*",
+      "${module.img_gen_function.function.arn}*"
+    ]
   }
   statement {
     sid    = "Bedrock"

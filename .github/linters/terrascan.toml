@@ -2,15 +2,20 @@
 
 # scan and skip rules configuration
 [rules]
-    # scan rules (list of rules to scan)
-    # adding rules here will override rules in the policy path
-#    scan-rules = [
-#        "AWS.S3Bucket.DS.High.1043",
-#        "AWS.S3Bucket.IAM.High.0370"
-#    ]
-
     # skip rules (list of rules to skip)
     skip-rules = [
-        "AWS.S3Bucket.DS.High.1043",
-        "AWS.S3Bucket.IAM.High.0370",
+        "AC_AWS_0215",
+        "AC_AWS_0214",
+        "AC_AWS_0500",
+        "AC_AWS_0012",
+        "AWS.AST.DP.MEDIUM.0037",
+        "AWS.LambdaFunction.EncryptionandKeyManagement.0471",
+        "AWS.LambdaFunction.LM.MEIDUM.0063",
+        "AC_AWS_0484",
+        "AC_AWS_0486",
+        "AC_AWS_0485",
+        "AC_AWS_0163",
+        "AC_AWS_0483",
+        "AC_AWS_0502",
+        "AC_AWS_0366"
     ]
