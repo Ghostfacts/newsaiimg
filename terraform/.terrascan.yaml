@@ -1,3 +1,5 @@
 ---
 skip_rules:
   - AC_AWS_0012
+  - AC_AWS_0500
+

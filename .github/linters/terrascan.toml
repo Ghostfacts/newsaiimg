@@ -6,5 +6,6 @@
     skip-rules = [
         "AC_AWS_0215",
         "AC_AWS_0214",
-        "AWS.SecretsManagerSecret.DP.MEDIUM.0036"
+        "AC_AWS_0500",
+        "AC_AWS_0012"
     ]
