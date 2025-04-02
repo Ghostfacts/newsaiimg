@@ -9,17 +9,24 @@ resource "aws_s3_bucket" "website_bucket" {
   # checkov:skip=CKV_AWS_20
   # checkov:skip=CKV_AWS_86
   bucket = "newsaiimg-${local.environment_map[var.environment]}-s3-website"
-
-  website {
-    index_document = "index.html"
-    error_document = "error.html"
-  }
   tags = merge(
     local.tags,
     {
       Name = "newsaiimg-${local.environment_map[var.environment]}-s3-website"
     }
   )
+}
+
+resource "aws_s3_bucket_website_configuration" "website" {
+  bucket = aws_s3_bucket.website_bucket.id
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "error.html"
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "website_bucket" {
@@ -39,10 +46,8 @@ resource "aws_s3_bucket_public_access_block" "website_bucket" {
 data "aws_iam_policy_document" "website_policy" {
   statement {
     principals {
-      type = "AWS"
-      identifiers = [
-        data.aws_caller_identity.current.account_id
-      ]
+      type        = "Service"
+      identifiers = ["cloudfront.amazonaws.com"]
     }
     actions = [
       "s3:GetObject",
