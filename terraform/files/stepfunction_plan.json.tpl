@@ -74,6 +74,11 @@
         }
       ],
       "ResultPath": "$.parallelResults",
+      "Next": "Wait"
+    },
+    "Wait": {
+      "Type": "Wait",
+      "Seconds": 200,
       "Next": "genimage"
     },
     "genimage": {
