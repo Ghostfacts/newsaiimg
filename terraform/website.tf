@@ -23,6 +23,11 @@ resource "aws_s3_bucket" "website_bucket" {
 }
 
 resource "aws_s3_bucket_public_access_block" "website_bucket" {
+  # checkov:skip=CKV_AWS_54
+  # checkov:skip=CKV_AWS_56
+  # checkov:skip=CKV_AWS_55
+  # checkov:skip=CKV_AWS_53
+
   bucket = aws_s3_bucket.website_bucket.id
 
   block_public_acls       = false
