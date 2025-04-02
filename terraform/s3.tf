@@ -22,5 +22,3 @@ resource "aws_s3_bucket_public_access_block" "imgstorage-blockpublic" {
   restrict_public_buckets = true
   ignore_public_acls      = true
 }
-
-# possable website part TBC
