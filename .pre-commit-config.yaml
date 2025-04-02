@@ -1,7 +1,7 @@
 ---
 repos:
   - repo: git@github.com:Ghostfacts/pre-commit-checks.git
-    rev: 223b4dd6027df6dda04f9e4ab4b8c7a602f0ffde
+    rev: 4db9b856f68de5e75403b3fce2ca80cd54bbf841
     hooks:
       #Code checks
       - id: check-added-large-files
