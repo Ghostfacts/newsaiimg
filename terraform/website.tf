@@ -36,22 +36,34 @@ resource "aws_s3_bucket_public_access_block" "website_bucket" {
   restrict_public_buckets = false
 }
 
-
-# S3 Bucket Policy to Allow Public Read Access
-resource "aws_s3_bucket_policy" "website_bucket_policy" {
-  bucket = aws_s3_bucket.website_bucket.id
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect    = "Allow"
-        Principal = "*"
-        Action    = "s3:GetObject"
-        Resource  = "${aws_s3_bucket.website_bucket.arn}/*"
-      }
+data "aws_iam_policy_document" "website_policy" {
+  statement {
+    principals {
+      type = "AWS"
+      identifiers = [
+        data.aws_caller_identity.current.account_id
+      ]
+    }
+    actions = [
+      "s3:GetObject",
     ]
-  })
+
+    resources = [
+      "${aws_s3_bucket.website_bucket.arn}/*"
+    ]
+  }
 }
+
+resource "aws_s3_bucket_policy" "website_policy" {
+  bucket = aws_s3_bucket.website_bucket.id
+  policy = data.aws_iam_policy_document.website_policy.json
+}
+
+
+
+
+
+
 
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "cdn" {
