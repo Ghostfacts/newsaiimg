@@ -18,5 +18,7 @@ level = "medium"
         "AC_AWS_0163",
         "AC_AWS_0483",
         "AC_AWS_0502",
-        "AC_AWS_0366"
+        "AC_AWS_0366",
+        "AC-AW-IS-CD-M-1186", # Web app firewall
+        "AWS.S3Bucket.NetworkSecurity.High.0417" #Cloudfront distributions have the Logging
     ]
