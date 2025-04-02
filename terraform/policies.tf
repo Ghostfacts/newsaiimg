@@ -3,10 +3,13 @@ data "aws_iam_policy_document" "lambda_policy" {
     sid    = "SNSqueue"
     effect = "Allow"
     actions = [
-      "SNS:SendMessage",
+      "SNS:Publish",
       "SQS:SendMessage"
     ]
-    resources = [aws_sqs_queue.dlq.arn]
+    resources = [
+      aws_sqs_queue.dlq.arn,
+      aws_sns_topic.sns_topic.arn
+    ]
   }
   statement {
     effect = "Allow"
@@ -58,10 +61,13 @@ data "aws_iam_policy_document" "step_function_policy" {
     sid    = "SNSqueue"
     effect = "Allow"
     actions = [
-      "SNS:SendMessage",
+      "SNS:Publish",
       "SQS:SendMessage"
     ]
-    resources = [aws_sqs_queue.dlq.arn]
+    resources = [
+      aws_sqs_queue.dlq.arn,
+      aws_sns_topic.sns_topic.arn
+    ]
   }
   statement {
     sid    = "lambda"
