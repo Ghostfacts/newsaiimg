@@ -20,5 +20,6 @@ level = "medium"
         "AC_AWS_0502",
         "AC_AWS_0366",
         "AC-AW-IS-CD-M-1186",
-        "AWS.S3Bucket.NetworkSecurity.High.0417"
+        "AWS.S3Bucket.NetworkSecurity.High.0417",
+        "AWS.CloudFront.Logging.Medium.0567"
     ]
