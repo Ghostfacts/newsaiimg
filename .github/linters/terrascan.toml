@@ -1,5 +1,6 @@
 # terrascan configuration file
-
+[severity]
+level = "medium"
 # scan and skip rules configuration
 [rules]
     # skip rules (list of rules to skip)
@@ -8,8 +9,8 @@
         "AC_AWS_0214",
         "AC_AWS_0500",
         "AC_AWS_0012",
-        "AWS.AST.DP.MEDIUM.0037",
-        "AWS.LambdaFunction.EncryptionandKeyManagement.0471",
+        "AC_AWS_0502",
+        "AAC_AWS_0483",
         "AWS.LambdaFunction.LM.MEIDUM.0063",
         "AC_AWS_0484",
         "AC_AWS_0486",

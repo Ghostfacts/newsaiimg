@@ -118,6 +118,12 @@ resource "aws_cloudfront_distribution" "cdn" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+
+  logging_config {
+    bucket = "${aws_s3_bucket.aiminnews.bucket}.s3.amazonaws.com"
+    prefix = "cloudfront-logs/"
+  }
+
   restrictions {
     geo_restriction {
       restriction_type = "whitelist"
