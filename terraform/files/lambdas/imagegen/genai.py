@@ -143,4 +143,4 @@ class Genai:  # pylint: disable=R0903
             }
         except (ClientError, Exception) as e:  # pylint: disable=W0718
             logging.error("Can't invoke %s Reason: %s", model_id, e)
-            return {"model_id": model_id, "outputText": f"error {e}"}
+            raise Exception("Invoke of model failed") from e  # pylint: disable=W0719
