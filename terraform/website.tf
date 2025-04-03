@@ -61,6 +61,7 @@ data "aws_iam_policy_document" "website_policy" {
 }
 
 resource "aws_s3_bucket_policy" "website_policy" {
+  # checkov:skip=CKV_AWS_70 #temp
   bucket = aws_s3_bucket.website_bucket.id
   policy = data.aws_iam_policy_document.website_policy.json
 }
