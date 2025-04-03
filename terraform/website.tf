@@ -1,3 +1,8 @@
+# Create a CloudFront Origin Access Identity (OAI)
+resource "aws_cloudfront_origin_access_identity" "oai" {
+  comment = "OAI for CloudFront to access S3 bucket"
+}
+
 # S3 Bucket for Static Website Hosting
 resource "aws_s3_bucket" "website_bucket" {
   # checkov:skip=CKV2_AWS_62
@@ -46,13 +51,12 @@ resource "aws_s3_bucket_public_access_block" "website_bucket" {
 data "aws_iam_policy_document" "website_policy" {
   statement {
     principals {
-      type        = "Service"
-      identifiers = ["cloudfront.amazonaws.com"]
+      type        = "AWS"
+      identifiers = [aws_cloudfront_origin_access_identity.oai.iam_arn]
     }
     actions = [
       "s3:GetObject",
     ]
-
     resources = [
       "${aws_s3_bucket.website_bucket.arn}/*"
     ]
@@ -63,12 +67,6 @@ resource "aws_s3_bucket_policy" "website_policy" {
   bucket = aws_s3_bucket.website_bucket.id
   policy = data.aws_iam_policy_document.website_policy.json
 }
-
-
-
-
-
-
 
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "cdn" {
