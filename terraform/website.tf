@@ -24,6 +24,21 @@ resource "aws_s3_bucket_website_configuration" "website" {
   }
 }
 
+resource "aws_s3_bucket_public_access_block" "website" {
+  # checkov:skip=CKV_AWS_54
+  # checkov:skip=CKV_AWS_56
+  # checkov:skip=CKV_AWS_55
+  # checkov:skip=CKV_AWS_53
+
+  bucket = aws_s3_bucket.website.id
+
+  block_public_acls       = false
+  block_public_policy     = false
+  ignore_public_acls      = false
+  restrict_public_buckets = false
+}
+
+
 resource "aws_s3_bucket_policy" "website_policy" {
   # checkov:skip=CKV_AWS_70 #temp
   bucket = aws_s3_bucket.website.id
