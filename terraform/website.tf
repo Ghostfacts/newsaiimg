@@ -52,12 +52,14 @@ data "aws_iam_policy_document" "website_policy" {
   statement {
     principals {
       type        = "AWS"
-      identifiers = [aws_cloudfront_origin_access_identity.oai.iam_arn]
+      identifiers = [aws_cloudfront_origin_access_identity.oai.cloudfront_access_identity_path]
+
     }
     actions = [
       "s3:GetObject",
     ]
     resources = [
+      aws_s3_bucket.website_bucket.arn,
       "${aws_s3_bucket.website_bucket.arn}/*"
     ]
   }
@@ -96,7 +98,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   default_cache_behavior {
     allowed_methods  = ["GET", "HEAD"]
     cached_methods   = ["GET", "HEAD"]
-    target_origin_id = "S3-${aws_s3_bucket.website_bucket.id}"
+    target_origin_id = aws_s3_bucket.website_bucket.id
 
     forwarded_values {
       query_string = false
