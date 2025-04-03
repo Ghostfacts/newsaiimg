@@ -43,24 +43,24 @@ resource "aws_s3_bucket_public_access_block" "website_bucket" {
   restrict_public_buckets = false
 }
 
-# data "aws_iam_policy_document" "website_policy" {
-#   statement {
-#     principals {
-#       type        = "AWS"
-#       identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+data "aws_iam_policy_document" "website_policy" {
+  statement {
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
 
-#     }
-#     actions = [
-#       "s3:GetObject",
-#     ]
-#     resources = [
-#       aws_s3_bucket.website_bucket.arn,
-#       "${aws_s3_bucket.website_bucket.arn}/*"
-#     ]
-#   }
-# }
+    }
+    actions = [
+      "s3:GetObject",
+    ]
+    resources = [
+      aws_s3_bucket.website_bucket.arn,
+      "${aws_s3_bucket.website_bucket.arn}/*"
+    ]
+  }
+}
 
-# resource "aws_s3_bucket_policy" "website_policy" {
-#   bucket = aws_s3_bucket.website_bucket.id
-#   policy = data.aws_iam_policy_document.website_policy.json
-# }
+resource "aws_s3_bucket_policy" "website_policy" {
+  bucket = aws_s3_bucket.website_bucket.id
+  policy = data.aws_iam_policy_document.website_policy.json
+}
