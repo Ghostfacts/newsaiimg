@@ -29,15 +29,12 @@ resource "aws_s3_bucket_public_access_block" "website" {
   # checkov:skip=CKV_AWS_56
   # checkov:skip=CKV_AWS_55
   # checkov:skip=CKV_AWS_53
-
-  bucket = aws_s3_bucket.website.id
-
+  bucket                  = aws_s3_bucket.website.id
   block_public_acls       = false
   block_public_policy     = false
   ignore_public_acls      = false
   restrict_public_buckets = false
 }
-
 
 resource "aws_s3_bucket_policy" "website_policy" {
   # checkov:skip=CKV_AWS_70 #temp
@@ -104,4 +101,15 @@ resource "aws_cloudfront_distribution" "cdn" {
   viewer_certificate {
     cloudfront_default_certificate = true
   }
+}
+
+
+##testng
+#Upload raw website
+# Optional: Upload all files from a folder to the S3 bucket
+resource "aws_s3_bucket_object" "website_files_test" {
+  for_each = fileset("files/website", "**") # Replace with the path to your folder
+  bucket   = aws_s3_bucket.website.id
+  key      = each.value
+  source   = each.value # Replace with the path to your folder
 }
