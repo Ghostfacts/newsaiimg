@@ -40,7 +40,7 @@
                 "ContentType": "application/json",
                 "Body.$": "States.JsonToString($.all_articles)",
                 "Bucket": "${s3_bucket}",
-                "Key.$": "States.Format('{}/news_stories.json', $event_id)"
+                "Key.$": "States.Format('/aiimg/{}/news_stories.json', $event_id)"
               },
               "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
               "End": true
@@ -65,7 +65,7 @@
                 "ContentType": "application/json",
                 "Body.$": "States.JsonToString($)",
                 "Bucket": "${s3_bucket}",
-                "Key.$": "States.Format('{}/lambda_log.json', $event_id)"
+                "Key.$": "States.Format('/aiimg/{}/lambda_log.json', $event_id)"
               },
               "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
               "End": true

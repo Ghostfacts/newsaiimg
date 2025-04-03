@@ -147,11 +147,3 @@ output "cloudfront_url" {
   description = "The URL of the CloudFront distribution"
   value       = aws_cloudfront_distribution.cdn.domain_name
 }
-
-# # Optional: Upload all files from a folder to the S3 bucket
-# resource "aws_s3_bucket_object" "website_files" {
-#   for_each = fileset("path/to/your/website-folder", "**") # Replace with the path to your folder
-#   bucket   = aws_s3_bucket.website_bucket.id
-#   key      = each.value
-#   source   = "path/to/your/website-folder/${each.value}" # Replace with the path to your folder
-# }

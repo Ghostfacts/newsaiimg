@@ -6,7 +6,14 @@ import os
 import tempfile
 
 import boto3
-import genai
+from functions import genai
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[logging.StreamHandler()],
+)
 
 
 def upload_to_s3(file_path, bucket_name, s3_key):
@@ -54,12 +61,12 @@ def lambda_handler(event, context):  # pylint: disable=W0613
     bucket_name = ssm_data["ais3bucket"]
     for file_name in os.listdir(temp_dir.name):
         file_path = os.path.join(temp_dir.name, file_name)
-        s3_key = f"{event.get('event_id')}/{file_name}"
+        s3_key = f"aiimg/{event.get('event_id')}/{file_name}"
         upload_to_s3(file_path, bucket_name, s3_key)
     temp_dir.cleanup()
     return {
         "statusCode": promt.get("status_code"),
-        "image_path": f"s3://{ssm_data['ais3bucket']}/{event.get('event_id')}/newsimage.png",
+        "image_path": f"s3://{ssm_data['ais3bucket']}/aiimg/{event.get('event_id')}/newsimage.png",
         "ai_data": {
             "prompt": promt.get("prompt"),
             "model_id": promt.get("model_id"),
