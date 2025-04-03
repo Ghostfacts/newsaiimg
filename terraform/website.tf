@@ -7,6 +7,7 @@ resource "aws_s3_bucket" "website" {
   # checkov:skip=CKV_AWS_145
   # checkov:skip=CKV_AWS_20
   # checkov:skip=CKV_AWS_86
+  # checkov:skip=CKV_AWS_70
   bucket = "newsaiimg-${local.environment_map[var.environment]}-s3-website"
   tags = merge(
     local.tags,

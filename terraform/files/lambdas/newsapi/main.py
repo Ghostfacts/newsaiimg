@@ -36,6 +36,17 @@ def generate_custom_uuid():
     return custom_uuid
 
 
+def upload_to_s3(file_path, bucket_name, s3_key):
+    """Upload a file to an S3 bucket"""
+    s3_client = boto3.client("s3")
+    try:
+        s3_client.upload_file(file_path, bucket_name, s3_key)
+        logging.info("Uploading %s to s3://%s/%s", file_path, bucket_name, s3_key)
+    except Exception as e:
+        logging.error("Failed to upload %s to S3: %s", file_path, e)
+        raise
+
+
 def get_secret(secret_name, region_name="eu-west-1"):
     """Retrives the secret from AWS Secrets Manager"""
     # Create a Secrets Manager client
@@ -151,6 +162,16 @@ def article_picker(articles):
 # main
 def lambda_handler(event, context):  # pylint: disable=W0613
     """Main function for the lambda"""
+    # ssm_client = boto3.client("ssm", region_name="eu-west-2")
+    # ssm_data = json.loads(
+    #     ssm_client.get_parameter(
+    #         Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/settings",
+    #         WithDecryption=True,
+    #     )["Parameter"]["Value"]
+    # )
+    # temp_dir = (
+    #     tempfile.TemporaryDirectory()  # pylint: disable=R1732 #dont want to use an with
+    # )
     newsapi_key = get_secret(
         secret_name=os.getenv("secrect_name", "newsaiimg-dev-ssm-newsapi"),
         region_name=os.getenv("region_name", "eu-west-2"),
