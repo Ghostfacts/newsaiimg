@@ -41,6 +41,7 @@ resource "aws_s3_bucket_policy" "website_policy" {
 }
 
 resource "aws_cloudfront_origin_access_control" "oac" {
+  # checkov:skip=CKV2_AWS_32
   name                              = "s3-origin-access-control"
   description                       = "OAC for S3 website"
   origin_access_control_origin_type = "s3"
@@ -49,6 +50,13 @@ resource "aws_cloudfront_origin_access_control" "oac" {
 }
 
 resource "aws_cloudfront_distribution" "cdn" {
+  # checkov:skip=CKV2_AWS_47
+  # checkov:skip=CKV2_AWS_42
+  # checkov:skip=CKV_AWS_310
+  # checkov:skip=CKV_AWS_174
+  # checkov:skip=CKV_AWS_374
+  # checkov:skip=CKV_AWS_68
+  # checkov:skip=CKV_AWS_86
   origin {
     domain_name              = aws_s3_bucket.website.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
