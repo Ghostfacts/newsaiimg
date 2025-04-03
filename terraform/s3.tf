@@ -23,7 +23,6 @@ resource "aws_s3_bucket_public_access_block" "imgstorage-blockpublic" {
   ignore_public_acls      = true
 }
 
-
 #Upload raw website
 # Optional: Upload all files from a folder to the S3 bucket
 resource "aws_s3_bucket_object" "website_files" {
