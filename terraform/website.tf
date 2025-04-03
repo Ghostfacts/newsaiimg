@@ -1,5 +1,4 @@
-# S3 Bucket for Static Website Hosting
-resource "aws_s3_bucket" "website_bucket" {
+resource "aws_s3_bucket" "website" {
   # checkov:skip=CKV2_AWS_62
   # checkov:skip=CKV_AWS_18
   # checkov:skip=CKV_AWS_144
@@ -18,50 +17,67 @@ resource "aws_s3_bucket" "website_bucket" {
 }
 
 resource "aws_s3_bucket_website_configuration" "website" {
-  bucket = aws_s3_bucket.website_bucket.id
+  bucket = aws_s3_bucket.website.id
 
   index_document {
     suffix = "index.html"
-  }
-
-  error_document {
-    key = "error.html"
-  }
-}
-
-resource "aws_s3_bucket_public_access_block" "website_bucket" {
-  # checkov:skip=CKV_AWS_54
-  # checkov:skip=CKV_AWS_56
-  # checkov:skip=CKV_AWS_55
-  # checkov:skip=CKV_AWS_53
-
-  bucket = aws_s3_bucket.website_bucket.id
-
-  block_public_acls       = false
-  block_public_policy     = false
-  ignore_public_acls      = false
-  restrict_public_buckets = false
-}
-
-data "aws_iam_policy_document" "website_policy" {
-  statement {
-    principals {
-      type        = "AWS"
-      identifiers = ["*"]
-
-    }
-    actions = [
-      "s3:GetObject",
-    ]
-    resources = [
-      aws_s3_bucket.website_bucket.arn,
-      "${aws_s3_bucket.website_bucket.arn}/*"
-    ]
   }
 }
 
 resource "aws_s3_bucket_policy" "website_policy" {
   # checkov:skip=CKV_AWS_70 #temp
-  bucket = aws_s3_bucket.website_bucket.id
-  policy = data.aws_iam_policy_document.website_policy.json
+  bucket = aws_s3_bucket.website.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect    = "Allow"
+        Principal = "*"
+        Action    = "s3:GetObject"
+        Resource  = "${aws_s3_bucket.website.arn}/*"
+      }
+    ]
+  })
+}
+
+resource "aws_cloudfront_origin_access_control" "oac" {
+  name                              = "s3-origin-access-control"
+  description                       = "OAC for S3 website"
+  origin_access_control_origin_type = "s3"
+  signing_behavior                  = "always"
+  signing_protocol                  = "sigv4"
+}
+
+resource "aws_cloudfront_distribution" "cdn" {
+  origin {
+    domain_name              = aws_s3_bucket.website.bucket_regional_domain_name
+    origin_access_control_id = aws_cloudfront_origin_access_control.oac.id
+    origin_id                = aws_s3_bucket.website.id
+  }
+
+  enabled             = true
+  default_root_object = "index.html"
+
+  default_cache_behavior {
+    target_origin_id       = aws_s3_bucket.website.id
+    viewer_protocol_policy = "redirect-to-https"
+    allowed_methods        = ["GET", "HEAD"]
+    cached_methods         = ["GET", "HEAD"]
+    forwarded_values {
+      query_string = false
+      cookies {
+        forward = "none"
+      }
+    }
+  }
+
+  restrictions {
+    geo_restriction {
+      restriction_type = "none"
+    }
+  }
+
+  viewer_certificate {
+    cloudfront_default_certificate = true
+  }
 }
