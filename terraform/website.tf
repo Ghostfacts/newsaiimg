@@ -111,8 +111,8 @@ resource "aws_cloudfront_distribution" "cdn" {
 }
 
 
-##testng
-#Upload raw website
+# #testng
+# Upload raw website
 # Optional: Upload all files from a folder to the S3 bucket
 # resource "aws_s3_bucket_object" "website_files_test" {
 #   # checkov:skip=CKV_AWS_186
