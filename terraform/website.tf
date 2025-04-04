@@ -23,7 +23,12 @@ resource "aws_s3_bucket_website_configuration" "website" {
   index_document {
     suffix = "index.html"
   }
+
+  error_document {
+    key = "404.html"
+  }
 }
+
 
 resource "aws_s3_bucket_public_access_block" "website" {
   # checkov:skip=CKV_AWS_54
@@ -58,6 +63,30 @@ resource "aws_s3_bucket_policy" "website_policy" {
     ]
   })
 }
+
+resource "aws_cloudfront_function" "redirect_index" {
+  name    = "redirect-index-html"
+  runtime = "cloudfront-js-1.0"
+  comment = "Redirects folder requests to index.html"
+  publish = true
+
+  code = <<EOT
+function handler(event) {
+    var request = event.request;
+    var uri = request.uri;
+
+    if (uri.endsWith("/")) {
+        request.uri += "index.html";
+    } else if (!uri.includes(".")) {
+        request.uri += "/index.html";
+    }
+
+    return request;
+}
+EOT
+}
+
+
 
 resource "aws_cloudfront_origin_access_control" "oac" {
   # checkov:skip=CKV2_AWS_32
@@ -97,6 +126,11 @@ resource "aws_cloudfront_distribution" "cdn" {
         forward = "none"
       }
     }
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.redirect_index.arn
+    }
+
   }
 
   restrictions {
