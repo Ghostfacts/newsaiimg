@@ -63,3 +63,24 @@ module "img_gen_function" {
     local.tags
   )
 }
+
+module "pagedeploy_function" {
+  # checkov:skip=CKV_AWS_50
+  # checkov:skip=CKV_AWS_272
+  # checkov:skip=CKV_AWS_116
+  # checkov:skip=CKV_AWS_117
+  # checkov:skip=CKV_AWS_173
+  source                = "./modules/lambda_function"
+  nameprefex            = "newsaiimg-${local.environment_map[var.environment]}-webpagedesign"
+  runtime               = "python3.10"
+  source_path           = "files/lambdas/imagegen/"
+  function_handler      = "main.lambda_handler"
+  timeout               = 830
+  environment_variables = {}
+  dlq_arn               = aws_sqs_queue.dlq.arn
+  attach_layers         = [module.image_gen_layer.layer.arn]
+  policy                = data.aws_iam_policy_document.lambda_policy.json
+  tags = merge(
+    local.tags
+  )
+}
