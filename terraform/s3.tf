@@ -29,5 +29,5 @@ resource "aws_s3_bucket_object" "website_files" {
   for_each = fileset("files/website", "**") # Replace with the path to your folder
   bucket   = aws_s3_bucket.aiminnews.id
   key      = each.value
-  source   = "website/${each.value}" # Replace with the path to your folder
+  source   = "files/website/${each.value}" # Replace with the path to your folder
 }

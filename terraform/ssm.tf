@@ -5,7 +5,7 @@ resource "aws_ssm_parameter" "json_parameter" {
   type        = "String"
   value = jsonencode({
     ais3bucket   = aws_s3_bucket.aiminnews.bucket
-    sites3bucket = "TBD"
+    sites3bucket = aws_s3_bucket.website.bucket
     region       = data.aws_region.current.name
     secret_name  = aws_secretsmanager_secret.newsapi.name
   })
