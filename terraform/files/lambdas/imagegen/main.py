@@ -78,17 +78,17 @@ def lambda_handler(event, context):  # pylint: disable=W0613
     json_data["genimage"] = {
         "prompt": promt.get("prompt"),
         "model_id": promt.get("model_id"),
-        "imagepath": f"s3://{ssm_data["ais3bucket"]}/aiimg/{event.get('event_id')}/main.png",
+        "imagepath": f"s3://{ssm_data['ais3bucket']}/aiimg/{event.get('event_id')}/main.png",
     }
     s3_write_file(
         bucketname=ssm_data["ais3bucket"],
-        key=f"aiimg/{event.get("event_id")}/main.json",
+        key=f"aiimg/{event.get('event_id')}/main.json",
         data=json.dumps(json_data, indent=2).encode("utf-8"),
     )
     temp_dir.cleanup()
     return {
         "statusCode": promt.get("status_code"),
-        "image_path": f"s3://{ssm_data["ais3bucket"]}/aiimg/{event.get('event_id')}/main.png",
+        "image_path": f"s3://{ssm_data['ais3bucket']}/aiimg/{event.get('event_id')}/main.png",
         "ai_data": json_data["genimage"],
         "error": promt.get("error"),
         "log_id": log_id,

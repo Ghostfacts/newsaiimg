@@ -7,7 +7,7 @@
       "Resource": "arn:aws:states:::lambda:invoke",
       "OutputPath": "$.Payload",
       "Parameters": {
-        "FunctionName": "${newapi_lmb_function_arn}"
+        "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-newsapi-lambda-function"
       },
       "Retry": [
         {
@@ -23,26 +23,47 @@
           "JitterStrategy": "FULL"
         }
       ],
-      "Next": "Parallel",
+      "Next": "Generating_image",
       "Assign": {
         "event_id.$": "$.Payload.event_id"
       }
     },
-    "Parallel": {
+    "Generating_image": {
       "Type": "Parallel",
       "Branches": [
         {
-          "StartAt": "Filtred_articles-to-s3",
+          "StartAt": "Waitforai",
           "States": {
-            "Filtred_articles-to-s3": {
+            "Waitforai": {
+              "Type": "Wait",
+              "Seconds": 200,
+              "Next": "genimage"
+            },
+            "genimage": {
               "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "OutputPath": "$.Payload",
               "Parameters": {
-                "ContentType": "application/json",
-                "Body.$": "States.JsonToString($.all_articles)",
-                "Bucket": "${s3_bucket}",
-                "Key.$": "States.Format('aiimg/{}/news_stories.json', $event_id)"
+                "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-imggen-lambda-function:$LATEST",
+                "Payload": {
+                  "event_id.$": "$event_id",
+                  "story.$": "$.picked_article"
+                }
               },
-              "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Lambda.ServiceException",
+                    "Lambda.AWSLambdaException",
+                    "Lambda.SdkClientException",
+                    "Lambda.TooManyRequestsException"
+                  ],
+                  "IntervalSeconds": 1,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2,
+                  "JitterStrategy": "FULL"
+                }
+              ],
               "End": true
             }
           }
@@ -64,7 +85,7 @@
               "Parameters": {
                 "ContentType": "application/json",
                 "Body.$": "States.JsonToString($)",
-                "Bucket": "${s3_bucket}",
+                "Bucket": "newsaiimg-dev-s3-imgstorage",
                 "Key.$": "States.Format('aiimg/{}/lambda_log.json', $event_id)"
               },
               "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
@@ -74,46 +95,73 @@
         }
       ],
       "ResultPath": "$.parallelResults",
-      "Next": "Wait"
+      "Next": "Wait_to_publish"
     },
-    "Wait": {
+    "Wait_to_publish": {
       "Type": "Wait",
-      "Seconds": 200,
-      "Next": "genimage"
+      "Seconds": 100,
+      "Next": "Publishing"
     },
-    "genimage": {
-      "Type": "Task",
-      "Resource": "arn:aws:states:::lambda:invoke",
-      "OutputPath": "$.Payload",
-      "Parameters": {
-        "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-imggen-lambda-function:$LATEST",
-        "Payload": {
-          "event_id.$": "$event_id",
-          "story.$": "$.picked_article"
-        }
-      },
-      "Retry": [
+    "Publishing": {
+      "Type": "Parallel",
+      "Next": "SNS Publish",
+      "Branches": [
         {
-          "ErrorEquals": [
-            "Lambda.ServiceException",
-            "Lambda.AWSLambdaException",
-            "Lambda.SdkClientException",
-            "Lambda.TooManyRequestsException"
-          ],
-          "IntervalSeconds": 1,
-          "MaxAttempts": 3,
-          "BackoffRate": 2,
-          "JitterStrategy": "FULL"
+          "StartAt": "Creating Web content",
+          "States": {
+            "Creating Web content": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::lambda:invoke",
+              "OutputPath": "$.Payload",
+              "Parameters": {
+                "Payload.$": "$",
+                "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-webpagedesign-lambda-function:$LATEST"
+              },
+              "Retry": [
+                {
+                  "ErrorEquals": [
+                    "Lambda.ServiceException",
+                    "Lambda.AWSLambdaException",
+                    "Lambda.SdkClientException",
+                    "Lambda.TooManyRequestsException"
+                  ],
+                  "IntervalSeconds": 1,
+                  "MaxAttempts": 3,
+                  "BackoffRate": 2,
+                  "JitterStrategy": "FULL"
+                }
+              ],
+              "End": true
+            }
+          }
         }
-      ],
-      "Next": "SNS Publish"
+      ]
     },
     "SNS Publish": {
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
+        "Subject": "NEWSAI - New story",
         "Message.$": "$",
-        "TopicArn": "arn:aws:sns:eu-west-2:711387118193:newsaiimg-dev-sns-topic"
+        "TopicArn": "arn:aws:sns:eu-west-2:711387118193:newsaiimg-dev-sns-topic",
+        "MessageAttributes": {
+          "eventType": {
+            "DataType": "String",
+            "StringValue": "ALERT"
+          },
+          "incidentKey": {
+            "DataType": "String",
+            "StringValue.$": "$event_id"
+          },
+          "priority": {
+            "DataType": "String",
+            "StringValue": "LOW"
+          },
+          "incidentUrl1": {
+            "DataType": "String",
+            "StringValue": "https://www.ilert.com/"
+          }
+        }
       },
       "End": true
     }
