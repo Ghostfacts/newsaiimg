@@ -28,6 +28,6 @@ resource "aws_s3_bucket_public_access_block" "imgstorage-blockpublic" {
 resource "aws_s3_bucket_object" "website_files" {
   for_each = fileset("files/website", "**") # Replace with the path to your folder
   bucket   = aws_s3_bucket.aiminnews.id
-  key      = each.value
+  key      = "website/${each.value}"
   source   = "files/website/${each.value}" # Replace with the path to your folder
 }
