@@ -9,14 +9,14 @@ from datetime import datetime
 
 import boto3
 from botocore.exceptions import ClientError
-from functions import genai, newsapi
+from functions import genai, newsapi  # pylint: disable=E0611
 
 if len(logging.getLogger().handlers) > 0:
     logging.getLogger().setLevel(logging.INFO)
 else:
     logging.basicConfig(level=logging.INFO)
 
-bedrock_client = genai.Bedrock(region="eu-west-2")
+bedrock_client = genai.Bedrock(region="eu-west-2")  # pylint: disable=E1101
 
 
 # functions
@@ -36,15 +36,25 @@ def generate_custom_uuid():
     return custom_uuid
 
 
-def upload_to_s3(file_path, bucket_name, s3_key):
-    """Upload a file to an S3 bucket"""
-    s3_client = boto3.client("s3")
+s3_client = boto3.client("s3")
+
+
+def s3_write_file(bucketname, key, data):
+    """Write s3 file"""
     try:
-        s3_client.upload_file(file_path, bucket_name, s3_key)
-        logging.info("Uploading %s to s3://%s/%s", file_path, bucket_name, s3_key)
-    except Exception as e:
-        logging.error("Failed to upload %s to S3: %s", file_path, e)
-        raise
+        s3_client.put_object(Bucket=bucketname, Key=key, Body=data)
+    except Exception as e:  # pylint: disable=W0718
+        logging.error("S3 Write error: %s", str(e))
+
+
+def s3_read_file(bucketname, key):
+    """Read an se file"""
+    try:
+        response = s3_client.get_object(Bucket=bucketname, Key=key)
+        return str(response["Body"].read().decode("utf-8"))
+    except Exception as e:  # pylint: disable=W0718
+        logging.error("S3 Read error: %s", str(e))
+        return None
 
 
 def get_secret(secret_name, region_name="eu-west-1"):
@@ -155,26 +165,23 @@ def article_picker(articles):
         max_record["title"],
         max_record["ai_results"]["score"],
     )
-    max_record.pop("ai_results")
     return max_record
 
 
 # main
 def lambda_handler(event, context):  # pylint: disable=W0613
     """Main function for the lambda"""
-    # ssm_client = boto3.client("ssm", region_name="eu-west-2")
-    # ssm_data = json.loads(
-    #     ssm_client.get_parameter(
-    #         Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/settings",
-    #         WithDecryption=True,
-    #     )["Parameter"]["Value"]
-    # )
-    # temp_dir = (
-    #     tempfile.TemporaryDirectory()  # pylint: disable=R1732 #dont want to use an with
-    # )
+    json_data = {"eventid": str(generate_custom_uuid())}
+    ssm_client = boto3.client("ssm", region_name="eu-west-2")
+    ssm_data = json.loads(
+        ssm_client.get_parameter(
+            Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/settings",
+            WithDecryption=True,
+        )["Parameter"]["Value"]
+    )
     newsapi_key = get_secret(
-        secret_name=os.getenv("secrect_name", "newsaiimg-dev-ssm-newsapi"),
-        region_name=os.getenv("region_name", "eu-west-2"),
+        secret_name=os.getenv("secrect_name", ssm_data["secret_name"]),
+        region_name=os.getenv("region_name", ssm_data["region"]),
     )["token"]
 
     newsapi_client = newsapi.Newsapi(newsapi_key)
@@ -211,11 +218,17 @@ def lambda_handler(event, context):  # pylint: disable=W0613
             len(filtred_articles),
             len(all_articles["articles"]),
         )
-    # Need to pick an winner
+    json_data["picked_article"] = article_picker(filtred_articles)
+    json_data["all_articles"] = filtred_articles
+
+    s3_write_file(
+        bucketname=ssm_data["ais3bucket"],
+        key=f"aiimg/{json_data.get("eventid")}/main.json",
+        data=json.dumps(json_data, indent=2).encode("utf-8"),
+    )
 
     return {
-        "event_id": str(generate_custom_uuid()),
-        "picked_article": article_picker(filtred_articles),
-        "all_articles": filtred_articles,
+        "event_id": json_data["eventid"],
+        "picked_article": json_data["picked_article"],
         "logStreamName": getattr(context, "log_stream_name", None),
     }
