@@ -73,7 +73,7 @@ module "pagedeploy_function" {
   source                = "./modules/lambda_function"
   nameprefex            = "newsaiimg-${local.environment_map[var.environment]}-webpagedesign"
   runtime               = "python3.10"
-  source_path           = "files/lambdas/imagegen/"
+  source_path           = "files/lambdas/webpagedesign/"
   function_handler      = "main.lambda_handler"
   timeout               = 830
   environment_variables = {}
