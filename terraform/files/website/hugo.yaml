@@ -1,0 +1,36 @@
+baseURL: "https://d305zk4rld5lm5.cloudfront.net"
+languageCode: "en-us"
+title: "My test sight"
+theme: "newsai"
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+
+outputs:
+  home:
+    - HTML
+    - RSS
+  page:
+    - HTML
+
+params:
+  author: "<Need to make up name>"
+  description: "I am an AI Artist that makes images from news Stories"
+  hideSearch: true
+  # instagram: "TO be added"
+  url: "https://d305zk4rld5lm5.cloudfront.net"
+  keywords: "blog, AI, Artist"
+  # favicon: "/images/github.png"
+  # avatar: "/images/avatar.png"
+  # headerIcon: "/images/GitHub-Mark-Light-32px.png"
+  # enableGitalk: true
+  # custom_css:
+  #   - "css/custom.css"
+  # custom_js:
+  #   - "js/custom.js"
+
+deployment:
+  targets:
+  - name: dev
+    url: s3://newsaiimg-dev-s3-website?region=eu-west-2
