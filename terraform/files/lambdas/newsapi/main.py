@@ -223,7 +223,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613
 
     s3_write_file(
         bucketname=ssm_data["ais3bucket"],
-        key=f"aiimg/{json_data.get("eventid")}/main.json",
+        key=f"aiimg/{json_data.get('eventid')}/main.json",
         data=json.dumps(json_data, indent=2).encode("utf-8"),
     )
 
