@@ -69,24 +69,24 @@
           }
         },
         {
-          "StartAt": "Get-Lambda-Logs",
+          "StartAt": "Get-newsapi-Logs",
           "States": {
-            "Get-Lambda-Logs": {
+            "Get-newsapi-Logs": {
               "Type": "Task",
               "Parameters": {
                 "LogGroupName": "/aws/lambda/newsaiimg-dev-newsapi-lambda-function",
                 "LogStreamName.$": "$.logStreamName"
               },
               "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:getLogEvents",
-              "Next": "lambda_logs-to-s3"
+              "Next": "Newsapi-Logs-to-s3"
             },
-            "lambda_logs-to-s3": {
+            "Newsapi-Logs-to-s3": {
               "Type": "Task",
               "Parameters": {
                 "ContentType": "application/json",
                 "Body.$": "States.JsonToString($)",
                 "Bucket": "newsaiimg-dev-s3-imgstorage",
-                "Key.$": "States.Format('aiimg/{}/lambda_log.json', $event_id)"
+                "Key.$": "States.Format('aiimg/{}/newsapi_log.json', $event_id)"
               },
               "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
               "End": true
@@ -131,6 +131,26 @@
                   "JitterStrategy": "FULL"
                 }
               ],
+              "Next": "Get-webpage-Logs"
+            },
+            "Get-webpage-Logs": {
+              "Type": "Task",
+              "Parameters": {
+                "LogGroupName": "/aws/lambda/newsaiimg-dev-webpagedesign-lambda-function",
+                "LogStreamName.$": "$.logStreamName"
+              },
+              "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:getLogEvents",
+              "Next": "webpage-Logs-to-s3"
+            },
+            "webpage-Logs-to-s3": {
+              "Type": "Task",
+              "Parameters": {
+                "ContentType": "application/json",
+                "Body.$": "States.JsonToString($)",
+                "Bucket": "newsaiimg-dev-s3-imgstorage",
+                "Key.$": "States.Format('aiimg/{}/webpage_log.json', $event_id)"
+              },
+              "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
               "End": true
             }
           }
@@ -159,7 +179,7 @@
           },
           "incidentUrl1": {
             "DataType": "String",
-            "StringValue": "https://www.ilert.com/"
+            "StringValue.$": "States.Format('https://d305zk4rld5lm5.cloudfront.net/post/{}', $event_id)"
           }
         }
       },
