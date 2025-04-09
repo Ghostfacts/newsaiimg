@@ -3,18 +3,22 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 14
+      python: 3.12
     commands:
-      - echo "Installing Hugo..."
+      - apt-get update
+      - npm install -g hugo
       - npm install -g hugo-cli
   build:
     commands:
       - echo "Pulling website from S3..."
       - aws s3 cp s3://$SOURCE_BUCKET/website/ ./website/ --recursive
+      - echo "Installing Hugo dependencies..."
+      - cd website
       - echo "Running Hugo build..."
       - cd website
-      - hugo
+      - hugo -v
   post_build:
     commands:
       - echo "Uploading published content to S3..."
       - aws s3 cp ./website/public/ s3://$DESTINATION_BUCKET/ --recursive
+      - aws cloudfront create-invalidation --distribution-id E123456789ABC --paths "/*"

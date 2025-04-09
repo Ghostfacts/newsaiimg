@@ -16,7 +16,7 @@ resource "aws_codebuild_project" "build-website" {
   }
   source {
     type      = "S3"
-    location  = "${aws_s3_bucket.aiminnews.bucket}/codebuild"
+    location  = "${aws_s3_bucket.aiminnews.bucket}/codebuild/"
     buildspec = "buildspec.yml"
   }
 
