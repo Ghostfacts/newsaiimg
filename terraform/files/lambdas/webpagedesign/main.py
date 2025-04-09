@@ -89,7 +89,7 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         )
         if not json_data:
             logger.error("Failed to read JSON data from S3")
-            return {"status": 500, "logid": getattr(context, "log_stream_name", None)}
+            return {"status": 500, "LogStreamName": getattr(context, "log_stream_name", None)}
 
         logger.debug("Reading image data from S3")
         imagedata = s3_read_file(
@@ -98,8 +98,8 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         )
         if not imagedata:
             logger.error("Failed to read image data from S3")
-            return {"status": 500, "logid": getattr(context, "log_stream_name", None)}
-
+            return {"status": 500, "LogStreamName": getattr(context, "log_stream_name", None)}
+          
         logger.debug("Resizing images")
         image = Image.open(BytesIO(imagedata))
         thumbnail = resize_image(image, width=70)
@@ -123,11 +123,17 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         logger.info("Successfully wrote resized images to S3")
 
         logger.debug("Writing markdown file to S3")
-        page = f"""\
+        pagejson={
+            "title":json_data["picked_article"]["title"].replace("'", "\\'"),
+            "date":{datetime.now(timezone.utc).astimezone().isoformat()},
+            "sotry_url":{json_data["picked_article"]["url"]},
+            "id":{json_data.get('eventid')}
+        }
+        page = f"""
         +++
-        title = '{json_data["picked_article"]["title"].replace("'", "\\'")}'
-        id ='{json_data.get("eventid")}'
-        sotry_url= '{json_data["picked_article"]["url"]}'
+        title = '{pagejson["title"]}'
+        id ='{pagejson["id"]}'
+        sotry_url= '{pagejson["sotry_url"]}'
         date = {datetime.now(timezone.utc).astimezone().isoformat()}
         draft = false
         +++
@@ -140,7 +146,7 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         )
         logger.info("Successfully wrote markdown file to S3")
 
-        return {"status": 200, "logid": getattr(context, "log_stream_name", None)}
+        return {"status": 200, "LogStreamName": getattr(context, "log_stream_name", None)}
     except (BotoCoreError, ClientError, json.JSONDecodeError, KeyError) as error:
         logger.error("Error occurred: %s", str(error))
-        return {"status": 500, "logid": getattr(context, "log_stream_name", None)}
+        return {"status": 500, "LogStreamName": getattr(context, "log_stream_name", None),"Error":str(e)}
