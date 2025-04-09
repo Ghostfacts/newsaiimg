@@ -58,6 +58,17 @@ data "aws_iam_policy_document" "lambda_policy" {
 
 data "aws_iam_policy_document" "step_function_policy" {
   statement {
+    sid    = "codebuild"
+    effect = "Allow"
+    actions = [
+      "codebuild:Start*",
+      "codebuild:Stop*"
+    ]
+    resources = [
+      aws_codebuild_project.build-website.arn
+    ]
+  }
+  statement {
     sid    = "SNSqueue"
     effect = "Allow"
     actions = [
