@@ -121,7 +121,7 @@ class Genai:  # pylint: disable=R0903
             - The generated prompt must not include any misleading or false information.
             - The prompt must be between 300 and 400 characters long (including spaces).
             - The description should be engaging, imaginative, and detailed.
-            - just inclde the promt for the image, do not include any other text.
+            - Just inclde the promt for the image, do not include any other text.
         This is the news Story:
         <story>{story}</story>
         """

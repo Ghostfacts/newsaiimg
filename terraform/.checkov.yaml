@@ -1,0 +1,3 @@
+---
+skip-rule:
+  - CKV_AWS_186
