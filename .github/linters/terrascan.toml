@@ -22,5 +22,6 @@ level = "medium"
         "AC_AWS_0032",
         "AWS.S3Bucket.NetworkSecurity.High.0417",
         "AC_AWS_0025",
-        "AWS.ASBO.DP.MEDIUM.003"
+        "AWS.ASBO.DP.MEDIUM.003",
+        "AWS.ASBO.DP.MEDIUM.0034"
     ]

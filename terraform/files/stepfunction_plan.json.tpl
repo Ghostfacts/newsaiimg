@@ -131,6 +131,14 @@
                   "JitterStrategy": "FULL"
                 }
               ],
+              "Next": "CodeBuild StartBuild"
+            },
+            "CodeBuild StartBuild": {
+              "Type": "Task",
+              "Resource": "arn:aws:states:::codebuild:startBuild",
+              "Parameters": {
+                "ProjectName": "newsaiimg-dev-codebuild-build-website"
+              },
               "End": true
             }
           }

@@ -19,14 +19,15 @@ phases:
       - aws s3 cp s3://$SOURCE_BUCKET/website/ ./website/ --recursive
       - echo "Running Hugo build..."
       - cd website
-      - hugo -v
+      - hugo version
+      - hugo
     finally:
       - echo Building the HTML files finished
   post_build:
     commands:
       - echo "Uploading published content to S3..."
-      - aws s3 cp ./website/public/ s3://$DESTINATION_BUCKET/ --recursive
-      - aws cloudfront create-invalidation --distribution-id E123456789ABC --paths "/*"
+      - aws s3 cp ./public/ s3://$DESTINATION_BUCKET/ --recursive
+      - aws cloudfront create-invalidation --distribution-id $CDNID --paths "/*"
     finally:
       - echo "Build and upload completed"
 artifacts:

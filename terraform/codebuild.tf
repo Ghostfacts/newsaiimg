@@ -33,6 +33,18 @@ resource "aws_codebuild_project" "build-website" {
       name  = "DESTINATION_BUCKET"
       value = aws_s3_bucket.website.bucket
     }
+    environment_variable {
+      name  = "environment"
+      value = var.environment
+    }
+    environment_variable {
+      name  = "CDNADDR"
+      value = aws_cloudfront_distribution.cdn.domain_name
+    }
+    environment_variable {
+      name  = "CDNID"
+      value = aws_cloudfront_distribution.cdn.id
+    }
   }
   artifacts {
     type = "NO_ARTIFACTS"
@@ -70,7 +82,8 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "s3:ListBucket",
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
-          "logs:PutLogEvents"
+          "logs:PutLogEvents",
+          "cloudfront:CreateInvalidation"
         ]
         Resource = [
           aws_s3_bucket.aiminnews.arn,
@@ -78,6 +91,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           aws_s3_bucket.website.arn,
           "${aws_s3_bucket.website.arn}/*",
           "arn:aws:logs:*",
+          "arn:aws:cloudfront::*"
         ]
       }
     ]
