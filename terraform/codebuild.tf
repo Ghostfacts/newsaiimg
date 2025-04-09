@@ -76,8 +76,7 @@ resource "aws_iam_role_policy" "codebuild_policy" {
           "${aws_s3_bucket.aiminnews.arn}/*",
           aws_s3_bucket.website.arn,
           "${aws_s3_bucket.website.arn}/*",
-          "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/codebuild/*",
-          "arn:aws:logs:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:log-group:/aws/codebuild/${aws_codebuild_project.build-website.name}:*"
+          "arn:aws:logs:*",
         ]
       }
     ]
