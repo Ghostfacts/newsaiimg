@@ -68,6 +68,7 @@ summary: "The summary content"
 ### Approach 2: use `<!--more-->`
 
 Use `<!--more-->` to separate content that will display in the posts page as abstraction and the rest of the content. This is different from summary, as summary will not appear in the post.
+
 ```
 ---
 title: "title"
@@ -132,6 +133,7 @@ display block $$ ... $$
 ![latex example](https://raw.githubusercontent.com/MeiK2333/github-style/master/images/latex_example.png)
 
 ## Support MathJax
+
 you can add MathJax:true to frontmatter
 
 ```
