@@ -123,11 +123,17 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         logger.info("Successfully wrote resized images to S3")
 
         logger.debug("Writing markdown file to S3")
-        page = f"""\
+        pagejson={
+            "title":json_data["picked_article"]["title"].replace("'", "\\'"),
+            date:{datetime.now(timezone.utc).astimezone().isoformat()},
+            "sotry_url":{json_data["picked_article"]["url"]},
+            "id":{json_data.get('eventid')}
+        }
+        page = f"""
         +++
-        title = '{json_data["picked_article"]["title"].replace("'", "\\'")}'
-        id ='{json_data.get("eventid")}'
-        sotry_url= '{json_data["picked_article"]["url"]}'
+        title = '{pagejson["title"]}'
+        id ='{pagejson["id"]}'
+        sotry_url= '{pagejson["sotry_url"]}'
         date = {datetime.now(timezone.utc).astimezone().isoformat()}
         draft = false
         +++
