@@ -32,5 +32,5 @@ params:
 
 deployment:
   targets:
-  - name: dev
-    url: s3://newsaiimg-dev-s3-website?region=eu-west-2
+    - name: dev
+      url: s3://newsaiimg-dev-s3-website?region=eu-west-2

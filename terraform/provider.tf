@@ -4,4 +4,10 @@ provider "aws" {
     role_arn     = "arn:aws:iam::${var.aws_account_id}:role/${var.aws_role_name}"
     session_name = "terraform"
   }
+  default_tags {
+    tags = {
+      project     = "newsaiimg"
+      environment = var.environment
+    }
+  }
 }

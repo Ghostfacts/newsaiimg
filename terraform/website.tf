@@ -138,20 +138,11 @@ resource "aws_cloudfront_distribution" "cdn" {
       restriction_type = "none"
     }
   }
-
   viewer_certificate {
     cloudfront_default_certificate = true
   }
 }
 
-
-# #testng
-# Upload raw website
-# Optional: Upload all files from a folder to the S3 bucket
-# resource "aws_s3_bucket_object" "website_files_test" {
-#   # checkov:skip=CKV_AWS_186
-#   for_each = fileset("files/website", "**") # Replace with the path to your folder
-#   bucket   = aws_s3_bucket.website.id
-#   key      = each.value
-#   source   = each.value # Replace with the path to your folder
-# }
+output "website_url" {
+  value = aws_cloudfront_distribution.cdn.domain_name
+}
