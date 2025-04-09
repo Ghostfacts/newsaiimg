@@ -131,26 +131,6 @@
                   "JitterStrategy": "FULL"
                 }
               ],
-              "Next": "Get-webpage-Logs"
-            },
-            "Get-webpage-Logs": {
-              "Type": "Task",
-              "Parameters": {
-                "LogGroupName": "/aws/lambda/newsaiimg-dev-webpagedesign-lambda-function",
-                "LogStreamName.$": "$.logStreamName"
-              },
-              "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:getLogEvents",
-              "Next": "webpage-Logs-to-s3"
-            },
-            "webpage-Logs-to-s3": {
-              "Type": "Task",
-              "Parameters": {
-                "ContentType": "application/json",
-                "Body.$": "States.JsonToString($)",
-                "Bucket": "newsaiimg-dev-s3-imgstorage",
-                "Key.$": "States.Format('aiimg/{}/webpage_log.json', $event_id)"
-              },
-              "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
               "End": true
             }
           }

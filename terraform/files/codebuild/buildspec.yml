@@ -1,13 +1,19 @@
 version: 0.2
 
+env:
+  variables: {}
+  parameter-store: {}
+
 phases:
   install:
-    runtime-versions:
-      python: 3.12
     commands:
-      - apt-get update
-      - npm install -g hugo
-      - npm install -g hugo-cli
+      - echo Entered the install phase...
+      - apt-get -qq update && apt-get -qq install curl
+      - apt-get -qq install asciidoctor
+      - curl -s -L https://github.com/gohugoio/hugo/releases/download/v0.145.0/hugo_0.145.0_linux-amd64.deb -o hugo.deb
+      - dpkg -i hugo.deb
+    finally:
+      - echo Installation done
   build:
     commands:
       - echo "Pulling website from S3..."
@@ -17,8 +23,17 @@ phases:
       - echo "Running Hugo build..."
       - cd website
       - hugo -v
+    finally:
+      - echo Building the HTML files finished
   post_build:
     commands:
       - echo "Uploading published content to S3..."
       - aws s3 cp ./website/public/ s3://$DESTINATION_BUCKET/ --recursive
       - aws cloudfront create-invalidation --distribution-id E123456789ABC --paths "/*"
+    finally:
+      - echo "Build and upload completed"
+artifacts:
+  files: []
+secondary-artifacts: {}
+cache:
+  paths: []
