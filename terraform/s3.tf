@@ -26,8 +26,9 @@ resource "aws_s3_bucket_public_access_block" "imgstorage-blockpublic" {
 # Upload raw website
 # Optional: Upload all files from a folder to the S3 bucket
 resource "aws_s3_bucket_object" "website_files" {
-  for_each = fileset("files/website", "**") # Replace with the path to your folder
+  for_each = fileset("files/website", "**")
   bucket   = aws_s3_bucket.aiminnews.id
   key      = "website/${each.value}"
-  source   = "files/website/${each.value}" # Replace with the path to your folder
+  source   = "files/website/${each.value}"
+  etag     = filemd5("files/website/${each.value}")
 }
