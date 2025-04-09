@@ -125,7 +125,7 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         logger.debug("Writing markdown file to S3")
         pagejson={
             "title":json_data["picked_article"]["title"].replace("'", "\\'"),
-            date:{datetime.now(timezone.utc).astimezone().isoformat()},
+            "date":{datetime.now(timezone.utc).astimezone().isoformat()},
             "sotry_url":{json_data["picked_article"]["url"]},
             "id":{json_data.get('eventid')}
         }
@@ -149,4 +149,4 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         return {"status": 200, "logid": getattr(context, "log_stream_name", None)}
     except (BotoCoreError, ClientError, json.JSONDecodeError, KeyError) as error:
         logger.error("Error occurred: %s", str(error))
-        return {"status": 500, "logid": getattr(context, "log_stream_name", None)}
+        return {"status": 500, "logid": getattr(context, "log_stream_name", None),"Error":str(e)}
