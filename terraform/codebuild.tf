@@ -1,7 +1,8 @@
 resource "aws_s3_bucket_object" "buildspec_file" {
   bucket = aws_s3_bucket.aiminnews.id
   key    = "codebuild/buildspec.yml"
-  source = "files/codebuild/buildspec.yml" # Replace with the path to your folder
+  source = "files/codebuild/buildspec.yml"
+  etag   = filemd5("files/codebuild/buildspec.yml")
 }
 
 resource "aws_codebuild_project" "build-website" {

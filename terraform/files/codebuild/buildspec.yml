@@ -7,7 +7,6 @@ env:
 phases:
   install:
     commands:
-      - echo Entered the install phase...
       - apt-get -qq update && apt-get -qq install curl
       - apt-get -qq install asciidoctor
       - curl -s -L https://github.com/gohugoio/hugo/releases/download/v0.145.0/hugo_0.145.0_linux-amd64.deb -o hugo.deb
@@ -18,8 +17,6 @@ phases:
     commands:
       - echo "Pulling website from S3..."
       - aws s3 cp s3://$SOURCE_BUCKET/website/ ./website/ --recursive
-      - echo "Installing Hugo dependencies..."
-      - cd website
       - echo "Running Hugo build..."
       - cd website
       - hugo -v
@@ -34,6 +31,3 @@ phases:
       - echo "Build and upload completed"
 artifacts:
   files: []
-secondary-artifacts: {}
-cache:
-  paths: []
