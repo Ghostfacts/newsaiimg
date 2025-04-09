@@ -8,7 +8,12 @@ resource "aws_codebuild_project" "build-website" {
   name          = "newsaiimg-${local.environment_map[var.environment]}-codebuild-build-website"
   description   = "To deploy the Hugu site to s3 bucket"
   build_timeout = 30
-
+  logs_config {
+    cloudwatch_logs {
+      group_name  = "log-group"
+      stream_name = "log-stream"
+    }
+  }
   source {
     type      = "S3"
     location  = "${aws_s3_bucket.aiminnews.bucket}/codebuild/buildspec.yml"
