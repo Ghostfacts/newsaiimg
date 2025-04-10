@@ -29,13 +29,20 @@
       <ul>
         {{ range .Paginator.Pages }}
         <li class="col-12 d-flex width-full py-4 border-bottom color-border-secondary public source">
+        {{ if .Params.id }}
+          <div class="col-2 d-flex">
+          <span class="overview">
+            <img class="thumbnail" src="/images/{{ .Params.id }}/thum.jpg" alt="{{ .Title }}" />
+          </span>
+          </div>
+        {{ end }}
+
           <div class="col-12 d-inline-block">
             <div class="d-inline-block mb-1">
               <h3 class="wb-break-all">
                 <a href="{{ .Permalink }}">{{ .Title }}</a>
               </h3>
             </div>
-
             <div>
               <div class="col-12 d-inline-block text-gray mb-2 pr-4">
                 {{ .Summary | safeHTML }}

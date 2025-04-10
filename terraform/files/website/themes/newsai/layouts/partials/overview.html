@@ -6,7 +6,7 @@
 {{ if ne (len $pinned) 0}}
 {{ else }}
 {{ $section = where .Site.RegularPages "Section" "in" (slice "post") }}
-{{ $section_title = "Popular posts" }}
+{{ $section_title = "Recent Storys" }}
 {{ end }}
 <div>
   <div class="position-relative">
@@ -46,14 +46,15 @@
           {{ $section_title }}
         </h2>
         <ol class="d-flex flex-wrap list-style-none gutter-condensed mb-4 js-pinned-items-reorder-list">
-          {{ range (first 6 $section) }}
+          {{ range (first 2 $section) }}
           <li class="col-12 col-md-6 col-lg-6 mb-3 d-flex flex-content-stretch">
             <div
               class="Box pinned-item-list-item d-flex p-3 width-full js-pinned-item-list-item public source reorderable sortable-button-item">
               <div class="pinned-item-list-item-content">
                 <div class="d-flex width-full flex-items-center position-relative">
-                  <a class="text-bold flex-auto min-width-0" href="{{ .Permalink }}">
+                    <a class="text-bold flex-auto min-width-0" href="{{ .Permalink }}">
                     <span class="repo" title="{{ .Title }}">{{ .Title }}</span>
+                    <p><span class="repo" title="{{ .Title }}">{{ .Date.Format "02/01/2006 03:04 PM" }}</span></p>
                   </a>
                     <span class="repo">
                       <img class="thumbnail" src="images/{{ .Params.id }}/thum.jpg" alt="{{ .Title }}" />

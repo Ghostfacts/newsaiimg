@@ -4,17 +4,6 @@
  *
  * Released under MIT license. Copyright (c) 2019 GitHub Inc.
  */
-.octicon {
-  display: inline-block;
-  vertical-align: text-top;
-  fill: currentColor;
-}
-
-.repo img.thumbnail {
-  width: 70px;
-  height: 70px;
-}
-
 /*! normalize.css v4.1.1 | MIT License | github.com/necolas/normalize.css */
 html {
   font-family: sans-serif;
@@ -3236,7 +3225,7 @@ p.explain .minibutton {
   margin-left: auto;
 }
 .container-xl {
-  max-width: 1280px;
+  max-width: 1712px;
 }
 .col-1 {
   width: 8.33333%;
@@ -12964,4 +12953,33 @@ g-emoji img {
 }
 .HeaderMenu--logged-out .header-search {
   min-width: auto;
+}
+
+/*!
+Custom
+ */
+.octicon {
+  display: inline-block;
+  vertical-align: text-top;
+  fill: currentColor;
+}
+
+.repo img.thumbnail {
+  width: 100px;
+  height: 100px;
+}
+
+.overview img.thumbnail {
+  width: 110px;
+  height: 110px;
+}
+
+.entry-content p {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.entry-content h1, h2, h3, h4, h5, h6 {
+  margin-top: 0px;
+  margin-bottom: 5px;
 }

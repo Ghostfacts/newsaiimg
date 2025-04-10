@@ -110,7 +110,8 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         image = Image.open(BytesIO(imagedata))
         thumbnail = resize_image(image, width=70)
         webimage = resize_image(image, width=500)
-
+        logger.info("Successfully resized images")
+        # Want to look at adding an water mark to the main image
         logger.debug("Converting images to bytes")
         thumbnail_bytes = image_to_bytes(thumbnail)
         webimage_bytes = image_to_bytes(webimage)
@@ -131,19 +132,27 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
         logger.debug("Writing markdown file to S3")
         pagejson = {
             "title": json_data["picked_article"]["title"].replace("'", ""),
-            "date": datetime.now(timezone.utc).astimezone().isoformat(),
-            "sotry_url": json_data["picked_article"]["url"],
             "id": json_data.get("eventid"),
         }
         page = f"""
 +++
 title = '{pagejson["title"]}'
 id ='{pagejson["id"]}'
-sotry_url='{pagejson["sotry_url"]}'
 date = {datetime.now(timezone.utc).astimezone().isoformat()}
 draft = false
 +++
-# Adding stuff about the story and image later
+
+### About the Story
+- Story Source: [{json_data['picked_article'].get('source', 'Website')}]({json_data['picked_article']['url']})
+- Story Author: {json_data['picked_article'].get('author', '')}
+
+{json_data['picked_article']['description']}
+
+### Promnt used for the image
+{json_data["genimage"]['prompt']}
+
+### AI moduled used
+{json_data["genimage"]['model_id']}
         """
         s3_write_file(
             bucketname=ssm_data["ais3bucket"],

@@ -1,3 +1,7 @@
 {{ define "content" }}
-<div class="application-main">{{ partial "user-profile.html" . }}</div>
+<div class="application-main">
+    {{ partial "user-profile.html" . }}
+    {{ partial "project.html" . }}
+</div>
+
 {{ end }}
