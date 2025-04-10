@@ -2,6 +2,11 @@
 **/.terraform/*
 **/files/website/public/
 **/files/website/.hugo_build.lock
+**/files/website/content/images/*
+**/files/website/content/post/*
+!**/files/website/content/images/--blank--
+!**/files/website/content/post/--blank--
+
 
 # .tfstate files
 *.tfstate
