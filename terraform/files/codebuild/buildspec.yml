@@ -20,7 +20,7 @@ phases:
       - echo "Running Hugo build..."
       - cd website
       - hugo version
-      - hugo
+      - hugo --cleanDestinationDir --minify --noBuildLock
     finally:
       - echo Building the HTML files finished
   post_build:
