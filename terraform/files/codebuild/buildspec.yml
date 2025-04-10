@@ -28,6 +28,10 @@ phases:
       - echo "Uploading published content to S3..."
       - aws s3 cp ./public/ s3://$DESTINATION_BUCKET/ --recursive
       - aws cloudfront create-invalidation --distribution-id $CDNID --paths "/*"
+      - aws cloudfront create-invalidation --distribution-id $CDNID --paths "/post"
+      - aws cloudfront create-invalidation --distribution-id $CDNID --paths "/post/*"
+      - aws cloudfront create-invalidation --distribution-id $CDNID --paths "/project"
+      - aws cloudfront create-invalidation --distribution-id $CDNID --paths "/project/*"
     finally:
       - echo "Build and upload completed"
 artifacts:
