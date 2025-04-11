@@ -25,8 +25,9 @@ resource "aws_s3_bucket_website_configuration" "website" {
   }
 
   error_document {
-    key = "404.html"
+    key = "/404.html"
   }
+
 }
 
 
@@ -131,6 +132,12 @@ resource "aws_cloudfront_distribution" "cdn" {
       function_arn = aws_cloudfront_function.redirect_index.arn
     }
 
+  }
+
+  custom_error_response {
+    error_code         = 404
+    response_code      = 404
+    response_page_path = "/404.html"
   }
 
   restrictions {

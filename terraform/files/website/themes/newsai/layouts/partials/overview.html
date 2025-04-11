@@ -34,7 +34,6 @@
     {{ end }}
     <div class="mt-4">
       <div>
-        <h2 class="f4 mb-2 text-normal">About the project</h2>
         {{ with .Content }}
         {{ range (split . "\n") }}
           <p class="f5 mb-2 text-normal">{{ . | markdownify }}</p>

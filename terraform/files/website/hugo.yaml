@@ -22,7 +22,6 @@ params:
   # url: "https://d305zk4rld5lm5.cloudfront.net"
   keywords: "blog, AI, Artist"
   #favicon: "/images/github.png"
-  avatar: "/images/avatar.png"
   # headerIcon: "/images/GitHub-Mark-Light-32px.png"
   # enableGitalk: true
   # custom_css:
