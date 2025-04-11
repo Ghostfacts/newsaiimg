@@ -45,7 +45,7 @@
             </div>
             <div>
               <div class="col-12 d-inline-block text-gray mb-2 pr-4">
-                {{ .Summary | safeHTML }}
+                Date: {{ .PublishDate.Format "Mon, 02 Jan 2006 15:04:05" }}
               </div>
             </div>
 
@@ -62,7 +62,6 @@
               </a>
               {{ end }}
               {{ end }}
-
               Created
               <relative-time datetime="{{ .PublishDate.Format " Mon, 02 Jan 2006 15:04:05 -0700" }}" class="no-wrap"
                 title="{{ .PublishDate.Format " Mon, 02 Jan 2006 15:04:05 -0700" }}">
