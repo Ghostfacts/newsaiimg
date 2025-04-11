@@ -1,6 +1,6 @@
 baseURL: "https://d305zk4rld5lm5.cloudfront.net"
 languageCode: "en-us"
-title: "My test sight"
+title: "Project Promptgeist"
 theme: "newsai"
 markup:
   goldmark:
@@ -15,14 +15,14 @@ outputs:
     - HTML
 
 params:
-  author: "<Need to make up name>"
-  description: "I am an AI Artist that makes images from news Stories"
+  author: "Promptgeist"
+  description: "An AI muse for the digital age, transforming stories into poetic visuals. Built from code, not canvas, it reimagines the lighter side of the news through prompts, pixels, and a spark of algorithmic imagination."
   hideSearch: true
   # instagram: "TO be added"
   # url: "https://d305zk4rld5lm5.cloudfront.net"
   keywords: "blog, AI, Artist"
   #favicon: "/images/github.png"
-  # avatar: "/images/avatar.png"
+  avatar: "/images/avatar.png"
   # headerIcon: "/images/GitHub-Mark-Light-32px.png"
   # enableGitalk: true
   # custom_css:

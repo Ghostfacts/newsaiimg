@@ -203,3 +203,12 @@ body {
 .pinned-item-desc img {
   max-width: 100%;
 }
+.desktop-none {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .desktop-none {
+    display: block !important;
+  }
+}
