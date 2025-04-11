@@ -12983,3 +12983,9 @@ Custom
   margin-top: 0px;
   margin-bottom: 5px;
 }
+
+.col-12.col-md-6 img {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
+}

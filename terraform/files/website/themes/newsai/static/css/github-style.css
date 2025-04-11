@@ -179,7 +179,13 @@ body {
     padding-left: 24px !important;
     padding-right: 24px !important;
   }
+
+  .mobile-none {
+    display: none !important;
+  }
+
 }
+
 
 @media (max-width: 480px) {
   .Header {
