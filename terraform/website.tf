@@ -154,7 +154,7 @@ output "website_url" {
 }
 
 #Build website on change
-resource "aws_s3_object" "buildspec_file" {
+resource "aws_s3_bucket_object" "buildspec_file" {
   bucket = aws_s3_bucket.aiminnews.id
   key    = "codebuild/buildspec.yml"
   source = "files/codebuild/buildspec.yml"
