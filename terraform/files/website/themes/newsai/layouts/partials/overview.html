@@ -6,7 +6,6 @@
 {{ if ne (len $pinned) 0}}
 {{ else }}
 {{ $section = where .Site.RegularPages "Section" "in" (slice "post") }}
-{{ $section_title = "Recent Storys" }}
 {{ end }}
 <div>
   <div class="position-relative">
@@ -33,17 +32,15 @@
     </div>
     {{ end }}
     <div class="mt-4">
-      <div>
+      <div class="js-pinned-items-reorder-container">
         {{ with .Content }}
         {{ range (split . "\n") }}
-          <p class="f5 mb-2 text-normal">{{ . | markdownify }}</p>
+          <p class="f4 mb-2 text-normal">{{ . | markdownify }}</p>
         {{ end }}
       {{ end }}
       </div>
       <div class="js-pinned-items-reorder-container">
-        <h2 class="f4 mb-2 text-normal">
-          {{ $section_title }}
-        </h2>
+        <h2 >Recent Storys</h2>
         <ol class="d-flex flex-wrap list-style-none gutter-condensed mb-4 js-pinned-items-reorder-list">
           {{ range (first 2 $section) }}
           <li class="col-12 col-md-6 col-lg-6 mb-3 d-flex flex-content-stretch">
@@ -89,7 +86,8 @@
   "publishDate": "{{ .PublishDate.Format "2006-01-02 15:04:05" }}"
 }{{ if ne $index (sub (len $section) 1) }},{{ end }}
 {{ end }}]'>
-      <!-- <div class="js-yearly-contributions">
+
+<!-- <div class="js-yearly-contributions">
         <div class="position-relative">
           <h2 class="f4 text-normal mb-2" id="posts-count"></h2>
           <div class="border py-2 graph-before-activity-overview">
@@ -130,9 +128,7 @@
           </div>
         </div>
 
-        <h2 class="f4 text-normal mt-4 mb-3">
-          Story activity
-        </h2>
+        <h2 class="text-normal">Story Activity</h2>
 
         <div id="posts-activity">
         </div>

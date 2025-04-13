@@ -184,8 +184,12 @@
       {{ partial "mobile-menus.html" . }}
       {{ if .IsHome }}
       {{ block "overview" . }}{{ end }}
-      {{ else }}
+      {{ end }}
+      {{ if eq .Type "post" }}
       {{ block "posts" . }}{{ end }}
+      {{ end }}
+      {{ if eq .Type "project" }}
+      {{ block "project" . }}{{ end }}
       {{ end }}
     </div>
   </div>
