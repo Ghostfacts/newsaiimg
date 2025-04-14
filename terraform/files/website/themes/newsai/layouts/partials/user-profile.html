@@ -101,7 +101,9 @@
         </div>
 
         <div class="border-top color-border-secondary pt-3 mt-3 clearfix hide-sm hide-md">
-          <h2 class="mb-2 h4">Links</h2>
+          {{ if or .Site.Params.github .Site.Params.twitter .Site.Params.facebook .Site.Params.linkedin .Site.Params.instagram .Site.Params.tumblr .Site.Params.stackoverflow .Site.Params.bluesky }}
+          <h2 class="mb-2 h4">Soucial Links</h2>
+          {{ end }}
           <div style="display:flex;justify-content:flex-start;flex-wrap:wrap;margin-bottom:3px;">
           {{ if .Site.Params.github}}
           <a style="margin: 0 10px 10px 0;" href="https://github.com/{{ .Site.Params.github }}">

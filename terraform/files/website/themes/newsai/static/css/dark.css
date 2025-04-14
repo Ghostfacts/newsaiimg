@@ -793,7 +793,8 @@
   --color-text-danger: #f85149;
   --color-text-disabled: #484f58;
   --color-text-inverse: #0d1117;
-  --color-text-link: #58a6ff;
+  --color-text-link-primary: #ffffff;
+  --color-text-link-hover: #0366d6;
   --color-text-placeholder: #484f58;
   --color-text-primary: #c9d1d9;
   --color-text-secondary: #8b949e;

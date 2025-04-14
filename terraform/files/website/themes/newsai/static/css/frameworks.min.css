@@ -362,7 +362,8 @@ textarea {
   --color-text-placeholder: #6a737d;
   --color-text-disabled: #6a737d;
   --color-text-inverse: #fff;
-  --color-text-link: #0366d6;
+  --color-text-link-primary: #ffffff;
+  --color-text-link-hover: #0366d6;
   --color-text-danger: #cb2431;
   --color-text-success: #22863a;
   --color-text-warning: #b08800;
@@ -1011,7 +1012,8 @@ textarea {
     --color-text-placeholder: #6a737d;
     --color-text-disabled: #6a737d;
     --color-text-inverse: #fff;
-    --color-text-link: #0366d6;
+    --color-text-link-primary: #2188ff;
+    --color-text-link-hover: #0366d6;
     --color-text-danger: #cb2431;
     --color-text-success: #22863a;
     --color-text-warning: #b08800;
@@ -1538,11 +1540,11 @@ body {
   background-color: var(--color-bg-canvas);
 }
 a {
-  color: var(--color-text-primary);
-  text-decoration: none;
+  color: var(--color-text-link-primary);
+  text-decoration: underline;
 }
 a:hover {
-  color: var(--color-text-link);
+  color: var(--color-text-link-primary);
   text-decoration: underline;
 }
 a:visited {
@@ -3729,11 +3731,11 @@ p.explain .minibutton {
 }
 .Link--primary,
 .link-gray-dark {
-  color: var(--color-text-primary) !important;
+  color: var(--color-text-link-primary) !important;
 }
 .Link--primary:hover,
 .link-gray-dark:hover {
-  color: var(--color-text-link) !important;
+  color: var(--color-text-link-hover) !important;
 }
 .Link--secondary,
 .link-gray {
@@ -9870,7 +9872,8 @@ a.tabnav-extra:hover {
   --color-text-placeholder: #484f58;
   --color-text-disabled: #484f58;
   --color-text-inverse: #0d1117;
-  --color-text-link: #58a6ff;
+  --color-text-link-primary: #ffffff;
+  --color-text-link-hover: #0366d6;
   --color-text-danger: #f85149;
   --color-text-success: #56d364;
   --color-text-warning: #e3b341;
@@ -10520,7 +10523,8 @@ a.tabnav-extra:hover {
     --color-text-placeholder: #484f58;
     --color-text-disabled: #484f58;
     --color-text-inverse: #0d1117;
-    --color-text-link: #58a6ff;
+    --color-text-link-primary: #c9d1d9;
+    --color-text-link-hover: #0366d6;
     --color-text-danger: #f85149;
     --color-text-success: #56d364;
     --color-text-warning: #e3b341;
