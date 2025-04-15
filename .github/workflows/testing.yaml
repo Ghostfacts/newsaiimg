@@ -31,7 +31,7 @@ jobs:
       name: development
     steps:
       - name: changelog
-        uses: github-changelog-generator/github-changelog-generator-action@v1.17.0
+        uses: janheinrichmerker/action-github-changelog-generator@v2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: true
