@@ -30,15 +30,6 @@ jobs:
     environment:
       name: development
     steps:
-      - name: changelog
-        uses: janheinrichmerker/action-github-changelog-generator@v2.3
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: false
-          unreleased: true
-          output: terraform/files/website/content/CHANGELOG.md
-          changelog_title: "NewsAPI Changes"
-
       - name: install terraform
         uses: hashicorp/setup-terraform@v3
         with:
