@@ -4,17 +4,6 @@
  *
  * Released under MIT license. Copyright (c) 2019 GitHub Inc.
  */
-.octicon {
-  display: inline-block;
-  vertical-align: text-top;
-  fill: currentColor;
-}
-
-.repo img.thumbnail {
-  width: 70px;
-  height: 70px;
-}
-
 /*! normalize.css v4.1.1 | MIT License | github.com/necolas/normalize.css */
 html {
   font-family: sans-serif;
@@ -373,7 +362,8 @@ textarea {
   --color-text-placeholder: #6a737d;
   --color-text-disabled: #6a737d;
   --color-text-inverse: #fff;
-  --color-text-link: #0366d6;
+  --color-text-link-primary: #ffffff;
+  --color-text-link-hover: #0366d6;
   --color-text-danger: #cb2431;
   --color-text-success: #22863a;
   --color-text-warning: #b08800;
@@ -1022,7 +1012,8 @@ textarea {
     --color-text-placeholder: #6a737d;
     --color-text-disabled: #6a737d;
     --color-text-inverse: #fff;
-    --color-text-link: #0366d6;
+    --color-text-link-primary: #2188ff;
+    --color-text-link-hover: #0366d6;
     --color-text-danger: #cb2431;
     --color-text-success: #22863a;
     --color-text-warning: #b08800;
@@ -1549,11 +1540,15 @@ body {
   background-color: var(--color-bg-canvas);
 }
 a {
-  color: var(--color-text-link);
-  text-decoration: none;
+  color: var(--color-text-link-primary);
+  text-decoration: underline;
 }
 a:hover {
+  color: var(--color-text-link-primary);
   text-decoration: underline;
+}
+a:visited {
+  text-decoration: line-through;
 }
 b,
 strong {
@@ -3236,7 +3231,7 @@ p.explain .minibutton {
   margin-left: auto;
 }
 .container-xl {
-  max-width: 1280px;
+  max-width: 1712px;
 }
 .col-1 {
   width: 8.33333%;
@@ -3736,11 +3731,11 @@ p.explain .minibutton {
 }
 .Link--primary,
 .link-gray-dark {
-  color: var(--color-text-primary) !important;
+  color: var(--color-text-link-primary) !important;
 }
 .Link--primary:hover,
 .link-gray-dark:hover {
-  color: var(--color-text-link) !important;
+  color: var(--color-text-link-hover) !important;
 }
 .Link--secondary,
 .link-gray {
@@ -9877,7 +9872,8 @@ a.tabnav-extra:hover {
   --color-text-placeholder: #484f58;
   --color-text-disabled: #484f58;
   --color-text-inverse: #0d1117;
-  --color-text-link: #58a6ff;
+  --color-text-link-primary: #ffffff;
+  --color-text-link-hover: #0366d6;
   --color-text-danger: #f85149;
   --color-text-success: #56d364;
   --color-text-warning: #e3b341;
@@ -10527,7 +10523,8 @@ a.tabnav-extra:hover {
     --color-text-placeholder: #484f58;
     --color-text-disabled: #484f58;
     --color-text-inverse: #0d1117;
-    --color-text-link: #58a6ff;
+    --color-text-link-primary: #c9d1d9;
+    --color-text-link-hover: #0366d6;
     --color-text-danger: #f85149;
     --color-text-success: #56d364;
     --color-text-warning: #e3b341;
@@ -12964,4 +12961,39 @@ g-emoji img {
 }
 .HeaderMenu--logged-out .header-search {
   min-width: auto;
+}
+
+/*!
+Custom
+ */
+.octicon {
+  display: inline-block;
+  vertical-align: text-top;
+  fill: currentColor;
+}
+
+.repo img.thumbnail {
+  width: 100px;
+  height: 100px;
+}
+
+.overview img.thumbnail {
+  width: 110px;
+  height: 110px;
+}
+
+.entry-content p {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.entry-content h1, h2, h3, h4, h5, h6 {
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.col-12.col-md-6 img {
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
 }

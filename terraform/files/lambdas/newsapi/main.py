@@ -133,11 +133,9 @@ def filter_article(article):
 
 def ai_scoring(article):
     """Using AI to score the article"""
-    article["ai_results"] = {}
-    article["ai_results"]["response"] = []
+    article["ai_results"] = {"score": 0, "aicheck": "pass", "response": []}
     for ainew_review in bedrock_client.news_reviews(article["content"]):
         finresulst = ainew_review.get("results", "")
-        article["ai_results"] = {"score": 0, "aicheck": "pass", "response": []}
         article["ai_results"]["response"].append(
             {
                 "model_id": ainew_review.get("model_id", "missing"),

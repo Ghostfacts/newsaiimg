@@ -28,7 +28,7 @@ class Bedrock:
             print(f"Error listing models: {str(e)}")
             return []
 
-    def __invoke_model__(self, model_id="amazon.titan-text-express-v1", prompt=""):
+    def __invoke_aws_model__(self, model_id="amazon.titan-text-express-v1", prompt=""):
         """
         Invokes the specified model with the supplied prompt.
         :param model_id: The model ID for the model that you want to use.
@@ -49,6 +49,7 @@ class Bedrock:
         request = json.dumps(native_request)
 
         try:
+            results = {}
             response = self.bedrockclient.invoke_model(modelId=model_id, body=request)
             model_response = json.loads(response["body"].read())
             if (
@@ -60,14 +61,14 @@ class Bedrock:
                     "score": "1",
                     "reson": "model is unable to respond to this request.",
                 }
-            return {
+            results = {
                 "model_id": model_id,
                 "outputText": model_response["results"][0]["outputText"],
             }
         except (ClientError, Exception) as e:  # pylint: disable=W0718
             logging.error("Can't invoke %s Reason: %s", model_id, e)
             if e.response["Error"]["Code"] == "ThrottlingException":
-                return {
+                results = {
                     "model_id": model_id,
                     "outputText": {
                         "result": "fail",
@@ -75,14 +76,17 @@ class Bedrock:
                         "reson": "ThrottlingException",
                     },
                 }
-            return {
-                "model_id": model_id,
-                "outputText": {
-                    "result": "fail",
-                    "score": "0",
-                    "reson": f"Returned error {str(e)}",
-                },
-            }
+            else:
+                logging.error("Unknow error: %s reson: %s", model_id, e)
+                results = {
+                    "model_id": model_id,
+                    "outputText": {
+                        "result": "fail",
+                        "score": "0",
+                        "reson": "Unknow error check logs",
+                    },
+                }
+        return results
 
     def news_reviews(self, news_story):
         """
@@ -117,16 +121,15 @@ class Bedrock:
         try:
             for ia_model_id in ia_model_ids:
                 airesponce = ""
-                airesponce = self.__invoke_model__(
+                airesponce = self.__invoke_aws_model__(
                     prompt=prompt_text, model_id=ia_model_id
                 )
                 # data clean up
-                news_reviews.append(
-                    {
-                        "model_id": airesponce["model_id"],
-                        "results": json.loads(airesponce["outputText"]),
-                    }
-                )
+                curai = {
+                    "model_id": airesponce["model_id"],
+                    "results": json.loads(airesponce["outputText"]),
+                }
+                news_reviews.append(curai)
                 time.sleep(5)
         except Exception as e:  # pylint: disable=W0718
             logging.error("Error processing news story: %s", str(e))

@@ -179,7 +179,13 @@ body {
     padding-left: 24px !important;
     padding-right: 24px !important;
   }
+
+  .mobile-none {
+    display: none !important;
+  }
+
 }
+
 
 @media (max-width: 480px) {
   .Header {
@@ -196,4 +202,13 @@ body {
 
 .pinned-item-desc img {
   max-width: 100%;
+}
+.desktop-none {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .desktop-none {
+    display: block !important;
+  }
 }
