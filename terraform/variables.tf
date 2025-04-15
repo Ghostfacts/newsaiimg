@@ -15,12 +15,14 @@ variable "environment" {
 
 variable "ilert_token" {
   type        = string
+  default     = "Need to be changed before can run"
   description = "ilert token for alerting"
   sensitive   = true
 }
 
 variable "newsapi_token" {
   type        = string
+  default     = "Need to be changed before can run"
   description = "This token is used to access the newsapi service"
   sensitive   = true
 }
