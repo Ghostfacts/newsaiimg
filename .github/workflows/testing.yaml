@@ -34,7 +34,6 @@ jobs:
         uses: janheinrichmerker/action-github-changelog-generator@v2.3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: true
           unreleased: true
           output: terraform/files/website/content/CHANGELOG.md
           changelog_title: "NewsAPI Changes"
