@@ -179,7 +179,17 @@ class Newsapi:
             logging.info("Total Stories: %s", response.json().get("totalResults", 0))
             if response.json().get("totalResults", 0) == 0:
                 raise ValueError("No stories found")
-            return response.json().get("articles", [])
+
+            story_list = []
+            for article in response.json().get("articles", []):
+                if self.__filter_story(article) is True:
+                    article["source"] = article["source"]["id"]
+                    story_list.append(article)
+
+            logging.info("Total after Filtering: %s", len(story_list))
+
+            return story_list
+
         except ValueError as ve:
             # Handle value errors (e.g., no stories found)
             logging.error("Value error occurred: %s", ve)
@@ -211,7 +221,7 @@ class Newsapi:
     def get_stories(self, daysold=1, country="en"):  # pylint: disable=R1710
         """grathing the needed stores from the newsapi"""
         try:
-            story_list = []
+
             query_params = (
                 f"?domains=bbc.co.uk"
                 f"&from={(datetime.now() - timedelta(days=daysold)).strftime("%Y-%m-%d")}"
@@ -227,6 +237,7 @@ class Newsapi:
             if response.json().get("totalResults", 0) == 0:
                 raise ValueError("No stories found")
 
+            story_list = []
             for article in response.json().get("articles", []):
                 if self.__filter_story(article) is True:
                     article["source"] = article["source"]["id"]
