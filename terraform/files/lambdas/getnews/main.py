@@ -54,12 +54,20 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
                 WithDecryption=True,
             )["Parameter"]["Value"]
         )
+
         # Ok need to get the Newsapi info
         newsapi = stories.Newsapi(
             apitoken=ssm_data["newsapi_token"],
         )
-        headlines = newsapi.get_stories(daysold=2)
-        print(headlines)
+
+        # Get the stories
+        json_data["all_articles"] = newsapi.get_stories()
+        # json_data["all_articles"] = newsapi.get_headlines()
+
+        # Get the count of articles
+        json_data["total_articles"] = len(json_data["all_articles"])
+
+        # need to pick the winner article now
 
         # save the content to s3
         s3_client = boto3.client("s3")

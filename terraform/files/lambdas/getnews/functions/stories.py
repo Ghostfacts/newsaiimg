@@ -1,10 +1,12 @@
 """News API module"""
 
 import logging
+import re
 import sys
 from datetime import datetime, timedelta
 
 import requests
+from bs4 import BeautifulSoup
 
 
 class Newsapi:
@@ -115,7 +117,18 @@ class Newsapi:
             "BBC Radio 6 Music",
             "BBC Radio 7",
             "BBC Radio 8",
+            "BBC News",
         ]
+
+    def __remove_specific_href_tags(self, text, keywords):
+        """Removes unwatned href info from story"""
+        # Define the regex pattern to find <a> tags with specific keywords in the href attribute
+        pattern = (
+            r'<a\s+[^>]*href="[^"]*(' + "|".join(keywords) + r')[^"]*"[^>]*>.*?<\/a>'
+        )
+        # Substitute the matching <a> tags with an empty string
+        cleaned_text = re.sub(pattern, "", text, flags=re.IGNORECASE)
+        return cleaned_text
 
     def __filter_story(self, article):
         """Filter the stories to remove the ones we dont want"""
@@ -241,8 +254,8 @@ class Newsapi:
             for article in response.json().get("articles", []):
                 if self.__filter_story(article) is True:
                     article["source"] = article["source"]["id"]
+                    article["content"] = self.get_full_content(article.get("url"))
                     story_list.append(article)
-
             logging.info("Total after Filtering: %s", len(story_list))
 
             return story_list
@@ -274,7 +287,40 @@ class Newsapi:
             logging.error("An error occurred while fetching news: %s", req_err)
             sys.exit(1)  # Exit the script with a failure code (1)
 
-    # def get_full_story(self, url):
-    #     """Retrive the full story"""
-    #     """At current only works for the BBC"""
-    #     print(url)
+    def get_full_content(self, url):
+        """Retrive the full story"""
+        logging.info("Retreving story from url: %s", str(url))
+        try:
+            result = None
+            storysite = requests.get(url=url, timeout=self.timeout)
+            storysite.raise_for_status()
+            soup = BeautifulSoup(storysite.text, "html.parser")
+            article = soup.find("article")
+            if article:
+                # Removing all images from the article
+                keywords = ["facebook", "twitter", "instagram"]
+                full_article = []
+                for img_tag in article.find_all("img"):
+                    img_tag.extract()  # Remove the <img> tag from the BeautifulSoup object
+                text_elements = soup.find_all(attrs={"data-component": "text-block"})
+                for text_element in text_elements:
+                    for par_element in text_element.find_all("p"):
+                        par_text = par_element.get_text(separator="\n", strip=True)
+                        par_text = self.__remove_specific_href_tags(par_text, keywords)
+                        par_text = par_text.replace("\n", " ")
+                        par_text = par_text.replace("\r", " ")
+                        if re.search(
+                            r"Follow BBC", par_text, flags=re.IGNORECASE
+                        ) or re.search(r"@BBC", par_text, flags=re.IGNORECASE):
+                            break
+                        full_article.append(f" {par_text}")
+                result = "".join(full_article)
+        except requests.exceptions.HTTPError as http_err:
+            # Handle HTTP errors (e.g., 404, 500, etc.)
+            logging.error(
+                "HTTP error occurred: %s - Status Code: %s",
+                http_err,
+                storysite.status_code,
+            )
+            sys.exit(1)  # Exit the script with a failure code (1)
+        return result
