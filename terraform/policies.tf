@@ -23,7 +23,8 @@ data "aws_iam_policy_document" "lambda_policy" {
     effect = "Allow"
     sid    = "SSMsettings"
     actions = [
-      "ssm:GetParameter"
+      "ssm:GetParameter",
+      "ssm:GetParameters"
     ]
     resources = [aws_ssm_parameter.json_parameter.arn]
   }
@@ -53,6 +54,14 @@ data "aws_iam_policy_document" "lambda_policy" {
       "arn:aws:bedrock:${data.aws_region.current.name}::foundation-model/amazon.titan-text-express-v1",
       "arn:aws:bedrock:${data.aws_region.current.name}::foundation-model/*"
     ]
+  }
+  statement {
+    sid    = "kms"
+    effect = "Allow"
+    actions = [
+      "kms:Decrypt"
+    ]
+    resources = ["arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:key/alias/aws/ssm"]
   }
 }
 
