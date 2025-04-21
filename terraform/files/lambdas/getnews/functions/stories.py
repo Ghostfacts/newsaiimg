@@ -170,6 +170,7 @@ class Newsapi:
                     word,
                 )
                 result = False
+                break
             if word in str(article.get("description", "None")).lower():
                 logging.info(
                     "Removing story %s -> Bad word (%s) in description",
@@ -177,6 +178,7 @@ class Newsapi:
                     word,
                 )
                 result = False
+                break
         return result
 
     # main functions
@@ -234,7 +236,7 @@ class Newsapi:
     def get_stories(self, daysold=1, country="en"):  # pylint: disable=R1710
         """grathing the needed stores from the newsapi"""
         try:
-
+            story_list = []
             query_params = (
                 f"?domains=bbc.co.uk"
                 f"&from={(datetime.now() - timedelta(days=daysold)).strftime("%Y-%m-%d")}"
@@ -250,14 +252,12 @@ class Newsapi:
             if response.json().get("totalResults", 0) == 0:
                 raise ValueError("No stories found")
 
-            story_list = []
             for article in response.json().get("articles", []):
                 if self.__filter_story(article) is True:
                     article["source"] = article["source"]["id"]
                     article["content"] = self.get_full_content(article.get("url"))
                     story_list.append(article)
             logging.info("Total after Filtering: %s", len(story_list))
-
             return story_list
 
         except ValueError as ve:
@@ -289,7 +289,7 @@ class Newsapi:
 
     def get_full_content(self, url):
         """Retrive the full story"""
-        logging.info("Retreving story from url: %s", str(url))
+        logging.debug("Retreving story from url: %s", str(url))
         try:
             result = None
             storysite = requests.get(url=url, timeout=self.timeout)
