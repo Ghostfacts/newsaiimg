@@ -1,4 +1,5 @@
 ## Welcome
+
 To a world where AI transforms News stories into visual works of magic.
 
 This project is somthing i wanted to try and take news articles, extracts key narratives, and generates striking AI images to match. I am hoping each image you see is a reflection of the stories shaping our world—told through the eyes of machine imagination.
