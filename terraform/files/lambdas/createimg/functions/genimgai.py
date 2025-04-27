@@ -6,6 +6,7 @@ import logging
 import time
 
 import boto3
+import requests
 from botocore.exceptions import ClientError
 
 
@@ -218,3 +219,65 @@ class AWSai:
             logging.error("model id: %s ValueError: %s", model_id, invokeerr)
             results = None
         return results
+
+
+class OPENai:
+    """Class for all need openai AI stuff"""
+
+    def __init__(self, apitoken=None, apiproject=None, apiorg=None):
+        self.apiproject = apiproject
+        self.headers = {
+            "Authorization": f"Bearer {apitoken}",
+            "OpenAI-Organization": apiorg,
+            "OpenAI-Project": apiproject,
+        }
+
+    def list_models(self):
+        """List all modules for openai"""
+        url = "https://api.openai.com/v1/models"
+        response = requests.get(url, headers=self.headers, timeout=20)
+        if response.status_code == 200:
+            mlist = response.json()
+        else:
+            logging.error("Error %s", {response.text})
+            mlist = None
+        return mlist
+
+    # need to add image gen
+    def gen_image(self, prompt=None, model_id="dall-e-3"):
+        """Generate an image use OPENAI"""
+        results = {
+            "image_data": "",
+            "AI": {
+                "model_id": f"openai_{model_id}",
+                "prompt": prompt,
+            },
+        }
+
+        logging.info("Promt size: %s", len(prompt))
+        try:
+            url = "https://api.openai.com/v1/images/generations"
+            data = {
+                "model": model_id,
+                "prompt": prompt,
+                "n": 1,  # number of images to generate
+                "size": "1024x1024",  # other options: 256x256, 512x512 for DALL-E 2
+            }
+            response = requests.post(url, headers=self.headers, json=data, timeout=300)
+            # Check the result
+            if response.status_code == 200:
+                results["img_path"] = response.json()["data"][0]["url"]
+                logging.debug("Image path: %s", results["img_path"])
+                # Retrieve the image URL and fetch the image data
+                image_url = response.json()["data"][0]["url"]
+                image_response = requests.get(image_url, timeout=300)
+                results["image_data"] = image_response.content
+            else:
+                print(f"Error: {response.status_code} - {response.text}")
+        except ValueError as invokeerr:
+            logging.error("model id: %s ValueError: %s", model_id, invokeerr)
+            results["error_type"] = str(invokeerr.__class__.__name__)
+            results["error_msg"] = str(invokeerr)
+        return results
+
+    # need to add  text gen

@@ -18,6 +18,14 @@ else:
     logging.basicConfig(level=logging.INFO)
 
 
+def save_img(img_data, img_path):
+    """Function to save the image"""
+    image = Image.open(io.BytesIO(img_data))
+    image = image.convert("RGB")
+    image.save(img_path, "PNG")
+    image.close()
+
+
 # main code
 def lambda_handler(event, context):  # pylint: disable=W0613,R1710
     """Main lambda handler Where it all starts"""
@@ -44,15 +52,22 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
             .read()
             .decode("utf-8")
         )
-        imgsai = genimgai.AWSai(region=os.getenv("region") or "eu-west-2")
+        aws_imgsai = genimgai.AWSai(region=os.getenv("region") or "eu-west-2")
+        open_imgsai = genimgai.OPENai(
+            apitoken=ssm_data["openai_token"],
+            apiproject="proj_inXx390c4R68kIAvlmGWmqfA",
+            apiorg="org-jwT66pEXmoZI6fGslw268mYY",
+        )
 
         imggen = {"max": 5, "attempts": 0, "tmpdir": tempfile.mkdtemp()}
 
         while imggen.get("attempts") < imggen.get("max"):
             imgpath = os.path.join(imggen.get("tmpdir"), "newsimage.png")
-            story_promt = imgsai.gen_img_promt(json_data["picked_article"]["content"])
+            story_promt = aws_imgsai.gen_img_promt(
+                json_data["picked_article"]["content"]
+            )
             # Checks the AWS one first
-            ai_image = imgsai.gen_aws_image(prompt=story_promt["response"])
+            ai_image = aws_imgsai.gen_aws_image(prompt=story_promt["response"])
             if ai_image.get("error_type") is not None:
                 logging.error(
                     "AI %s error: %s",
@@ -64,18 +79,30 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
                 logging.info(
                     "AI %s image generated", ai_image.get("AI").get("model_id")
                 )
-                image = Image.open(io.BytesIO(ai_image["image_data"]))
-                image = image.convert("RGB")
-                image.save(imgpath, "PNG")
-                image.close()
+                save_img(ai_image["image_data"], img_path=imgpath)
                 break
 
             # Run the next AI image gen (?????)
 
             # Run the next AI image gen (openAI say)
+            ai_image = open_imgsai.gen_image(
+                prompt=story_promt["response"]
+            )  # not creted yet
+            if ai_image.get("error_type") is not None:
+                logging.error(
+                    "AI %s error: %s",
+                    ai_image.get("model_id"),
+                    ai_image.get("error_msg"),
+                )
+            else:
+                save_img(ai_image["image_data"], img_path=imgpath)
+                break
 
+            # If both fail then wait and try again
             imggen["attempts"] += 1
             time.sleep(5)
+
+        # If maxed then out then raise error
         if imggen.get("attempts") == imggen.get("max"):
             raise ValueError("Max retries reached for image generation")
 
@@ -85,6 +112,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
             "promt_model": story_promt.get("model_id"),
             "img_model": ai_image.get("AI").get("model_id"),
         }
+        logging.info("Save image: %s", imgpath)
         s3_client.upload_file(
             imgpath,
             ssm_data["ais3bucket"],
@@ -92,7 +120,10 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
             ExtraArgs={"ContentType": "image/png"},
         )
         logging.info("Image uploaded")
-
+        logging.info(
+            "image path: %s",
+            f"s3://{ssm_data["ais3bucket"]}/aiimg/{event.get('event_id')}/newsimage.png",
+        )
         # Upload the JSON data to S3
         s3_client.put_object(
             Bucket=ssm_data["ais3bucket"],
@@ -101,6 +132,10 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
             ContentType="application/json",
         )
         logging.info("JSON data uploaded")
+        logging.info(
+            "JSON path: %s",
+            f"s3://{ssm_data["ais3bucket"]}/aiimg/{event.get('event_id')}/main.json",
+        )
 
     # Error handeling
     except EndpointConnectionError as e:
