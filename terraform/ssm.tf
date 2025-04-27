@@ -30,6 +30,7 @@ resource "aws_ssm_parameter" "json_parameter_v2" {
     sites3bucket  = aws_s3_bucket.website.bucket
     region        = data.aws_region.current.name
     newsapi_token = var.newsapi_token
+    openai_token  = var.openai_token
   })
   tags = merge(
     local.tags,
