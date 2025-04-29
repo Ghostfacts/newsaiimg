@@ -82,12 +82,8 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
                 save_img(ai_image["image_data"], img_path=imgpath)
                 break
 
-            # Run the next AI image gen (?????)
-
-            # Run the next AI image gen (openAI say)
-            ai_image = open_imgsai.gen_image(
-                prompt=story_promt["response"]
-            )  # not creted yet
+            # Running openAI image gen
+            ai_image = open_imgsai.gen_image(prompt=story_promt["response"])
             if ai_image.get("error_type") is not None:
                 logging.error(
                     "AI %s error: %s",
