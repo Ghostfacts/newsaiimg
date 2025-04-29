@@ -55,8 +55,8 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         aws_imgsai = genimgai.AWSai(region=os.getenv("region") or "eu-west-2")
         open_imgsai = genimgai.OPENai(
             apitoken=ssm_data["openai_token"],
-            apiproject="proj_inXx390c4R68kIAvlmGWmqfA",
-            apiorg="org-jwT66pEXmoZI6fGslw268mYY",
+            apiproject=ssm_data["openai_project"],
+            apiorg=ssm_data["openai_org"],
         )
 
         imggen = {"max": 5, "attempts": 0, "tmpdir": tempfile.mkdtemp()}

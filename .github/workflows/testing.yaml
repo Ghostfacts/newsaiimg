@@ -58,6 +58,9 @@ jobs:
           TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
           TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
           TF_VAR_openai_token: ${{ secrets.OPENAI_TOKEN }}
+          TF_VAR_openai_project: ${{ secrets.OPENAI_PROJECT }}
+          TF_VAR_openai_org: ${{ secrets.OPENAI_ORG }}
+
         shell: sh
         run: |
           terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/development/backend.conf -var-file=config/development/terraform.tfvars
@@ -85,6 +88,8 @@ jobs:
           TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
           TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
           TF_VAR_openai_token: ${{ secrets.OPENAI_TOKEN }}
+          TF_VAR_openai_project: ${{ secrets.OPENAI_PROJECT }}
+          TF_VAR_openai_org: ${{ secrets.OPENAI_ORG }}
         working-directory: terraform
 
       - name: Checkov
@@ -133,6 +138,8 @@ jobs:
           TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
           TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
           TF_VAR_openai_token: ${{ secrets.OPENAI_TOKEN }}
+          TF_VAR_openai_project: ${{ secrets.OPENAI_PROJECT }}
+          TF_VAR_openai_org: ${{ secrets.OPENAI_ORG }}
         run: |
           terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/development/backend.conf -var-file=config/development/terraform.tfvars
         working-directory: terraform
@@ -146,6 +153,8 @@ jobs:
           TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
           TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
           TF_VAR_openai_token: ${{ secrets.OPENAI_TOKEN }}
+          TF_VAR_openai_project: ${{ secrets.OPENAI_PROJECT }}
+          TF_VAR_openai_org: ${{ secrets.OPENAI_ORG }}
         run: |
           terraform apply -var-file=config/development/terraform.tfvars --auto-approve
         working-directory: terraform
