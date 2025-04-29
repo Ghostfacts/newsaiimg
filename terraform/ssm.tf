@@ -26,10 +26,13 @@ resource "aws_ssm_parameter" "json_parameter_v2" {
   type        = "SecureString"
   key_id      = "alias/aws/ssm"
   value = jsonencode({
-    ais3bucket    = aws_s3_bucket.aiminnews.bucket
-    sites3bucket  = aws_s3_bucket.website.bucket
-    region        = data.aws_region.current.name
-    newsapi_token = var.newsapi_token
+    ais3bucket     = aws_s3_bucket.aiminnews.bucket
+    sites3bucket   = aws_s3_bucket.website.bucket
+    region         = data.aws_region.current.name
+    newsapi_token  = var.newsapi_token
+    openai_token   = var.openai_token
+    openai_project = var.openai_project
+    openai_org     = var.openai_org
   })
   tags = merge(
     local.tags,
