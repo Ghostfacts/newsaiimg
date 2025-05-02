@@ -9,6 +9,7 @@ from io import BytesIO
 
 import boto3
 from botocore.exceptions import ClientError, EndpointConnectionError
+from functions import newsai
 from PIL import Image
 
 # from datetime import datetime, timezone
@@ -18,6 +19,9 @@ if len(logging.getLogger().handlers) > 0:
     logging.getLogger().setLevel(logging.INFO)
 else:
     logging.basicConfig(level=logging.INFO)
+
+
+editerai = newsai.AWSai(region="eu-west-2")
 
 
 def resize_and_save_image(image, width=None, size=None, s3info=None):
@@ -48,12 +52,14 @@ def resize_and_save_image(image, width=None, size=None, s3info=None):
 def make_story_post(json_story):
     """Makes the markdown story post"""
     # Write Markdown content to a temporary file
+    story_data = json_story["picked_article"]
+    ai_data = json_story["ai_img"]
+    editedstory = editerai.alter_story(story_data["content"])
+    story_data["ai_description"] = editedstory["body"]
+
     with tempfile.NamedTemporaryFile(delete=False, suffix=".md") as tmp_file:
         tmp_file_path = tmp_file.name
         logging.info("Temp file: %s", tmp_file_path)
-        story_data = json_story["picked_article"]
-        ai_data = json_story["ai_img"]
-
         published_at = json_story["picked_article"]["publishedAt"]
         formatted_date = datetime.fromisoformat(published_at).isoformat()
         tmp_file.write(b"+++\n")
@@ -82,7 +88,7 @@ def make_story_post(json_story):
             )
         )
         tmp_file.write(b"\n")
-        tmp_file.write(f"{story_data['description']}\n".encode("utf-8"))
+        tmp_file.write(f"{story_data['ai_description']}\n".encode("utf-8"))
         tmp_file.write(b"\n")
         tmp_file.write(b"## AI info for image\n")
         tmp_file.write(b"\n")
@@ -169,7 +175,6 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
             },
         )
         logging.info("AI the story info")
-
         # Upload the temporary file to S3
         with open(make_story_post(json_data), "rb") as tmp_file:
             s3_client.put_object(
