@@ -15,6 +15,31 @@ variable "environment" {
 
 variable "ilert_token" {
   type        = string
-  description = ""
+  default     = "Need to be changed before can run"
+  description = "ilert token for alerting"
+  sensitive   = true
 }
 
+variable "newsapi_token" {
+  type        = string
+  description = "This token is used to access the newsapi service"
+  sensitive   = true
+}
+
+variable "openai_token" {
+  type        = string
+  description = "This token is used to access the newsapi service"
+  sensitive   = true
+}
+
+variable "openai_project" {
+  type        = string
+  description = "the openAI project"
+  sensitive   = true
+}
+
+variable "openai_org" {
+  type        = string
+  description = "the openAI org"
+  sensitive   = true
+}
