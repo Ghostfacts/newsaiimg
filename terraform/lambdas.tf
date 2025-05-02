@@ -28,7 +28,7 @@ module "news_api_function" {
   source           = "./modules/lambda_function"
   nameprefex       = "newsaiimg-${local.environment_map[var.environment]}-newsapi"
   runtime          = "python3.10"
-  source_path      = "files/lambdas/newsapi/"
+  source_path      = "files/lambdas/getnews/"
   function_handler = "main.lambda_handler"
   timeout          = 830
   environment_variables = {
