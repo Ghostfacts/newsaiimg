@@ -52,7 +52,7 @@ module "img_gen_function" {
   source                = "./modules/lambda_function"
   nameprefex            = "newsaiimg-${local.environment_map[var.environment]}-imggen"
   runtime               = "python3.10"
-  source_path           = "files/lambdas/imagegen/"
+  source_path           = "files/lambdas/createimg/"
   function_handler      = "main.lambda_handler"
   timeout               = 830
   environment_variables = {}
@@ -73,7 +73,7 @@ module "pagedeploy_function" {
   source                = "./modules/lambda_function"
   nameprefex            = "newsaiimg-${local.environment_map[var.environment]}-webpagedesign"
   runtime               = "python3.10"
-  source_path           = "files/lambdas/webpagedesign/"
+  source_path           = "files/lambdas/createwebpost/"
   function_handler      = "main.lambda_handler"
   timeout               = 830
   environment_variables = {}
