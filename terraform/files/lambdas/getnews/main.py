@@ -68,7 +68,6 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         if json_data["all_articles"] is not None:
             json_data["total_articles"] = len(json_data["all_articles"])
             # need to pick the winner article now
-
             for article in json_data["all_articles"]:
                 logging.info(
                     "Starting to AI score on:%s", article.get("title", "Unknow")
@@ -80,7 +79,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         else:
             json_data["total_articles"] = 0
 
-        for index, rt in enumerate(json_data["all_articles"]):
+        for index, rt in enumerate(json_data.get("all_articles", [])):
             logging.debug(
                 "Index: %s, Score: %s - AI Check: %s",
                 index,
@@ -88,7 +87,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
                 rt["aiscore"]["aicheck"],
             )
             # Find the article with the highest score
-            highest_score_article = max(
+            json_data["picked_article"] = max(
                 json_data["all_articles"],
                 key=lambda x: (
                     x["aiscore"]["score"]
@@ -97,13 +96,15 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
                 ),
             )
             # Log the article with the highest score
-            json_data["picked_article"] = highest_score_article
-        logging.info(
-            "Winner Article: %s Wiht Score %s and check: %s",
-            highest_score_article.get("title", "Unknown"),
-            highest_score_article["aiscore"]["score"],
-            highest_score_article["aiscore"]["aicheck"],
-        )
+        if json_data.get("picked_article") is not None:
+            logging.info(
+                "Winner Article: %s With Score %s and check: %s",
+                json_data["picked_article"].get("title", "Unknown"),
+                json_data["picked_article"]["aiscore"]["score"],
+                json_data["picked_article"]["aiscore"]["aicheck"],
+            )
+        else:
+            logging.error("No Winning storry found")
 
         # save the content to s3
         s3_client = boto3.client("s3")
