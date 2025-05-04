@@ -46,8 +46,7 @@
               "Parameters": {
                 "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-imggen-lambda-function:$LATEST",
                 "Payload": {
-                  "event_id.$": "$event_id",
-                  "story.$": "$.picked_article"
+                  "event_id.$": "$event_id"
                 }
               },
               "Retry": [
