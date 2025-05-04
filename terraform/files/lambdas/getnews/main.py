@@ -47,7 +47,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         # genertaes the basic jasondata file
         json_data = {"eventid": str(generate_custom_uuid())}
         # Get the event data from the event
-        result["eventid"] = json_data["eventid"]
+        result["event_id"] = json_data["eventid"]
         # Returns the ssm prmater for all info
         ssm_client = boto3.client("ssm", region_name=os.getenv("region") or "eu-west-2")
         ssm_data = json.loads(
