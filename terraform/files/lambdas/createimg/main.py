@@ -39,7 +39,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         ssm_client = boto3.client("ssm", region_name=os.getenv("region") or "eu-west-2")
         ssm_data = json.loads(
             ssm_client.get_parameter(
-                Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/lambdasettings",
+                Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/settings",
                 WithDecryption=True,
             )["Parameter"]["Value"]
         )
