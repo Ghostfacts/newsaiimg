@@ -37,11 +37,13 @@ def generate_custom_uuid():
 # main code
 def lambda_handler(event, context):  # pylint: disable=W0613,R1710
     """Main lambda handler Where it all starts"""
+
     newsai = aiscoring.AWSai(region=os.getenv("region") or "eu-west-2")
     # Defult Return info
     result = {
         "statusCode": 200,
         "body": json.dumps("Hello from Lambda!"),
+        "logStreamName": getattr(context, "log_stream_name", None),
     }
     try:
         # genertaes the basic jasondata file
