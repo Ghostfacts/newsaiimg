@@ -52,7 +52,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         ssm_client = boto3.client("ssm", region_name=os.getenv("region") or "eu-west-2")
         ssm_data = json.loads(
             ssm_client.get_parameter(
-                Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/lambdasettings",
+                Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/settings",
                 WithDecryption=True,
             )["Parameter"]["Value"]
         )
@@ -126,10 +126,5 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         logging.error("Client error: %s", str(e))
         result["statusCode"] = 500
         result["error"] = json.dumps({"error": "Client error"})
-    # except Exception as e:  # pylint: disable=W0718
-    #     logging.error("General: %s", str(e))
-    #     result["statusCode"] = 500
-    #     result["error"] = json.dumps({"error": str(e)})
-
     # Return the result
     return result
