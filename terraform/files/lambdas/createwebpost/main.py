@@ -74,7 +74,7 @@ def make_story_post(json_story):
         tmp_file.write(f"author = '{story_data['author']}'\n".encode("utf-8"))
         tmp_file.write(f"source = '{story_data['source']}'\n".encode("utf-8"))
         tmp_file.write(b"+++\n")
-        tmp_file.write(b"## About the story\n")
+        tmp_file.write(b"## About the story\n\n")
         tmp_file.write(
             f"- Story Source: [{story_data['source']}]({story_data['url']})\n".encode(
                 "utf-8"
@@ -85,21 +85,19 @@ def make_story_post(json_story):
         tmp_file.write(b"\n")
         tmp_file.write(f"{story_data['ai_description']}\n".encode("utf-8"))
         tmp_file.write(b"\n")
-        tmp_file.write(b"## AI info for image\n")
-        tmp_file.write(b"\n")
+        tmp_file.write(b"\n## AI info for image\n\n")
         tmp_file.write(f"- Image Model used: {ai_data['img_model']}\n".encode("utf-8"))
         tmp_file.write(
             f"- Promt Model used: {ai_data['promt_model']}\n".encode("utf-8")
         )
         tmp_file.write(b"\n")
-        tmp_file.write(b"### Promt Used\n")
+        tmp_file.write(b"\n### Promt Used\n")
         tmp_file.write(f"{ai_data['promt']}\n".encode("utf-8"))
         tmp_file.write(b"\n")
-        tmp_file.write(b"## AI info for Story\n")
-        tmp_file.write(b"\n")
         tmp_file.write(
-            f"- Total score: {story_data['aiscore']['score']}\n".encode("utf-8")
-        )
+            f"\n## AI info for Story (Total: {story_data['aiscore']['score']})\n"
+        ).encode("utf-8")
+        tmp_file.write(b"\n")
         tmp_file.write(b"\n")
         for aiscore in story_data["aiscore"]["response"]:
             tmp_file.write(
