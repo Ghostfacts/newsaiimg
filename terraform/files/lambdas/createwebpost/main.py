@@ -81,11 +81,7 @@ def make_story_post(json_story):
             )
         )
         tmp_file.write(f"- Story Author: {story_data['author']}\n".encode("utf-8"))
-        tmp_file.write(
-            f"- Published Date: {datetime.fromisoformat(published_at).strftime('%d %B %Y')}\n".encode(
-                "utf-8"
-            )
-        )
+        tmp_file.write(f"- Published Date: {published_at}\n".encode("utf-8"))
         tmp_file.write(b"\n")
         tmp_file.write(f"{story_data['ai_description']}\n".encode("utf-8"))
         tmp_file.write(b"\n")
