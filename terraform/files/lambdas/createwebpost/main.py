@@ -157,7 +157,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
             image=news_image,
             width=500,
             s3info={
-                "bucket": ssm_data["sites3bucket"],
+                "bucket": ssm_data["ais3bucket"],
                 "key": f"website/content/images/{json_data.get('eventid')}/main.jpg",
             },
         )
@@ -165,7 +165,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
             image=news_image,
             width=70,
             s3info={
-                "bucket": ssm_data["sites3bucket"],
+                "bucket": ssm_data["ais3bucket"],
                 "key": f"website/content/images/{json_data.get('eventid')}/thum.jpg",
             },
         )
@@ -173,7 +173,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         # Upload the temporary file to S3
         with open(make_story_post(json_data), "rb") as tmp_file:
             s3_client.put_object(
-                Bucket=ssm_data["sites3bucket"],
+                Bucket=ssm_data["ais3bucket"],
                 Key=f"website/content/post/{json_data.get('eventid')}.md",
                 Body=tmp_file,
             )
@@ -187,6 +187,5 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         logging.error("Client error: %s", str(e))
         result["statusCode"] = 500
         result["error"] = json.dumps({"error": "Client error"})
-
     # Return the result
     return result
