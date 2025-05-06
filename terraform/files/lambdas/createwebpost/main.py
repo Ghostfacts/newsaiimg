@@ -64,15 +64,15 @@ def make_story_post(json_story):
         tmp_file.write(b"+++\n")
         tmp_file.write(f"title = '{story_data['title']}'\n".encode("utf-8"))
         tmp_file.write(f"id ='{json_story.get('eventid')}'\n".encode("utf-8"))
-        tmp_file.write(f"story_date = {published_at}\n".encode("utf-8"))
+        tmp_file.write(f"story_date = '{published_at}'\n".encode("utf-8"))
         tmp_file.write(
-            f"date = {datetime.now(timezone.utc).astimezone().isoformat()}\n".encode(
+            f"date = '{datetime.now(timezone.utc).astimezone().isoformat()}'\n".encode(
                 "utf-8"
             )
         )
         tmp_file.write(b"draft = false\n")
-        tmp_file.write(f"author = {story_data['author']}\n".encode("utf-8"))
-        tmp_file.write(f"source = {story_data['source']}\n".encode("utf-8"))
+        tmp_file.write(f"author = '{story_data['author']}'\n".encode("utf-8"))
+        tmp_file.write(f"source = '{story_data['source']}'\n".encode("utf-8"))
         tmp_file.write(b"+++\n")
         tmp_file.write(b"## About the story\n")
         tmp_file.write(
