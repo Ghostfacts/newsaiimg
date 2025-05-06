@@ -79,6 +79,7 @@ def make_story_post(json_story):
         tmpmd.write("\n")
         tmpmd.write(f"{story_data['ai_description']}\n")
         tmpmd.write("\n")
+        tmpmd.write("\n")
         tmpmd.write("\n## AI info for image\n\n")
         tmpmd.write(f"- Image Model used: {ai_data['img_model']}\n")
         tmpmd.write(f"- Promt Model used: {ai_data['promt_model']}\n")
@@ -91,9 +92,9 @@ def make_story_post(json_story):
         )
         tmpmd.write("\n")
         tmpmd.write("\n")
-        for aiscore in story_data["aiscore"]["response"]:
-            tmpmd.write(f"- Model {aiscore['model_id']} Scored {aiscore['score']}\n")
 
+        for aiscore in story_data["aiscore"]["response"]:
+            tmpmd.write(f"- Model {aiscore['model_id']} Scored {aiscore['score']}\n\n")
     return tmp_file_path
 
 
