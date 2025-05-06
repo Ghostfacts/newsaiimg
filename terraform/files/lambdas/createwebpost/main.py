@@ -61,11 +61,10 @@ def make_story_post(json_story):
         tmp_file_path = tmp_file.name
         logging.info("Temp file: %s", tmp_file_path)
         published_at = json_story["picked_article"]["publishedAt"]
-        formatted_date = datetime.fromisoformat(published_at).isoformat()
         tmp_file.write(b"+++\n")
         tmp_file.write(f"title = '{story_data['title']}'\n".encode("utf-8"))
         tmp_file.write(f"id ='{json_story.get('eventid')}'\n".encode("utf-8"))
-        tmp_file.write(f"story_date = {formatted_date}\n".encode("utf-8"))
+        tmp_file.write(f"story_date = {published_at}\n".encode("utf-8"))
         tmp_file.write(
             f"date = {datetime.now(timezone.utc).astimezone().isoformat()}\n".encode(
                 "utf-8"
