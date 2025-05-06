@@ -60,6 +60,7 @@ def make_story_post(json_story):
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".md") as tmp_file:
         tmp_file_path = tmp_file.name
+
     logging.info("Temp Path file %s", str(tmp_file_path))
 
     with open(tmp_file_path, "w", encoding="utf-8") as tmpmd:
