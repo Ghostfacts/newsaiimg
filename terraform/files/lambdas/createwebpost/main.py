@@ -56,55 +56,44 @@ def make_story_post(json_story):
     ai_data = json_story["ai_img"]
     editedstory = editerai.alter_story(story_data["content"])
     story_data["ai_description"] = editedstory["body"]
+    published_at = json_story["picked_article"]["publishedAt"]
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=".md") as tmp_file:
         tmp_file_path = tmp_file.name
-        logging.info("Temp file: %s", tmp_file_path)
-        published_at = json_story["picked_article"]["publishedAt"]
-        tmp_file.write(b"+++\n")
-        tmp_file.write(f"title = '{story_data['title']}'\n".encode("utf-8"))
-        tmp_file.write(f"id ='{json_story.get('eventid')}'\n".encode("utf-8"))
-        tmp_file.write(f"story_date = '{published_at}'\n".encode("utf-8"))
-        tmp_file.write(
-            f"date = '{datetime.now(timezone.utc).astimezone().isoformat()}'\n".encode(
-                "utf-8"
-            )
-        )
-        tmp_file.write(b"draft = false\n")
-        tmp_file.write(f"author = '{story_data['author']}'\n".encode("utf-8"))
-        tmp_file.write(f"source = '{story_data['source']}'\n".encode("utf-8"))
-        tmp_file.write(b"+++\n")
-        tmp_file.write(b"## About the story\n\n")
-        tmp_file.write(
-            f"- Story Source: [{story_data['source']}]({story_data['url']})\n".encode(
-                "utf-8"
-            )
-        )
-        tmp_file.write(f"- Story Author: {story_data['author']}\n".encode("utf-8"))
-        tmp_file.write(f"- Published Date: {published_at}\n".encode("utf-8"))
-        tmp_file.write(b"\n")
-        tmp_file.write(f"{story_data['ai_description']}\n".encode("utf-8"))
-        tmp_file.write(b"\n")
-        tmp_file.write(b"\n## AI info for image\n\n")
-        tmp_file.write(f"- Image Model used: {ai_data['img_model']}\n".encode("utf-8"))
-        tmp_file.write(
-            f"- Promt Model used: {ai_data['promt_model']}\n".encode("utf-8")
-        )
-        tmp_file.write(b"\n")
-        tmp_file.write(b"\n### Promt Used\n")
-        tmp_file.write(f"{ai_data['promt']}\n".encode("utf-8"))
-        tmp_file.write(b"\n")
-        tmp_file.write(
+    logging.info("Temp Path file %s", str(tmp_file_path))
+
+    with open(tmp_file_path, "w", encoding="utf-8") as tmpmd:
+        tmpmd.write("+++\n")
+        tmpmd.write(f"title = '{story_data['title']}'\n")
+        tmpmd.write(f"id ='{json_story.get('eventid')}'\n")
+        tmpmd.write(f"story_date = '{published_at}'\n")
+        tmpmd.write(f"date = '{datetime.now(timezone.utc).astimezone().isoformat()}'\n")
+        tmpmd.write("draft = false\n")
+        tmpmd.write(f"author = '{story_data['author']}'\n")
+        tmpmd.write(f"source = '{story_data['source']}'\n")
+        tmpmd.write("+++\n")
+        tmpmd.write("## About the story\n\n")
+        tmpmd.write(f"- Story Source: [{story_data['source']}]({story_data['url']})\n")
+        tmpmd.write(f"- Story Author: {story_data['author']}\n")
+        tmpmd.write(f"- Published Date: {published_at}\n")
+        tmpmd.write("\n")
+        tmpmd.write(f"{story_data['ai_description']}\n")
+        tmpmd.write("\n")
+        tmpmd.write("\n## AI info for image\n\n")
+        tmpmd.write(f"- Image Model used: {ai_data['img_model']}\n")
+        tmpmd.write(f"- Promt Model used: {ai_data['promt_model']}\n")
+        tmpmd.write("\n")
+        tmpmd.write("\n### Promt Used\n")
+        tmpmd.write(f"{ai_data['promt']}\n")
+        tmpmd.write("\n")
+        tmpmd.write(
             f"\n## AI info for Story (Total: {story_data['aiscore']['score']})\n"
-        ).encode("utf-8")
-        tmp_file.write(b"\n")
-        tmp_file.write(b"\n")
+        )
+        tmpmd.write("\n")
+        tmpmd.write("\n")
         for aiscore in story_data["aiscore"]["response"]:
-            tmp_file.write(
-                f"- Model {aiscore['model_id']} Scored {aiscore['score']}\n".encode(
-                    "utf-8"
-                )
-            )
+            tmpmd.write(f"- Model {aiscore['model_id']} Scored {aiscore['score']}\n")
+
     return tmp_file_path
 
 
