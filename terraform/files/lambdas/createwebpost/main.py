@@ -31,10 +31,12 @@ def resize_and_save_image(image, width=None, size=None, s3info=None):
         w_percent = width / float(image.size[0])
         h_size = int((float(image.size[1]) * float(w_percent)))
         img_resiz = image.resize(
-            (width, h_size), Image.LANCZOS  # pylint: disable=E1101
+            (width, h_size), Image.Resampling.LANCZOS  # pylint: disable=E1101
         )
     elif size:
-        img_resiz = image.resize(size, Image.LANCZOS)  # pylint: disable=E1101
+        img_resiz = image.resize(
+            size, Image.Resampling.LANCZOS
+        )  # pylint: disable=E1101
     if s3info is None:
         logging.info("NO s3 returning image")
         return img_resiz
@@ -47,6 +49,40 @@ def resize_and_save_image(image, width=None, size=None, s3info=None):
             Body=output.getvalue(),
         )
     return True
+
+
+def watermark_image(imagedata):
+    """Watermark the image with transparency and resizing"""
+    # Open the watermark image
+    watermark = Image.open("watermark.png").convert("RGBA")
+
+    # Resize the watermark to 20% of the original image size
+    watermark_width = int(imagedata.size[0] * 0.3)
+    watermark_height = int(imagedata.size[1] * 0.3)
+    watermark = watermark.resize(
+        (watermark_width, watermark_height), Image.Resampling.LANCZOS
+    )
+
+    # Make the watermark 70% transparent
+    watermark_alpha = watermark.split()[3]  # Extract the alpha channel
+    watermark_alpha = watermark_alpha.point(
+        lambda p: int(p * 0.7)
+    )  # Reduce opacity to 70%
+    watermark.putalpha(watermark_alpha)
+
+    # Calculate position for bottom-right corner
+    position = (
+        imagedata.size[0] - watermark.size[0],
+        imagedata.size[1] - watermark.size[1],
+    )
+
+    # Create a new image with an alpha channel to combine the watermark
+    transparent = Image.new("RGBA", imagedata.size, (0, 0, 0, 0))
+    transparent.paste(imagedata.convert("RGBA"), (0, 0))
+    transparent.paste(watermark, position, watermark)
+
+    # Return the final image
+    return transparent.convert("RGB")
 
 
 def make_story_post(json_story):
@@ -148,8 +184,9 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
                 )["Body"].read()
             )
         )
+        # Save the image to a test file
         resize_and_save_image(
-            image=news_image,
+            image=watermark_image(news_image),
             width=500,
             s3info={
                 "bucket": ssm_data["ais3bucket"],
