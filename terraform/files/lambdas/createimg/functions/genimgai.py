@@ -58,7 +58,7 @@ class AWSai:
             "cyberpunk",
             "retro",
             "vaporwave",
-            "Hentai",
+            "hentai",
         ]
         img_style = random.choice(img_styls)
         logging.info("Image style picked: %s", img_style)
