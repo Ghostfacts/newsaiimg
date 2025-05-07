@@ -64,6 +64,9 @@ def make_story_post(json_story):
     logging.info("Temp Path file %s", str(tmp_file_path))
 
     with open(tmp_file_path, "w", encoding="utf-8") as tmpmd:
+        formated_pub_date = datetime.fromisoformat(
+            published_at.replace("Z", "+00:00")
+        ).strftime("%d/%m/%Y %I:%M %p")
         tmpmd.write("+++\n")
         tmpmd.write(f"title = '{story_data['title']}'\n")
         tmpmd.write(f"id ='{json_story.get('eventid')}'\n")
@@ -76,7 +79,10 @@ def make_story_post(json_story):
         tmpmd.write("## About the story\n\n")
         tmpmd.write(f"- Story Source: [{story_data['source']}]({story_data['url']})\n")
         tmpmd.write(f"- Story Author: {story_data['author']}\n")
-        tmpmd.write(f"- Published Date: {published_at}\n")
+        tmpmd.write(f"- Published Date: {formated_pub_date}\n")
+        tmpmd.write(
+            f"- Picked Date: {datetime.now(timezone.utc).astimezone().strftime("%d/%m/%Y %I:%M %p")}\n"
+        )
         tmpmd.write("\n")
         tmpmd.write(f"{story_data['ai_description']}\n")
         tmpmd.write("\n")
