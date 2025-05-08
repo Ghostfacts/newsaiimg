@@ -117,7 +117,7 @@ def make_story_post(json_story):
         tmpmd.write(f"- Story Author: {story_data['author']}\n")
         tmpmd.write(f"- Published Date: {formated_pub_date}\n")
         tmpmd.write(
-            f"- Picked Date: {datetime.now(timezone.utc).astimezone().strftime("%d/%m/%Y %I:%M %p")}\n"
+            f"- Picked Date: {datetime.now(timezone.utc).astimezone().strftime('%d/%m/%Y %I:%M %p')}\n"
         )
         tmpmd.write("\n")
         tmpmd.write(f"{story_data['ai_description']}\n")
