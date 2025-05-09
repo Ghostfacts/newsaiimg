@@ -37,22 +37,24 @@ def generate_custom_uuid():
 # main code
 def lambda_handler(event, context):  # pylint: disable=W0613,R1710
     """Main lambda handler Where it all starts"""
+
     newsai = aiscoring.AWSai(region=os.getenv("region") or "eu-west-2")
     # Defult Return info
     result = {
         "statusCode": 200,
         "body": json.dumps("Hello from Lambda!"),
+        "logStreamName": getattr(context, "log_stream_name", None),
     }
     try:
         # genertaes the basic jasondata file
         json_data = {"eventid": str(generate_custom_uuid())}
         # Get the event data from the event
-        result["eventid"] = json_data["eventid"]
+        result["event_id"] = json_data["eventid"]
         # Returns the ssm prmater for all info
         ssm_client = boto3.client("ssm", region_name=os.getenv("region") or "eu-west-2")
         ssm_data = json.loads(
             ssm_client.get_parameter(
-                Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/lambdasettings",
+                Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/settings",
                 WithDecryption=True,
             )["Parameter"]["Value"]
         )
@@ -68,7 +70,6 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         if json_data["all_articles"] is not None:
             json_data["total_articles"] = len(json_data["all_articles"])
             # need to pick the winner article now
-
             for article in json_data["all_articles"]:
                 logging.info(
                     "Starting to AI score on:%s", article.get("title", "Unknow")
@@ -80,7 +81,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         else:
             json_data["total_articles"] = 0
 
-        for index, rt in enumerate(json_data["all_articles"]):
+        for index, rt in enumerate(json_data.get("all_articles", [])):
             logging.debug(
                 "Index: %s, Score: %s - AI Check: %s",
                 index,
@@ -88,7 +89,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
                 rt["aiscore"]["aicheck"],
             )
             # Find the article with the highest score
-            highest_score_article = max(
+            json_data["picked_article"] = max(
                 json_data["all_articles"],
                 key=lambda x: (
                     x["aiscore"]["score"]
@@ -97,13 +98,15 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
                 ),
             )
             # Log the article with the highest score
-            json_data["picked_article"] = highest_score_article
-        logging.info(
-            "Winner Article: %s Wiht Score %s and check: %s",
-            highest_score_article.get("title", "Unknown"),
-            highest_score_article["aiscore"]["score"],
-            highest_score_article["aiscore"]["aicheck"],
-        )
+        if json_data.get("picked_article") is not None:
+            logging.info(
+                "Winner Article: %s With Score %s and check: %s",
+                json_data["picked_article"].get("title", "Unknown"),
+                json_data["picked_article"]["aiscore"]["score"],
+                json_data["picked_article"]["aiscore"]["aicheck"],
+            )
+        else:
+            logging.error("No Winning storry found")
 
         # save the content to s3
         s3_client = boto3.client("s3")
@@ -125,10 +128,5 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         logging.error("Client error: %s", str(e))
         result["statusCode"] = 500
         result["error"] = json.dumps({"error": "Client error"})
-    # except Exception as e:  # pylint: disable=W0718
-    #     logging.error("General: %s", str(e))
-    #     result["statusCode"] = 500
-    #     result["error"] = json.dumps({"error": str(e)})
-
     # Return the result
     return result

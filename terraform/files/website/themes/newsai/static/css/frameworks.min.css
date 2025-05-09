@@ -12987,12 +12987,18 @@ Custom
   margin-bottom: 10px;
 }
 
-.entry-content h1,
+.entry-content
 h2,
 h3,
 h4,
 h5,
 h6 {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.entry-content h1,
+{
   margin-top: 0px;
   margin-bottom: 5px;
 }
