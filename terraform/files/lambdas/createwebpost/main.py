@@ -100,6 +100,7 @@ def make_story_post(json_story):
     logging.info("Temp Path file %s", str(tmp_file_path))
 
     with open(tmp_file_path, "w", encoding="utf-8") as tmpmd:
+        story_data['title'] = str(story_data['title']).replace("'","")
         formated_pub_date = datetime.fromisoformat(
             published_at.replace("Z", "+00:00")
         ).strftime("%d/%m/%Y %I:%M %p")
