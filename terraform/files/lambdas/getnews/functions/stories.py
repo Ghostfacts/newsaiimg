@@ -239,8 +239,8 @@ class Newsapi:
             story_list = []
             query_params = (
                 f"?domains=bbc.co.uk"
-                f"&from={(datetime.now() - timedelta(days=daysold)).strftime("%Y-%m-%d")}"
-                f"&to={datetime.now().strftime("%Y-%m-%d")}"
+                f"&from={(datetime.now() - timedelta(days=daysold)).strftime('%Y-%m-%d')}"
+                f"&to={datetime.now().strftime('%Y-%m-%d')}"
                 f"&sortBy=popularity"
                 f"&language={country}"
             )
