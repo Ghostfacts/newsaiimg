@@ -289,7 +289,7 @@ class OPENai:
                 image_response = requests.get(image_url, timeout=300)
                 results["image_data"] = image_response.content
             else:
-                print(f"Error: {response.status_code} - {response.text}")
+                raise ValueError(f"Error: {response.status_code} - {response.text}")
         except ValueError as invokeerr:
             logging.error("model id: %s ValueError: %s", model_id, invokeerr)
             results["error_type"] = str(invokeerr.__class__.__name__)
