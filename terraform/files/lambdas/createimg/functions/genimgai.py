@@ -282,6 +282,7 @@ class OPENai:
             response = requests.post(url, headers=self.headers, json=data, timeout=300)
             # Check the result
             if response.status_code == 200:
+                logging.info("model id: %s Image Created", model_id)
                 results["img_path"] = response.json()["data"][0]["url"]
                 logging.debug("Image path: %s", results["img_path"])
                 # Retrieve the image URL and fetch the image data
