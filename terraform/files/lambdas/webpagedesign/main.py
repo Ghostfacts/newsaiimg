@@ -134,16 +134,12 @@ def lambda_handler(event, context):  # pylint: disable=unused-argument
             "title": json_data["picked_article"]["title"].replace("'", ""),
             "id": json_data.get("eventid"),
         }
-        #  will need to workout wau to add more latters 
-        site_keywords = "AI-test"
         page = f"""
 +++
 title = '{pagejson["title"]}'
 id ='{pagejson["id"]}'
 date = {datetime.now(timezone.utc).astimezone().isoformat()}
 draft = false
-Keywords = '{site_keywords}'
-Cover   = 'images/{json_data.get('eventid')}/main.jpg'
 +++
 
 ### About the Story
