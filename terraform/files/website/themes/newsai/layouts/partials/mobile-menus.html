@@ -31,7 +31,6 @@
         <path d="M219.854,294.719c22.155,0,40.144-17.966,40.144-40.137c0-22.159-17.988-40.128-40.144-40.12,c-22.161,0-40.148,17.968-40.148,40.128C179.706,276.753,197.692,294.719,219.854,294.719z"/>
       </svg>
       Gallery
-      <span class="Counter ">{{ $section_count}}</span>
     </a>
     <a class='UnderlineNav-item  {{ if eq .Type "project" }} selected {{ end }}{{ if eq .Type "tags" }} selected {{ end }}'
       href="{{urls.JoinPath .Site.BaseURL "project"}}">
