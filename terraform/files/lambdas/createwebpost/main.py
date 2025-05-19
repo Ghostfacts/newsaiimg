@@ -100,7 +100,7 @@ def make_story_post(json_story):
     logging.info("Temp Path file %s", str(tmp_file_path))
 
     keywords="testAI"
-
+    coverimg='images/{story_data["eventid"]}/main.jpg'
     with open(tmp_file_path, "w", encoding="utf-8") as tmpmd:
         story_data['title'] = str(story_data['title']).replace("'","")
         formated_pub_date = datetime.fromisoformat(
@@ -115,7 +115,7 @@ def make_story_post(json_story):
         tmpmd.write(f"author = '{story_data['author']}'\n")
         tmpmd.write(f"source = '{story_data['source']}'\n")
         tmpmd.write(f"keywords = '{keywords}'\n")
-        tmpmd.write(f"cover = 'images/{story_data["eventid"]}/main.jpg'\n")
+        tmpmd.write(f"cover = '{coverimg}'\n")
         tmpmd.write("+++\n")
         tmpmd.write("## About the story\n\n")
         tmpmd.write(f"- Story Source: [{story_data['source']}]({story_data['url']})\n")
