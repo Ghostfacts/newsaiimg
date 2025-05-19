@@ -51,6 +51,7 @@ class AWSai:
             - It should only be an few lines maxium for 10 lines
             - It needs to be relevent to th story
             - Make it easy to read like for a 7 year old to understand
+            - only output the story no other promts like "Here is a short version of the news story for the website:"
 
         Here is the news story to score:
         \"\"\"{news_story}\"\"\"
@@ -67,6 +68,7 @@ class AWSai:
                 )
             ai_score_reslt["model_id"] = pik_model.get("id")
             if ai_score_reslt.get("result", "fail") == "passed":
+                logging.info("Story info Generated: %s", pik_model.get("id"))
                 break
         return ai_score_reslt
 
@@ -136,8 +138,9 @@ class AWSai:
             model_response = json.loads(response["body"].read())
             results = {
                 "result": "passed",
-                "body": json.loads(model_response["generation"]),
+                "body": model_response["generation"],
             }
+
             logging.debug("Raw AI %s output: %s", model_id, results)
         except ClientError as invokeerr:
             if invokeerr.response["Error"]["Code"] == "ThrottlingException":

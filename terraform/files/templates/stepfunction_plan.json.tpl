@@ -46,8 +46,7 @@
               "Parameters": {
                 "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-imggen-lambda-function:$LATEST",
                 "Payload": {
-                  "event_id.$": "$event_id",
-                  "story.$": "$.picked_article"
+                  "event_id.$": "$event_id"
                 }
               },
               "Retry": [
@@ -104,7 +103,7 @@
     },
     "Publishing": {
       "Type": "Parallel",
-      "Next": "SNS Publish",
+      "Next": "GetObject",
       "Branches": [
         {
           "StartAt": "Creating Web content",
@@ -145,6 +144,15 @@
         }
       ]
     },
+    "GetObject": {
+      "Type": "Task",
+      "Parameters": {
+        "Bucket": "newsaiimg-dev-s3-imgstorage",
+        "Key.$": "States.Format('aiimg/{}/main.json', $event_id)"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
+      "Next": "SNS Publish"
+    },
     "SNS Publish": {
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
@@ -171,7 +179,8 @@
           }
         }
       },
-      "End": true
+      "End": true,
+      "InputPath": "$.Body"
     }
   }
 }

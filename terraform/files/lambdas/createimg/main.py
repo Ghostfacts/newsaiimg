@@ -39,7 +39,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         ssm_client = boto3.client("ssm", region_name=os.getenv("region") or "eu-west-2")
         ssm_data = json.loads(
             ssm_client.get_parameter(
-                Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/lambdasettings",
+                Name=os.getenv("SSM_PARAMETER_NAME") or "/newsaiimg/dev/settings",
                 WithDecryption=True,
             )["Parameter"]["Value"]
         )
@@ -118,7 +118,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         logging.info("Image uploaded")
         logging.info(
             "image path: %s",
-            f"s3://{ssm_data["ais3bucket"]}/aiimg/{event.get('event_id')}/newsimage.png",
+            f"s3://{ssm_data['ais3bucket']}/aiimg/{event.get('event_id')}/newsimage.png",
         )
         # Upload the JSON data to S3
         s3_client.put_object(
@@ -130,7 +130,7 @@ def lambda_handler(event, context):  # pylint: disable=W0613,R1710
         logging.info("JSON data uploaded")
         logging.info(
             "JSON path: %s",
-            f"s3://{ssm_data["ais3bucket"]}/aiimg/{event.get('event_id')}/main.json",
+            f"s3://{ssm_data['ais3bucket']}/aiimg/{event.get('event_id')}/main.json",
         )
 
     # Error handeling

@@ -38,7 +38,9 @@ data "aws_iam_policy_document" "lambda_policy" {
     ]
     resources = [
       aws_s3_bucket.aiminnews.arn,
-      "${aws_s3_bucket.aiminnews.arn}/*"
+      "${aws_s3_bucket.aiminnews.arn}/*",
+      aws_s3_bucket.website.arn,
+      "${aws_s3_bucket.website.arn}/*"
     ]
   }
   statement {

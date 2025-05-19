@@ -3,6 +3,7 @@
 import base64
 import json
 import logging
+import random
 import time
 
 import boto3
@@ -46,13 +47,28 @@ class AWSai:
             {"provider": "meta", "id": "meta.llama3-8b-instruct-v1:0"},
             # {"provider": "aws", "id": "amazon.titan-text-express-v1"}
         ]
+        img_styls = [
+            "realistic",
+            "artistic",
+            "cartoon",
+            "fantasy",
+            "abstract",
+            "anime",
+            "manga",
+            "cyberpunk",
+            "retro",
+            "vaporwave",
+            "hentai",
+        ]
+        img_style = random.choice(img_styls)
+        logging.info("Image style picked: %s", img_style)
         prompt_text = f"""
         Task:
             Create an image prompt based on the following news story. The image should be visually appealing and relevant to the content of the story.
             The prompt should be suitable for an AI image generation model and should not contain any explicit or inappropriate content.
         Rules to follow:
             - The MAXIUM number of characters for the prompt is 400 it MUST not go any higher.
-            - Include the image style of realistic in the prompt.
+            - Include the image style of {img_style} in the prompt.
             - The description should be engaging, imaginative, and detailed.
             - Just inclde the promt for the image, DO NOT include any other text.
         This is the news Story:
@@ -266,6 +282,7 @@ class OPENai:
             response = requests.post(url, headers=self.headers, json=data, timeout=300)
             # Check the result
             if response.status_code == 200:
+                logging.info("model id: %s Image Created", model_id)
                 results["img_path"] = response.json()["data"][0]["url"]
                 logging.debug("Image path: %s", results["img_path"])
                 # Retrieve the image URL and fetch the image data
@@ -273,7 +290,7 @@ class OPENai:
                 image_response = requests.get(image_url, timeout=300)
                 results["image_data"] = image_response.content
             else:
-                print(f"Error: {response.status_code} - {response.text}")
+                raise ValueError(f"Error: {response.status_code} - {response.text}")
         except ValueError as invokeerr:
             logging.error("model id: %s ValueError: %s", model_id, invokeerr)
             results["error_type"] = str(invokeerr.__class__.__name__)
