@@ -28,7 +28,7 @@ resource "aws_sfn_state_machine" "newsaiimg_step_function" {
   # checkov:skip=CKV_AWS_285
   name     = "newsaiimg-${local.environment_map[var.environment]}-step-function"
   role_arn = aws_iam_role.step_function_role.arn
-  definition = templatefile("${path.module}/files/stepfunction_plan.json.tpl", {
+  definition = templatefile("${path.module}/files/templates/stepfunction_plan.json.tpl", {
     newapi_lmb_function_arn  = module.news_api_function.function.arn,
     newapi_lmb_function_name = module.news_api_function.function.name,
     s3_bucket                = aws_s3_bucket.aiminnews.bucket,

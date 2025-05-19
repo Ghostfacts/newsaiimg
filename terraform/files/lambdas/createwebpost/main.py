@@ -115,7 +115,7 @@ def make_story_post(json_story):
         tmpmd.write(f"author = '{story_data['author']}'\n")
         tmpmd.write(f"source = '{story_data['source']}'\n")
         tmpmd.write(f"keywords = '{keywords}'\n")
-        tmpmd.write(f"cover = 'images/{event.get('event_id')}/main.jpg'\n")
+        tmpmd.write(f"cover = 'images/{story_data["eventid"]}/main.jpg'\n")
         tmpmd.write("+++\n")
         tmpmd.write("## About the story\n\n")
         tmpmd.write(f"- Story Source: [{story_data['source']}]({story_data['url']})\n")
