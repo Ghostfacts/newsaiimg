@@ -31,7 +31,7 @@ resource "aws_sfn_state_machine" "newsaiimg_step_function" {
   definition = templatefile("${path.module}/files/templates/stepfunction_plan.json.tpl", {
     accountid   = data.aws_caller_identity.current.account_id,
     environment = local.environment_map[var.environment],
-    region      = local.region_map[data.aws_region.current.name],
+    region      = data.aws_region.current.name,
     domain      = aws_cloudfront_distribution.cdn.domain_name
   })
 }

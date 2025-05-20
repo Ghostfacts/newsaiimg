@@ -100,6 +100,18 @@ jobs:
           path: terraform
           githubapi: ${{ secrets.GITHUB_TOKEN }}
 
+  approve_deploy:
+    needs: terraformplan
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for approval
+        uses: trstringer/manual-approval@v1
+        with:
+          secret: ${{ secrets.GITHUB_TOKEN }}
+          approvers:  forestnd,forstops
+          minimum-approvals: 1
+
+
   terraformdeploy:
     concurrency:
       group: terraform-deploy
