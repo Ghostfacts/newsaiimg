@@ -149,10 +149,6 @@ resource "aws_cloudfront_distribution" "cdn" {
   }
 }
 
-output "website_url" {
-  value = aws_cloudfront_distribution.cdn.domain_name
-}
-
 #Build website on change
 resource "aws_s3_bucket_object" "buildspec_file" {
   bucket = aws_s3_bucket.aiminnews.id

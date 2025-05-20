@@ -72,7 +72,7 @@ module "pagedeploy_function" {
   # checkov:skip=CKV_AWS_117
   # checkov:skip=CKV_AWS_173
   source           = "./modules/lambda_function"
-  nameprefex       = "newsaiimg-${local.environment_map[var.environment]}-webpagedesign"
+  nameprefex       = "newsaiimg-${local.environment_map[var.environment]}-publish"
   runtime          = "python3.10"
   source_path      = "files/lambdas/createwebpost/"
   function_handler = "main.lambda_handler"

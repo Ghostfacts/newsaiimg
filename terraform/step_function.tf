@@ -29,8 +29,9 @@ resource "aws_sfn_state_machine" "newsaiimg_step_function" {
   name     = "newsaiimg-${local.environment_map[var.environment]}-step-function"
   role_arn = aws_iam_role.step_function_role.arn
   definition = templatefile("${path.module}/files/templates/stepfunction_plan.json.tpl", {
-    newapi_lmb_function_arn  = module.news_api_function.function.arn,
-    newapi_lmb_function_name = module.news_api_function.function.name,
-    s3_bucket                = aws_s3_bucket.aiminnews.bucket,
+    accountid   = data.aws_caller_identity.current.account_id,
+    environment = local.environment_map[var.environment],
+    region      = local.region_map[data.aws_region.current.name],
+    domain      = aws_cloudfront_distribution.cdn.domain_name
   })
 }
