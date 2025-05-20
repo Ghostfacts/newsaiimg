@@ -175,7 +175,7 @@
           },
           "incidentUrl1": {
             "DataType": "String",
-            "StringValue.$": "States.Format('https://d305zk4rld5lm5.cloudfront.net/post/{}', $event_id)"
+            "StringValue.$": "States.Format('https://${ domain }/post/{}', $event_id)"
           }
         }
       },
