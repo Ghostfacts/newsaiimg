@@ -7,7 +7,7 @@
       "Resource": "arn:aws:states:::lambda:invoke",
       "OutputPath": "$.Payload",
       "Parameters": {
-        "FunctionName": "arn:aws:lambda:eu-west-2:${ accountid }:function:newsaiimg-${ environment }-newsapi-lambda-function"
+        "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-newsapi-lambda-function"
       },
       "Retry": [
         {
@@ -44,7 +44,7 @@
               "Resource": "arn:aws:states:::lambda:invoke",
               "OutputPath": "$.Payload",
               "Parameters": {
-                "FunctionName": "arn:aws:lambda:eu-west-2:${ accountid }:function:newsaiimg-${ environment }-imggen-lambda-function:$LATEST",
+                "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-imggen-lambda-function:$LATEST",
                 "Payload": {
                   "event_id.$": "$event_id"
                 }
@@ -114,7 +114,7 @@
               "OutputPath": "$.Payload",
               "Parameters": {
                 "Payload.$": "$",
-                "FunctionName": "arn:aws:lambda:eu-west-2:${ accountid }:function:newsaiimg-${ environment }-webpagedesign-lambda-function:$LATEST"
+                "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-webpagedesign-lambda-function:$LATEST"
               },
               "Retry": [
                 {
@@ -159,7 +159,7 @@
       "Parameters": {
         "Subject": "NEWSAI - New story",
         "Message.$": "$",
-        "TopicArn": "arn:aws:sns:eu-west-2:${ accountid }:newsaiimg-${ environment }-sns-topic",
+        "TopicArn": "arn:aws:sns:${ region }:${ accountid }:newsaiimg-${ environment }-sns-topic",
         "MessageAttributes": {
           "eventType": {
             "DataType": "String",
