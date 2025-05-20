@@ -7,7 +7,7 @@
       "Resource": "arn:aws:states:::lambda:invoke",
       "OutputPath": "$.Payload",
       "Parameters": {
-        "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-newsapi-lambda-function"
+        "FunctionName": "arn:aws:lambda:${region}:${accountid}:function:newsaiimg-${environment}-newsapi-lambda-function"
       },
       "Retry": [
         {
@@ -44,7 +44,7 @@
               "Resource": "arn:aws:states:::lambda:invoke",
               "OutputPath": "$.Payload",
               "Parameters": {
-                "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-imggen-lambda-function:$LATEST",
+                "FunctionName": "arn:aws:lambda:${region}:${accountid}:function:newsaiimg-${environment}-imggen-lambda-function:$LATEST",
                 "Payload": {
                   "event_id.$": "$event_id"
                 }
@@ -73,7 +73,7 @@
             "Get-newsapi-Logs": {
               "Type": "Task",
               "Parameters": {
-                "LogGroupName": "/aws/lambda/newsaiimg-dev-newsapi-lambda-function",
+                "LogGroupName": "/aws/lambda/newsaiimg-${environment}-newsapi-lambda-function",
                 "LogStreamName.$": "$.logStreamName"
               },
               "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:getLogEvents",
@@ -84,7 +84,7 @@
               "Parameters": {
                 "ContentType": "application/json",
                 "Body.$": "States.JsonToString($)",
-                "Bucket": "newsaiimg-dev-s3-imgstorage",
+                "Bucket": "newsaiimg-${environment}-s3-imgstorage",
                 "Key.$": "States.Format('aiimg/{}/newsapi_log.json', $event_id)"
               },
               "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
@@ -114,7 +114,7 @@
               "OutputPath": "$.Payload",
               "Parameters": {
                 "Payload.$": "$",
-                "FunctionName": "arn:aws:lambda:eu-west-2:711387118193:function:newsaiimg-dev-webpagedesign-lambda-function:$LATEST"
+                "FunctionName": "arn:aws:lambda:${region}:${accountid}:function:newsaiimg-${environment}-publish-lambda-function:$LATEST"
               },
               "Retry": [
                 {
@@ -136,7 +136,7 @@
               "Type": "Task",
               "Resource": "arn:aws:states:::codebuild:startBuild",
               "Parameters": {
-                "ProjectName": "newsaiimg-dev-codebuild-build-website"
+                "ProjectName": "newsaiimg-${environment}-codebuild-build-website"
               },
               "End": true
             }
@@ -147,7 +147,7 @@
     "GetObject": {
       "Type": "Task",
       "Parameters": {
-        "Bucket": "newsaiimg-dev-s3-imgstorage",
+        "Bucket": "newsaiimg-${environment}-s3-imgstorage",
         "Key.$": "States.Format('aiimg/{}/main.json', $event_id)"
       },
       "Resource": "arn:aws:states:::aws-sdk:s3:getObject",
@@ -159,7 +159,7 @@
       "Parameters": {
         "Subject": "NEWSAI - New story",
         "Message.$": "$",
-        "TopicArn": "arn:aws:sns:eu-west-2:711387118193:newsaiimg-dev-sns-topic",
+        "TopicArn": "arn:aws:sns:${region}:${accountid}:newsaiimg-${environment}-sns-topic",
         "MessageAttributes": {
           "eventType": {
             "DataType": "String",
@@ -175,7 +175,7 @@
           },
           "incidentUrl1": {
             "DataType": "String",
-            "StringValue.$": "States.Format('https://d305zk4rld5lm5.cloudfront.net/post/{}', $event_id)"
+            "StringValue.$": "States.Format('${domain}/post/{}', $event_id)"
           }
         }
       },
@@ -184,3 +184,4 @@
     }
   }
 }
+region
