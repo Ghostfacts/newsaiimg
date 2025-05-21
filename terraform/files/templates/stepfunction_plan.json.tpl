@@ -114,7 +114,7 @@
               "OutputPath": "$.Payload",
               "Parameters": {
                 "Payload.$": "$",
-                "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-webpagedesign-lambda-function:$LATEST"
+                "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-publish-lambda-function:$LATEST"
               },
               "Retry": [
                 {
