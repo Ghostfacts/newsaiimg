@@ -22,7 +22,7 @@ defaults:
     working-directory: terraform
 
 jobs:
-  terraformplan:
+  terraform_plan:
     concurrency:
       group: terraform-plan
       cancel-in-progress: false
@@ -100,12 +100,12 @@ jobs:
           path: terraform
           githubapi: ${{ secrets.GITHUB_TOKEN }}
 
-  terraformdeploy:
+  terraform_deploy:
     concurrency:
       group: terraform-deploy
       cancel-in-progress: false
     runs-on: ubuntu-latest
-    needs: terraformplan
+    needs: terraform_plan
     environment:
       name: development
     steps:
@@ -164,7 +164,7 @@ jobs:
       group: terraform-deploy
       cancel-in-progress: false
     runs-on: ubuntu-latest
-    needs: terraformdeploy
+    needs: terraform_deploy
     environment:
       name: development
     steps:
@@ -179,7 +179,7 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ vars.DEPLOY_AWS_ACCOUNT_ID }}:role/${{ vars.DEPLOY_AWS_ROLE }}
-          role-session-name: ${{ github.sha }}-githubaction-${{ vars.DEPLOY_AWS_ACCOUNT_ID }}
+          role-session-name: ${{ github.sha }}
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Setup Python
