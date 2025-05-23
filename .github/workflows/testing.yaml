@@ -175,16 +175,6 @@ jobs:
           role-session-name: ${{ github.sha }}
           aws-region: ${{ vars.AWS_REGION }}
 
-      - name: Switch to new AWS role
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
-
-          role-to-assume: arn:aws:iam::${{ vars.DEPLOY_AWS_ACCOUNT_ID }}:role/${{ vars.DEPLOY_AWS_ROLE }}
-          role-session-name: ${{ github.sha }}
-          aws-region: ${{ vars.AWS_REGION }}
-
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
@@ -194,6 +184,16 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install boto3
+
+      - name: Switch to new AWS role
+        id: assume_2nd_role
+        run: |
+          CREDS=$(aws sts assume-role \
+            --role-arn arn:aws:iam::${{ vars.DEPLOY_AWS_ACCOUNT_ID }}:role/${{ vars.DEPLOY_AWS_ROLE }} \
+            --role-session-name github-action-session)
+          echo "AWS_ACCESS_KEY_ID=$(echo $CREDS | jq -r '.Credentials.AccessKeyId')" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=$(echo $CREDS | jq -r '.Credentials.SecretAccessKey')" >> $GITHUB_ENV
+          echo "AWS_SESSION_TOKEN=$(echo $CREDS | jq -r '.Credentials.SessionToken')" >> $GITHUB_ENV
 
       - name: Trigger Step Function
         run: |
