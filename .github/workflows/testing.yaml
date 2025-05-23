@@ -158,7 +158,23 @@ jobs:
         run: |
           terraform apply -var-file=config/development/terraform.tfvars --auto-approve
         working-directory: terraform
-      
+  
+  test_code:
+    concurrency:
+      group: testing_app
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    needs: terraform_deploy
+    environment:
+      name: development
+    steps:
+      - name: AWS login main account
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ vars.MAIN_AWS_ACCOUNT_ID }}:role/${{ vars.MAIN_AWS_ROLE }}
+          role-session-name: ${{ github.sha }}
+          aws-region: ${{ vars.AWS_REGION }}    
+
       - name: Install aws-sdk
         shell: sh
         run: |
