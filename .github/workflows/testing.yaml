@@ -158,33 +158,7 @@ jobs:
         run: |
           terraform apply -var-file=config/development/terraform.tfvars --auto-approve
         working-directory: terraform
-  
-  test_code:
-    concurrency:
-      group: testing_app
-      cancel-in-progress: false
-    runs-on: ubuntu-latest
-    needs: terraform_deploy
-    environment:
-      name: development-plan
-    steps:
-      - name: install terraform
-        uses: hashicorp/setup-terraform@v3
-        with:
-          terraform_version: 1.9.5
-  
-      - name: AWS login main account
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::${{ vars.MAIN_AWS_ACCOUNT_ID }}:role/${{ vars.MAIN_AWS_ROLE }}
-          role-session-name: ${{ github.sha }}
-          aws-region: ${{ vars.AWS_REGION }}    
-
-      - name: Set up Python
-        uses: actions/setup-python@v5.4.0
-        with:
-          python-version: 3.x # Use any supported Python version
-          
+         
       - name: Switch to new AWS role
         id: assume_2nd_role
         shell: sh
