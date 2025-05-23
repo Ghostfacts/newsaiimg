@@ -175,6 +175,11 @@ jobs:
           role-session-name: ${{ github.sha }}
           aws-region: ${{ vars.AWS_REGION }}    
 
+      - name: Set up Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version: 3.x # Use any supported Python version
+
       - name: Install aws-sdk
         shell: sh
         run: |
