@@ -180,7 +180,7 @@ jobs:
         shell: sh
         run: |
           aws stepfunctions start-execution \
-            --state-machine-arn arn:aws:states::${{ vars.DEPLOY_AWS_ACCOUNT_ID }}:stateMachine/newsaiimg-dev-step-function \
+            --state-machine-arn arn:aws:states:${{ vars.AWS_REGION }}:${{ vars.DEPLOY_AWS_ACCOUNT_ID }}:stateMachine:newsaiimg-dev-step-function \
             --region ${{ vars.AWS_REGION }}
           echo "Step Function triggered!"
 
