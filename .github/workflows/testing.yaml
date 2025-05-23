@@ -166,7 +166,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: terraform_deploy
     environment:
-      name: development
+      name: development-plan
     steps:
       - name: AWS login main account
         uses: aws-actions/configure-aws-credentials@v4
