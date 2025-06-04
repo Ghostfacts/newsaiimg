@@ -1,8 +1,8 @@
-## CE cost taging (may move)
-resource "aws_ce_cost_allocation_tag" "ce_project" {
-  tag_key = "project"
-  status  = "Active"
-}
+# ## CE cost taging (may move)
+# resource "aws_ce_cost_allocation_tag" "ce_project" {
+#   tag_key = "project"
+#   status  = "Active"
+# }
 
 #lambda function
 module "billing_function" {
