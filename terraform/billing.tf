@@ -45,7 +45,7 @@ data "aws_iam_policy_document" "lambda_billing_policy" {
   }
   statement {
     effect = "Allow"
-    sid    = "Billing_Access"
+    sid    = "BillingAccess"
     actions = [
       "ce:GetCostAndUsage"
     ]
