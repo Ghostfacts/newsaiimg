@@ -53,7 +53,7 @@
       "Type": "Task",
       "Resource": "arn:aws:states:::sns:publish",
       "Parameters": {
-        "Subject": "NEWSAI - New story",
+        "Subject": "NEWSAI - ERROR",
         "Message.$": "$",
         "TopicArn": "arn:aws:sns:${ region }:${ accountid }:newsaiimg-${ environment }-sns-topic",
         "MessageAttributes": {
