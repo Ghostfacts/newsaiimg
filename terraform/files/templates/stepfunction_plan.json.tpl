@@ -23,78 +23,134 @@
           "JitterStrategy": "FULL"
         }
       ],
-      "Next": "Generating_image",
+      "Next": "News_err_check",
       "Assign": {
         "event_id.$": "$.Payload.event_id"
       }
     },
-    "Generating_image": {
-      "Type": "Parallel",
-      "Branches": [
+    "News_err_check": {
+      "Type": "Choice",
+      "Choices": [
         {
-          "StartAt": "Waitforai",
-          "States": {
-            "Waitforai": {
-              "Type": "Wait",
-              "Seconds": 200,
-              "Next": "genimage"
+          "Next": "SNS-ERROR",
+          "And": [
+            {
+              "Variable": "$.statusCode",
+              "IsPresent": true
             },
-            "genimage": {
-              "Type": "Task",
-              "Resource": "arn:aws:states:::lambda:invoke",
-              "OutputPath": "$.Payload",
-              "Parameters": {
-                "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-imggen-lambda-function:$LATEST",
-                "Payload": {
-                  "event_id.$": "$event_id"
-                }
-              },
-              "Retry": [
-                {
-                  "ErrorEquals": [
-                    "Lambda.ServiceException",
-                    "Lambda.AWSLambdaException",
-                    "Lambda.SdkClientException",
-                    "Lambda.TooManyRequestsException"
-                  ],
-                  "IntervalSeconds": 1,
-                  "MaxAttempts": 3,
-                  "BackoffRate": 2,
-                  "JitterStrategy": "FULL"
-                }
-              ],
-              "End": true
+            {
+              "Not": {
+                "Variable": "$.statusCode",
+                "NumericEquals": 200
+              }
             }
-          }
-        },
-        {
-          "StartAt": "Get-newsapi-Logs",
-          "States": {
-            "Get-newsapi-Logs": {
-              "Type": "Task",
-              "Parameters": {
-                "LogGroupName": "/aws/lambda/newsaiimg-${ environment }-newsapi-lambda-function",
-                "LogStreamName.$": "$.logStreamName"
-              },
-              "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:getLogEvents",
-              "Next": "Newsapi-Logs-to-s3"
-            },
-            "Newsapi-Logs-to-s3": {
-              "Type": "Task",
-              "Parameters": {
-                "ContentType": "application/json",
-                "Body.$": "States.JsonToString($)",
-                "Bucket": "newsaiimg-${ environment }-s3-imgstorage",
-                "Key.$": "States.Format('aiimg/{}/newsapi_log.json', $event_id)"
-              },
-              "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
-              "End": true
-            }
-          }
+          ]
         }
       ],
-      "ResultPath": "$.parallelResults",
-      "Next": "Wait_to_publish"
+      "Default": "Get-newsapi-Logs"
+    },
+    "SNS-ERROR": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::sns:publish",
+      "Parameters": {
+        "Subject": "NEWSAI - New story",
+        "Message.$": "$",
+        "TopicArn": "arn:aws:sns:${ region }:${ accountid }:newsaiimg-${ environment }-sns-topic",
+        "MessageAttributes": {
+          "eventType": {
+            "DataType": "String",
+            "StringValue": "ALERT"
+          },
+          "incidentKey": {
+            "DataType": "String",
+            "StringValue.$": "$event_id"
+          },
+          "priority": {
+            "DataType": "String",
+            "StringValue": "LOW"
+          },
+          "incidentUrl1": {
+            "DataType": "String",
+            "StringValue.$": "States.Format('https://d305zk4rld5lm5.cloudfront.net/post/{}', $event_id)"
+          }
+        }
+      },
+      "Next": "Fail"
+    },
+    "Fail": {
+      "Type": "Fail"
+    },
+    "Get-newsapi-Logs": {
+      "Type": "Task",
+      "Parameters": {
+        "LogGroupName": "/aws/lambda/newsaiimg-${ environment }-newsapi-lambda-function",
+        "LogStreamName.$": "$.logStreamName"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:cloudwatchlogs:getLogEvents",
+      "Next": "Newsapi-Logs-to-s3"
+    },
+    "Newsapi-Logs-to-s3": {
+      "Type": "Task",
+      "Parameters": {
+        "ContentType": "application/json",
+        "Body.$": "States.JsonToString($)",
+        "Bucket": "newsaiimg-${ environment }-s3-imgstorage",
+        "Key.$": "States.Format('aiimg/{}/newsapi_log.json', $event_id)"
+      },
+      "Resource": "arn:aws:states:::aws-sdk:s3:putObject",
+      "Next": "Waitforai"
+    },
+    "Waitforai": {
+      "Type": "Wait",
+      "Seconds": 200,
+      "Next": "genimage"
+    },
+    "genimage": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-imggen-lambda-function:$LATEST",
+        "Payload": {
+          "event_id.$": "$event_id"
+        }
+      },
+      "Retry": [
+        {
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
+        }
+      ],
+      "Next": "genimg_err_chk"
+    },
+    "genimg_err_chk": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Next": "SNS-ERROR",
+          "And": [
+            {
+              "Variable": "$.statusCode",
+              "IsPresent": true
+            },
+            {
+              "Not": {
+                "Variable": "$.statusCode",
+                "NumericEquals": 200
+              }
+            }
+          ]
+        }
+      ],
+      "Default": "Wait_to_publish"
     },
     "Wait_to_publish": {
       "Type": "Wait",
@@ -175,12 +231,12 @@
           },
           "incidentUrl1": {
             "DataType": "String",
-            "StringValue.$": "States.Format('https://${ domain }/post/{}', $event_id)"
+            "StringValue.$": "States.Format('https://d305zk4rld5lm5.cloudfront.net/post/{}', $event_id)"
           }
         }
       },
-      "End": true,
-      "InputPath": "$.Body"
+      "InputPath": "$.Body",
+      "End": true
     }
   }
 }
