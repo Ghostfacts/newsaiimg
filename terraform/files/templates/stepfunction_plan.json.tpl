@@ -162,8 +162,10 @@
       "Resource": "arn:aws:states:::lambda:invoke",
       "OutputPath": "$.Payload",
       "Parameters": {
-        "Payload.$": "$",
-        "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-publish-lambda-function:$LATEST"
+        "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-publish-lambda-function:$LATEST",
+        "Payload": {
+          "event_id.$": "$event_id"
+        }
       },
       "Retry": [
         {
