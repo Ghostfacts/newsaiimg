@@ -71,7 +71,7 @@
           },
           "incidentUrl1": {
             "DataType": "String",
-            "StringValue.$": "States.Format('https://d305zk4rld5lm5.cloudfront.net/post/{}', $event_id)"
+            "StringValue.$": "States.Format('https://${ domain }/post/{}', $event_id)"
           }
         }
       },
@@ -155,50 +155,60 @@
     "Wait_to_publish": {
       "Type": "Wait",
       "Seconds": 100,
-      "Next": "Publishing"
+      "Next": "Creating Web content"
     },
-    "Publishing": {
-      "Type": "Parallel",
-      "Next": "GetObject",
-      "Branches": [
+    "Creating Web content": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::lambda:invoke",
+      "OutputPath": "$.Payload",
+      "Parameters": {
+        "Payload.$": "$",
+        "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-publish-lambda-function:$LATEST"
+      },
+      "Retry": [
         {
-          "StartAt": "Creating Web content",
-          "States": {
-            "Creating Web content": {
-              "Type": "Task",
-              "Resource": "arn:aws:states:::lambda:invoke",
-              "OutputPath": "$.Payload",
-              "Parameters": {
-                "Payload.$": "$",
-                "FunctionName": "arn:aws:lambda:${ region }:${ accountid }:function:newsaiimg-${ environment }-publish-lambda-function:$LATEST"
-              },
-              "Retry": [
-                {
-                  "ErrorEquals": [
-                    "Lambda.ServiceException",
-                    "Lambda.AWSLambdaException",
-                    "Lambda.SdkClientException",
-                    "Lambda.TooManyRequestsException"
-                  ],
-                  "IntervalSeconds": 1,
-                  "MaxAttempts": 3,
-                  "BackoffRate": 2,
-                  "JitterStrategy": "FULL"
-                }
-              ],
-              "Next": "CodeBuild StartBuild"
-            },
-            "CodeBuild StartBuild": {
-              "Type": "Task",
-              "Resource": "arn:aws:states:::codebuild:startBuild",
-              "Parameters": {
-                "ProjectName": "newsaiimg-${ environment }-codebuild-build-website"
-              },
-              "End": true
-            }
-          }
+          "ErrorEquals": [
+            "Lambda.ServiceException",
+            "Lambda.AWSLambdaException",
+            "Lambda.SdkClientException",
+            "Lambda.TooManyRequestsException"
+          ],
+          "IntervalSeconds": 1,
+          "MaxAttempts": 3,
+          "BackoffRate": 2,
+          "JitterStrategy": "FULL"
         }
-      ]
+      ],
+      "Next": "Gen_content"
+    },
+    "Gen_content": {
+      "Type": "Choice",
+      "Choices": [
+        {
+          "Next": "SNS-ERROR",
+          "And": [
+            {
+              "Variable": "$.statusCode ",
+              "IsPresent": true
+            },
+            {
+              "Not": {
+                "Variable": "$.statusCode ",
+                "NumericEquals": 200
+              }
+            }
+          ]
+        }
+      ],
+      "Default": "CodeBuild StartBuild"
+    },
+    "CodeBuild StartBuild": {
+      "Type": "Task",
+      "Resource": "arn:aws:states:::codebuild:startBuild",
+      "Parameters": {
+        "ProjectName": "newsaiimg-${ environment }-codebuild-build-website"
+      },
+      "Next": "GetObject"
     },
     "GetObject": {
       "Type": "Task",
@@ -231,7 +241,7 @@
           },
           "incidentUrl1": {
             "DataType": "String",
-            "StringValue.$": "States.Format('https://d305zk4rld5lm5.cloudfront.net/post/{}', $event_id)"
+            "StringValue.$": "States.Format('https://${ domain }/post/{}', $event_id)"
           }
         }
       },
