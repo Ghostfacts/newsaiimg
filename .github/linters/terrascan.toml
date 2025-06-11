@@ -1,0 +1,27 @@
+# terrascan configuration file
+[severity]
+level = "medium"
+# scan and skip rules configuration
+[rules]
+    # skip rules (list of rules to skip)
+    skip-rules = [
+        "AC_AWS_0215",
+        "AC_AWS_0214",
+        "AC_AWS_0500",
+        "AC_AWS_0012",
+        "AC_AWS_0502",
+        "AAC_AWS_0483",
+        "AWS.LambdaFunction.LM.MEIDUM.0063",
+        "AC_AWS_0484",
+        "AC_AWS_0486",
+        "AC_AWS_0485",
+        "AC_AWS_0163",
+        "AC_AWS_0483",
+        "AC_AWS_0502",
+        "AC_AWS_0366",
+        "AC_AWS_0032",
+        "AWS.S3Bucket.NetworkSecurity.High.0417",
+        "AC_AWS_0025",
+        "AWS.ASBO.DP.MEDIUM.003",
+        "AWS.ASBO.DP.MEDIUM.0034"
+    ]

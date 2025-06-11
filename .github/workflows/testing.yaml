@@ -1,0 +1,160 @@
+---
+name: Terraform Checks/Deploy(Dev)
+permissions:
+  id-token: write
+  contents: read
+  pull-requests: write
+  statuses: write
+  checks: write
+  security-events: write
+  issues: write
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - terraform/**
+
+defaults:
+  run:
+    shell: bash
+    working-directory: terraform
+
+jobs:
+  terraformplan:
+    concurrency:
+      group: terraform-plan
+      cancel-in-progress: false
+    runs-on: ubuntu-latest
+    environment:
+      name: development
+    steps:
+      - name: install terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5.4.0
+        with:
+          python-version: 3.x # Use any supported Python version
+
+      - name: AWS login
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::${{ secrets.MAIN_AWS_ACCOUNT_ID }}:role/${{ secrets.MAIN_AWS_ROLE }}
+          role-session-name: ${{ github.sha }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Checkout
+        uses: actions/checkout@v4.2.2
+
+      - name: Terraform init
+        env:
+          TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
+          TF_VAR_AWS_ROLE_NAME: ${{ secrets.DEPLOY_AWS_ROLE }}
+          TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
+          TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
+          TF_VAR_openai_token: ${{ secrets.OPENAI_TOKEN }}
+          TF_VAR_openai_project: ${{ secrets.OPENAI_PROJECT }}
+          TF_VAR_openai_org: ${{ secrets.OPENAI_ORG }}
+
+        shell: sh
+        run: |
+          terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/development/backend.conf -var-file=config/development/terraform.tfvars
+        working-directory: terraform
+
+      - name: Terraform Validate
+        if: github.event_name == 'pull_request'
+        shell: sh
+        run: |
+          terraform validate -no-color
+        continue-on-error: true
+        working-directory: terraform
+
+      - name: Terraform Plan/Show
+        if: github.event_name == 'pull_request'
+        id: terraform_plan
+        shell: sh
+        run: |
+          terraform plan -refresh=true -out=plan.out -var-file=config/development/terraform.tfvars
+          terraform show -json plan.out | jq . > plan.json
+        env:
+          TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
+          TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
+          TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
+          TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
+          TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
+          TF_VAR_openai_token: ${{ secrets.OPENAI_TOKEN }}
+          TF_VAR_openai_project: ${{ secrets.OPENAI_PROJECT }}
+          TF_VAR_openai_org: ${{ secrets.OPENAI_ORG }}
+        working-directory: terraform
+
+      - name: Checkov
+        id: checkov
+        uses: ghostfacts/checkov@main
+        with:
+          planfilename: plan.json
+          path: terraform
+          githubapi: ${{ secrets.GITHUB_TOKEN }}
+
+  # terraformdeploy:
+  #   concurrency:
+  #     group: terraform-deploy
+  #     cancel-in-progress: false
+  #   runs-on: ubuntu-latest
+  #   needs: terraformplan
+  #   environment:
+  #     name: development
+  #   steps:
+  #     - name: AWS login
+  #       uses: aws-actions/configure-aws-credentials@v4
+  #       with:
+  #         role-to-assume: arn:aws:iam::${{ secrets.MAIN_AWS_ACCOUNT_ID }}:role/${{ secrets.MAIN_AWS_ROLE }}
+  #         role-session-name: ${{ github.sha }}
+  #         aws-region: ${{ vars.AWS_REGION }}
+
+  #     - name: install terraform
+  #       uses: hashicorp/setup-terraform@v3
+  #       with:
+  #         terraform_version: 1.9.5
+
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v5.4.0
+  #       with:
+  #         python-version: "3.10" # Use any supported Python version
+
+  #     - name: Checkout
+  #       uses: actions/checkout@v4.2.2
+
+  #     - name: Terraform init
+  #       shell: sh
+  #       env:
+  #         TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
+  #         TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
+  #         TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
+  #         TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
+  #         TF_VAR_openai_token: ${{ secrets.OPENAI_TOKEN }}
+  #         TF_VAR_openai_project: ${{ secrets.OPENAI_PROJECT }}
+  #         TF_VAR_openai_org: ${{ secrets.OPENAI_ORG }}
+  #       run: |
+  #         terraform init -input=false -no-color -upgrade -reconfigure -backend-config=config/development/backend.conf -var-file=config/development/terraform.tfvars
+  #       working-directory: terraform
+
+  #     - name: Terraform apply
+  #       shell: sh
+  #       env:
+  #         TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
+  #         TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
+  #         TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
+  #         TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
+  #         TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
+  #         TF_VAR_openai_token: ${{ secrets.OPENAI_TOKEN }}
+  #         TF_VAR_openai_project: ${{ secrets.OPENAI_PROJECT }}
+  #         TF_VAR_openai_org: ${{ secrets.OPENAI_ORG }}
+  #       run: |
+  #         terraform apply -var-file=config/development/terraform.tfvars --auto-approve
+  #       working-directory: terraform
