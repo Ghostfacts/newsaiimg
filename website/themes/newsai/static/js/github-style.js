@@ -144,7 +144,7 @@ function monthly(year, month, posts) {
           <details class="Details-element details-reset">
             <summary role="button" class="btn-link f4 muted-link no-underline lh-condensed width-full">
               <span class="color-text-primary ws-normal text-left">
-                Created ${monthPosts.length} post${monthPosts.length > 1 ? "s" : ""}
+                Created ${monthPosts.length} image${monthPosts.length > 1 ? "s" : ""}
               </span>
               <span class="d-inline-block float-right color-icon-secondary">
                 <span class="Details-content--open float-right">
