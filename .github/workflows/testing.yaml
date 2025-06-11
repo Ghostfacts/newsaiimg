@@ -28,7 +28,7 @@ jobs:
       cancel-in-progress: false
     runs-on: ubuntu-latest
     environment:
-      name: development-plan
+      name: development
     steps:
       - name: install terraform
         uses: hashicorp/setup-terraform@v3
@@ -43,7 +43,7 @@ jobs:
       - name: AWS login
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: arn:aws:iam::${{ secrets.MAIN_AWS_ACCOUNT_ID }}:role/${{ secrets.MAIN_AWS_ROLE }}
+          role-to-assume: arn:aws:iam::${{ vars.MAIN_AWS_ACCOUNT_ID }}:role/${{ vars.MAIN_AWS_ROLE }}
           role-session-name: ${{ github.sha }}
           aws-region: ${{ vars.AWS_REGION }}
 
@@ -52,8 +52,8 @@ jobs:
 
       - name: Terraform init
         env:
-          TF_VAR_AWS_ACCOUNT_ID: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
-          TF_VAR_AWS_ROLE_NAME: ${{ secrets.DEPLOY_AWS_ROLE }}
+          TF_VAR_AWS_ACCOUNT_ID: ${{ vars.DEPLOY_AWS_ACCOUNT_ID }}
+          TF_VAR_AWS_ROLE_NAME: ${{ vars.DEPLOY_AWS_ROLE }}
           TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
           TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
           TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
@@ -82,8 +82,8 @@ jobs:
           terraform plan -refresh=true -out=plan.out -var-file=config/development/terraform.tfvars
           terraform show -json plan.out | jq . > plan.json
         env:
-          TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
-          TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
+          TF_VAR_aws_account_id: ${{ vars.DEPLOY_AWS_ACCOUNT_ID }}
+          TF_VAR_aws_role_name: ${{ vars.DEPLOY_AWS_ROLE }}
           TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
           TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
           TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
@@ -112,7 +112,7 @@ jobs:
   #     - name: AWS login
   #       uses: aws-actions/configure-aws-credentials@v4
   #       with:
-  #         role-to-assume: arn:aws:iam::${{ secrets.MAIN_AWS_ACCOUNT_ID }}:role/${{ secrets.MAIN_AWS_ROLE }}
+  #         role-to-assume: arn:aws:iam::${{ vars.MAIN_AWS_ACCOUNT_ID }}:role/${{ vars.MAIN_AWS_ROLE }}
   #         role-session-name: ${{ github.sha }}
   #         aws-region: ${{ vars.AWS_REGION }}
 
@@ -132,8 +132,8 @@ jobs:
   #     - name: Terraform init
   #       shell: sh
   #       env:
-  #         TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
-  #         TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
+  #         TF_VAR_aws_account_id: ${{ vars.DEPLOY_AWS_ACCOUNT_ID }}
+  #         TF_VAR_aws_role_name: ${{ vars.DEPLOY_AWS_ROLE }}
   #         TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
   #         TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
   #         TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
@@ -147,8 +147,8 @@ jobs:
   #     - name: Terraform apply
   #       shell: sh
   #       env:
-  #         TF_VAR_aws_account_id: ${{ secrets.DEPLOY_AWS_ACCOUNT_ID }}
-  #         TF_VAR_aws_role_name: ${{ secrets.DEPLOY_AWS_ROLE }}
+  #         TF_VAR_aws_account_id: ${{ vars.DEPLOY_AWS_ACCOUNT_ID }}
+  #         TF_VAR_aws_role_name: ${{ vars.DEPLOY_AWS_ROLE }}
   #         TF_VAR_github_token: ${{ secrets.GITHUB_TOKEN }}
   #         TF_VAR_ilert_token: ${{ secrets.ILERT_HOOK }}
   #         TF_VAR_newsapi_token: ${{ secrets.NEWSAPI_TOKEN }}
