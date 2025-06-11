@@ -141,7 +141,7 @@ function monthly(year, month, posts) {
           </svg>
         </div>
         <div class="TimelineItem-body ">
-          <details class="Details-element details-reset" open>
+          <details class="Details-element details-reset">
             <summary role="button" class="btn-link f4 muted-link no-underline lh-condensed width-full">
               <span class="color-text-primary ws-normal text-left">
                 Created ${monthPosts.length} post${monthPosts.length > 1 ? "s" : ""}
