@@ -77,10 +77,6 @@ jobs:
       - name: Terraform Plan/Show
         if: github.event_name == 'pull_request'
         id: terraform_plan
-        shell: sh
-        run: |
-          terraform plan -refresh=true -out=plan.out -var-file=config/development/terraform.tfvars
-          terraform show -json plan.out | jq . > plan.json
         env:
           TF_VAR_aws_account_id: ${{ vars.DEPLOY_AWS_ACCOUNT_ID }}
           TF_VAR_aws_role_name: ${{ vars.DEPLOY_AWS_ROLE }}
@@ -90,6 +86,10 @@ jobs:
           TF_VAR_openai_token: ${{ secrets.OPENAI_TOKEN }}
           TF_VAR_openai_project: ${{ secrets.OPENAI_PROJECT }}
           TF_VAR_openai_org: ${{ secrets.OPENAI_ORG }}
+        shell: sh
+        run: |
+          terraform plan -refresh=true -out=plan.out -var-file=config/development/terraform.tfvars
+          terraform show -json plan.out | jq . > plan.json
         working-directory: terraform
 
       - name: Checkov
