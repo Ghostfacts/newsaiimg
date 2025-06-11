@@ -11,6 +11,7 @@ resource "aws_s3_bucket" "aiminnews" { # ts:skip=AC_AWS_0012
     local.tags,
     {
       Name = "newsaiimg-${local.environment_map[var.environment]}-s3-imgstorage"
+      datatype = "private"
     }
   )
 }

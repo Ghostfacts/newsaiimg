@@ -255,7 +255,8 @@ class Newsapi:
             for article in response.json().get("articles", []):
                 if self.__filter_story(article) is True:
                     article["source"] = article["source"]["id"]
-                    article["content"] = self.get_full_content(article.get("url"))
+                    # due to law and copy right disabling for testing
+                    # article["content"] = self.get_full_content(article.get("url"))
                     story_list.append(article)
             logging.info("Total after Filtering: %s", len(story_list))
             return story_list

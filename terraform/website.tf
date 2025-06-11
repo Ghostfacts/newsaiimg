@@ -12,7 +12,8 @@ resource "aws_s3_bucket" "website" {
   tags = merge(
     local.tags,
     {
-      Name = "newsaiimg-${local.environment_map[var.environment]}-s3-website"
+      Name = "newsaiimg-${local.environment_map[var.environment]}-s3-website",
+      datatype = "public"
     }
   )
 }
