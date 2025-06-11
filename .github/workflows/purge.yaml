@@ -40,5 +40,6 @@ jobs:
                   echo "Deleting run $id ($created_at, $age days old)"
                   gh api "repos/${REPO}/actions/runs/$id" -X DELETE
                   echo "- Run ID: $id, Created At: $created_at, Age: $age days" >> deleted_runs.log
+                  echo "| $id | $created_at | $age days |" >> $GITHUB_STEP_SUMMARY
               fi
           done
