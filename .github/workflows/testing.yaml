@@ -88,7 +88,7 @@ jobs:
           TF_VAR_openai_org: ${{ secrets.OPENAI_ORG }}
         shell: sh
         run: |
-          ls -hal
+          ls -hal config/development/terraform.tfvars
           terraform plan -refresh=true -out=plan.out -var-file=config/development/terraform.tfvars
           terraform show -json plan.out | jq . > plan.json
         working-directory: terraform
