@@ -28,7 +28,7 @@ jobs:
       cancel-in-progress: false
     runs-on: ubuntu-latest
     environment:
-      name: development
+      name: development-plan
     steps:
       - name: install terraform
         uses: hashicorp/setup-terraform@v3
