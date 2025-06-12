@@ -12,12 +12,27 @@ module "image_gen_layer" {
   source     = "./modules/lambda_layer_python"
   layer_name = "newsaiimg-${local.environment_map[var.environment]}-lambda-layer-imggen"
   runtime    = "python3.10"
-  codepath = "../lambdas/layers/grpai/"
   modules = [
     "pillow==10.2.0",
     "requests==2.31.0"
   ]
 }
+
+module "ai_layer" {
+  source     = "./modules/lambda_layer_python"
+  layer_name = "newsaiimg-${local.environment_map[var.environment]}-lambda-layer-aitools"
+  runtime    = "python3.12"
+  codepath = "../lambdas/layers/grpai/"
+  modules = [
+    "pillow==10.2.0",
+    "requests==2.31.0",
+    "google-genai==1.20.0",
+    "boto3==1.38.35"
+  ]
+}
+
+
+
 
 module "news_api_function" {
   # checkov:skip=CKV_AWS_50
