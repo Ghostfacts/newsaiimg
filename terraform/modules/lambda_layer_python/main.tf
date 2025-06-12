@@ -32,7 +32,7 @@ resource "null_resource" "copy_code_folder" {
   provisioner "local-exec" {
     command = <<EOT
     if [ -d "${local.normalized_codepath}" ]; then
-      cp -vr "${local.normalized_codepath}/." "/tmp/${var.layer_name}/python/lib/${var.runtime}/site-packages/"
+      cp -vr "${local.normalized_codepath}" "/tmp/${var.layer_name}/python/lib/${var.runtime}/site-packages/"
     fi
     EOT
   }
