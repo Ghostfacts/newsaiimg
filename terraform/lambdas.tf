@@ -12,7 +12,7 @@ module "image_gen_layer" {
   source     = "./modules/lambda_layer_python"
   layer_name = "newsaiimg-${local.environment_map[var.environment]}-lambda-layer-imggen"
   runtime    = "python3.10"
-  codepath = "../lambdas/layers/test/"
+  codepath = "../lambdas/layers/grpai/"
   modules = [
     "pillow==10.2.0",
     "requests==2.31.0"
