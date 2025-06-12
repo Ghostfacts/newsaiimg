@@ -12,3 +12,9 @@ variable "modules" {
   type        = list(string)
   description = "environment the code being deplyed"
 }
+
+variable "codepath" {
+  type        = string
+  description = "file path to custom modules to be included"
+  default     = ""
+}

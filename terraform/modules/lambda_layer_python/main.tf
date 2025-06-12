@@ -10,6 +10,21 @@ resource "null_resource" "pip" {
   }
 }
 
+resource "null_resource" "copy_code_folder" {
+  provisioner "local-exec" {
+    command = <<EOT
+    if [ -d "${var.codepath}" ]; then
+      cp -r "${var.codepath}/." "/tmp/${var.layer_name}/python/lib/${var.runtime}/site-packages/"
+    fi
+    EOT
+  }
+  triggers = {
+    source_folder = var.codepath
+    dest_folder   = "/tmp/${var.layer_name}/python/lib/${var.runtime}/site-packages/"
+    time          = timestamp()
+  }
+}
+
 data "archive_file" "layerzip" {
   type        = "zip"
   source_dir  = "/tmp/${var.layer_name}/"
