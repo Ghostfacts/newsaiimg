@@ -19,10 +19,11 @@ module "image_gen_layer" {
 }
 
 module "ai_layer" {
-  source     = "./modules/lambda_layer_python"
-  layer_name = "newsaiimg-${local.environment_map[var.environment]}-lambda-layer-aitools"
-  runtime    = "python3.12"
-  codepath = "../lambdas/layers/grpai/"
+  source      = "./modules/lambda_layer_python"
+  layer_name  = "newsaiimg-${local.environment_map[var.environment]}-lambda-layer-aitools"
+  description = "For AI requirments"
+  runtime     = "python3.12"
+  codepath    = "../lambdas/layers/grpai/"
   modules = [
     "pillow==10.2.0",
     "requests==2.31.0",
