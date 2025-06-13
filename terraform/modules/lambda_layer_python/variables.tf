@@ -18,3 +18,9 @@ variable "codepath" {
   description = "file path to custom modules to be included"
   default     = ""
 }
+
+variable "description" {
+  type    = string
+  description = "description text of the lambda"
+  default = ""
+}

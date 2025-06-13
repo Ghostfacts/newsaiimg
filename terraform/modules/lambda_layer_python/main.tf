@@ -63,6 +63,7 @@ resource "aws_lambda_layer_version" "layer" {
   source_code_hash    = data.archive_file.layerzip.output_base64sha256
   compatible_runtimes = [var.runtime]
   skip_destroy        = true
+  description         = var.description
   depends_on = [
     data.archive_file.layerzip
   ]
