@@ -18,6 +18,22 @@ module "image_gen_layer" {
   ]
 }
 
+module "ai_layer" {
+  source      = "./modules/lambda_layer_python"
+  layer_name  = "newsaiimg-${local.environment_map[var.environment]}-lambda-layer-aitools"
+  description = "For AI requirments"
+  runtime     = "python3.12"
+  codepath    = "../lambdas/layers/grpai/"
+  modules = [
+    "pillow==10.2.0",
+    "requests==2.31.0",
+    "google-genai==1.20.0",
+    "boto3==1.38.35"
+  ]
+}
+
+
+
 
 module "news_api_function" {
   # checkov:skip=CKV_AWS_50
@@ -28,7 +44,7 @@ module "news_api_function" {
   source           = "./modules/lambda_function"
   nameprefex       = "newsaiimg-${local.environment_map[var.environment]}-newsapi"
   runtime          = "python3.10"
-  source_path      = "files/lambdas/getnews/"
+  source_path      = "../lambdas/functions/getnews/"
   function_handler = "main.lambda_handler"
   timeout          = 830
   environment_variables = {
@@ -51,7 +67,7 @@ module "img_gen_function" {
   source           = "./modules/lambda_function"
   nameprefex       = "newsaiimg-${local.environment_map[var.environment]}-imggen"
   runtime          = "python3.10"
-  source_path      = "files/lambdas/createimg/"
+  source_path      = "../lambdas/functions/createimg/"
   function_handler = "main.lambda_handler"
   timeout          = 830
   environment_variables = {
@@ -74,7 +90,7 @@ module "pagedeploy_function" {
   source           = "./modules/lambda_function"
   nameprefex       = "newsaiimg-${local.environment_map[var.environment]}-webpagedesign"
   runtime          = "python3.10"
-  source_path      = "files/lambdas/createwebpost/"
+  source_path      = "../lambdas/functions/publishcontent/"
   function_handler = "main.lambda_handler"
   timeout          = 830
   environment_variables = {

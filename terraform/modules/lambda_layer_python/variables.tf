@@ -12,3 +12,15 @@ variable "modules" {
   type        = list(string)
   description = "environment the code being deplyed"
 }
+
+variable "codepath" {
+  type        = string
+  description = "file path to custom modules to be included"
+  default     = ""
+}
+
+variable "description" {
+  type    = string
+  description = "description text of the lambda"
+  default = ""
+}

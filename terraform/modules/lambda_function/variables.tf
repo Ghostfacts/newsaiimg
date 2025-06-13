@@ -54,3 +54,10 @@ variable "dlq_arn" {
   type    = any
   default = ""
 }
+
+variable "description" {
+  type    = string
+  description = "description text of the lambda"
+  default = ""
+}
+

@@ -11,6 +11,7 @@ resource "aws_s3_bucket" "aiminnews" { # ts:skip=AC_AWS_0012
     local.tags,
     {
       Name = "newsaiimg-${local.environment_map[var.environment]}-s3-imgstorage"
+      datatype = "private"
     }
   )
 }
@@ -26,9 +27,9 @@ resource "aws_s3_bucket_public_access_block" "imgstorage-blockpublic" {
 # Upload raw website
 # Optional: Upload all files from a folder to the S3 bucket
 resource "aws_s3_bucket_object" "website_files" {
-  for_each = fileset("files/website", "**")
+  for_each = fileset("../website", "**")
   bucket   = aws_s3_bucket.aiminnews.id
   key      = "website/${each.value}"
-  source   = "files/website/${each.value}"
-  etag     = filemd5("files/website/${each.value}")
+  source   = "../website/${each.value}"
+  etag     = filemd5("../website/${each.value}")
 }
